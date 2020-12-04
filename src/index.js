@@ -1,80 +1,85 @@
 import { Note, Scale, Range } from '@tonaljs/tonal'
-import { select, range, scaleBand, scalePoint } from 'd3'
+import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
 
 document.addEventListener('DOMContentLoaded', () => {
-  const margin = { t: 0, r: 0, b: 0, l: 0 }
+  const margin = { t: 10, r: 10, b: 10, l: 10 }
   const width = window.innerWidth
   const height = Math.round(width / 6)
-  const fretHeight = Math.round(height * 0.9)
+  const fheight = height - margin.t - margin.b
   const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
-  const frets = range(1, 25)
   const notes = tuning.map((t) =>
-    Range.chromatic([`${t}0`, `${t}2`], { flats: true })
+    Range.chromatic([`${t}0`, `${t}2`], { sharps: true })
   )
+  const fretData = range(25).map((d) => tuning.map((_, i) => notes[i][d]))
+  const openNotes = fretData.splice(0, 1)
 
-  const fretData = frets.map((d) => {
-    return tuning.map((_, i) => notes[i][d])
-  })
+  const fx = scaleBand()
+    .domain(fretData)
+    .range([margin.l, width - margin.r])
+    .paddingInner(0.05)
 
-  const fretX = scaleBand().domain(frets).rangeRound([0, width]).padding(0.05)
-  const noteY = scalePoint()
-    .padding(1)
-    .domain(range(tuning.length))
-    .rangeRound([fretHeight, 0])
+  const fy = scaleLinear().range([height - margin.b, margin.t])
+  const sy = scalePoint().domain(tuning).range([fheight, 0])
 
   const svg = select('#neck')
     .append('svg')
     .attr('viewBox', [0, 0, width, height])
+    .style('border', '1px dotted #333')
 
-  const fret = svg
+  const frets = svg
     .selectAll('.fret')
-    .data(frets)
+    .data(fretData)
     .join('g')
-    .attr('transform', (d) => `translate(${fretX(d)}, 0)`)
-    .attr('fill', '#eee')
+    .attr('transform', (d) => `translate(${fx(d)}, ${margin.t})`)
     .attr('class', 'fret')
 
-  const opens = svg
-    .selectAll('.open')
-    .data(tuning)
-    .join('g')
-    .attr('transform', (d, i) => `translate(0, ${noteY(i) + 4})`)
-    .attr('class', 'open')
-
-  opens.append('text').text(String).attr('font-size', 12)
-
-  fret
+  frets
     .append('rect')
-    .attr('width', fretX.bandwidth())
-    .attr('height', fretHeight)
+    .attr('width', fx.bandwidth())
+    .attr('height', height - margin.t - margin.b)
+    .attr('fill', '#eee')
 
-  const labels = fret
-    .append('g')
-    .attr('transform', `translate(${fretX.bandwidth() / 2}, ${height})`)
-    .attr('fill', '#333')
-    .attr('text-anchor', 'middle')
-    .attr('font-size', 12)
+  // const opens = svg
+  //   .selectAll('.open')
+  //   .data(tuning)
+  //   .join('g')
+  //   .attr('transform', (d, i) => `translate(0, ${noteY(i) + 4})`)
+  //   .attr('class', 'open')
 
-  labels.append('text').text(String)
-  labels
-    .filter((d) => (d % 2 != 0 && d != 1 && d != 11 && d != 13) || d == 12)
-    .append('text')
-    .text((d) => (d == 12 ? '··' : '·'))
-    .attr('font-size', 50)
-    .attr('fill', 'gold')
+  // opens.append('text').text(String).attr('font-size', 12)
 
-  const note = fret
-    .selectAll('.string')
-    .data(tuning)
-    .join('g')
-    .attr('transform', (d, i) => `translate(0, ${noteY(i)})`)
-    .attr('class', 'string')
+  // fret
+  //   .append('rect')
+  //   .attr('width', fretX.bandwidth())
+  //   .attr('height', fretHeight)
 
-  note
-    .append('rect')
-    .attr('width', fretX.bandwidth())
-    .attr('height', 2)
-    .attr('fill', '#ddd')
+  // const labels = fret
+  //   .append('g')
+  //   .attr('transform', `translate(${fretX.bandwidth() / 2}, ${height})`)
+  //   .attr('fill', '#333')
+  //   .attr('text-anchor', 'middle')
+  //   .attr('font-size', 12)
 
-  note.append('text')
+  // labels.append('text').text(String)
+  // labels
+  //   .filter((d) => (d % 2 != 0 && d != 1 && d != 11 && d != 13) || d == 12)
+  //   .append('text')
+  //   .text((d) => (d == 12 ? '··' : '·'))
+  //   .attr('font-size', 50)
+  //   .attr('fill', 'gold')
+
+  // const note = fret
+  //   .selectAll('.string')
+  //   .data(tuning)
+  //   .join('g')
+  //   .attr('transform', (d, i) => `translate(0, ${noteY(i)})`)
+  //   .attr('class', 'string')
+
+  // note
+  //   .append('rect')
+  //   .attr('width', fretX.bandwidth())
+  //   .attr('height', 2)
+  //   .attr('fill', '#ddd')
+
+  // note.append('text')
 })
