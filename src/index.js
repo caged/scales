@@ -26,6 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
     .attr('viewBox', [0, 0, width, height])
     .style('border', '1px dotted #333')
 
+  const openf = svg
+    .append('g')
+    .attr('transform', (d) => `translate(${margin.l / 2}, ${margin.t})`)
+    .attr('font-size', 12)
+
+  const opens = openf
+    .selectAll('.open')
+    .data(openNotes)
+    .join('g')
+    .attr('transform', (d, i) => `translate(0, ${sy(i) + 6})`)
+    .attr('class', 'open')
+
+  opens.append('text').text((d) => Note.get(d).pc)
+
   const frets = svg
     .selectAll('.fret')
     .data(fretData)
