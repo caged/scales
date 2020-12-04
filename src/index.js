@@ -2,24 +2,33 @@ import { Note, Scale, Range } from '@tonaljs/tonal'
 import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
 
 document.addEventListener('DOMContentLoaded', () => {
-  const margin = { t: 10, r: 10, b: 10, l: 10 }
+  const margin = { t: 20, r: 10, b: 30, l: 40 }
   const width = window.innerWidth
-  const height = Math.round(width / 6)
+  const height = Math.round(width / 5)
   const fheight = height - margin.t - margin.b
   const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
   const notes = tuning.map((t) =>
     Range.chromatic([`${t}0`, `${t}2`], { sharps: true })
   )
   const fretData = range(25).map((d) => tuning.map((_, i) => notes[i][d]))
-  const openNotes = fretData.splice(0, 1)
+  const openNotes = fretData.splice(0, 1)[0]
 
   const fx = scaleBand()
     .domain(fretData)
-    .range([margin.l, width - margin.r])
+    .rangeRound([margin.l, width - margin.r])
     .paddingInner(0.05)
 
   const fy = scaleLinear().range([height - margin.b, margin.t])
-  const sy = scalePoint().domain(tuning).range([fheight, 0])
+
+  const sy = scalePoint()
+    .domain(range(tuning.length))
+    .rangeRound([fheight, 0])
+    .padding(0.5)
+
+  const sw = scaleLinear().domain([0, tuning.length]).range([3, 1])
+  const noteRad = fx.bandwidth() / 4
+  const getsMark = (fnum) =>
+    (fnum % 2 != 0 && fnum != 1 && fnum != 11 && fnum != 13) || fnum == 12
 
   const svg = select('#neck')
     .append('svg')
@@ -53,47 +62,65 @@ document.addEventListener('DOMContentLoaded', () => {
     .attr('height', height - margin.t - margin.b)
     .attr('fill', '#eee')
 
-  // const opens = svg
-  //   .selectAll('.open')
-  //   .data(tuning)
-  //   .join('g')
-  //   .attr('transform', (d, i) => `translate(0, ${noteY(i) + 4})`)
-  //   .attr('class', 'open')
+  const str = frets
+    .selectAll('.string')
+    .data((d) => d)
+    .join('g')
+    .attr('transform', (d, i) => `translate(0, ${sy(i)})`)
 
-  // opens.append('text').text(String).attr('font-size', 12)
+  str
+    .append('rect')
+    .attr('width', fx.bandwidth() + 5)
+    .attr('height', (d, i) => sw(i))
+    .attr('fill', '#333')
 
-  // fret
-  //   .append('rect')
-  //   .attr('width', fretX.bandwidth())
-  //   .attr('height', fretHeight)
+  // str
+  //   .append('circle')
+  //   .attr('r', noteRad)
+  //   .attr('cx', fx.bandwidth() / 2)
+  //   .attr('cy', 1)
+  //   .attr('fill', '#eee')
 
-  // const labels = fret
-  //   .append('g')
-  //   .attr('transform', `translate(${fretX.bandwidth() / 2}, ${height})`)
-  //   .attr('fill', '#333')
-  //   .attr('text-anchor', 'middle')
-  //   .attr('font-size', 12)
+  str
+    .append('rect')
+    .attr('width', noteRad * 2)
+    .attr('height', noteRad)
+    .attr('x', fx.bandwidth() / 2 - (noteRad * 2) / 2)
+    .attr('y', -noteRad)
+    .attr('fill', '#e1e1e1')
 
-  // labels.append('text').text(String)
-  // labels
-  //   .filter((d) => (d % 2 != 0 && d != 1 && d != 11 && d != 13) || d == 12)
-  //   .append('text')
-  //   .text((d) => (d == 12 ? '··' : '·'))
-  //   .attr('font-size', 50)
-  //   .attr('fill', 'gold')
+  str
+    .append('text')
+    .attr('x', fx.bandwidth() / 2)
+    .attr('y', -5)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 8)
+    .attr('fill', '#555')
+    .text((d) => Note.get(d).pc)
 
-  // const note = fret
-  //   .selectAll('.string')
-  //   .data(tuning)
-  //   .join('g')
-  //   .attr('transform', (d, i) => `translate(0, ${noteY(i)})`)
-  //   .attr('class', 'string')
+  const labels = frets
+    .append('g')
+    .attr(
+      'transform',
+      `translate(${fx.bandwidth() / 2}, ${fheight + margin.b / 2})`
+    )
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 10)
 
-  // note
-  //   .append('rect')
-  //   .attr('width', fretX.bandwidth())
-  //   .attr('height', 2)
-  //   .attr('fill', '#ddd')
+  labels.append('text').text((d, i) => i + 1)
 
-  // note.append('text')
+  frets.each(function (d, i) {
+    const fnum = i + 1
+    if (getsMark(fnum)) {
+      select(this)
+        .append('text')
+        .text(fnum == 12 ? '··' : '·')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 38)
+        .attr('font-family', 'sans-serif')
+        .attr('fill', '#333')
+        .attr('x', fx.bandwidth() / 2)
+        .attr('y', margin.t / 2 - 5)
+    }
+  })
 })
