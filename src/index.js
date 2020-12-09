@@ -3,21 +3,7 @@ import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
 
 // console.log(Scale.names(), Scale.get('c0 harmonic minor'))
 // console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
-const dminor = Scale.rangeOf('D minor')('D0', 'D2')
-console.log(dminor)
-console.log(dminor.map(Note.get))
-// console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
-const modes = Mode.names().map((name) => {
-  const intervals = Mode.get(name).intervals
-  const notes = intervals.map(Note.transposeFrom('D'))
-  return {
-    name,
-    notes,
-    intervals,
-  }
-})
-
-console.log(modes)
+const dminor = Scale.rangeOf('E major')('E0', 'E2')
 
 document.addEventListener('DOMContentLoaded', () => {
   const margin = { t: 20, r: 10, b: 30, l: 40 }
