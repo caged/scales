@@ -1,5 +1,23 @@
-import { Note, Scale, Range } from '@tonaljs/tonal'
+import { Note, Scale, Range, Mode } from '@tonaljs/tonal'
 import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
+
+// console.log(Scale.names(), Scale.get('c0 harmonic minor'))
+// console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
+const dminor = Scale.rangeOf('D minor')('D0', 'D2')
+console.log(dminor)
+console.log(dminor.map(Note.get))
+// console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
+const modes = Mode.names().map((name) => {
+  const intervals = Mode.get(name).intervals
+  const notes = intervals.map(Note.transposeFrom('D'))
+  return {
+    name,
+    notes,
+    intervals,
+  }
+})
+
+console.log(modes)
 
 document.addEventListener('DOMContentLoaded', () => {
   const margin = { t: 20, r: 10, b: 30, l: 40 }
@@ -8,10 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const fheight = height - margin.t - margin.b
   const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
   const notes = tuning.map((t) =>
-    Range.chromatic([`${t}0`, `${t}2`], { sharps: true })
+    Range.chromatic([`${t}0`, `${t}2`], { flats: true })
   )
   const fretData = range(25).map((d) => tuning.map((_, i) => notes[i][d]))
   const openNotes = fretData.splice(0, 1)[0]
+
+  console.log(range(25).map((d) => tuning.map((_, i) => notes[i][d])))
+  console.log(notes)
 
   const fx = scaleBand()
     .domain(fretData)
@@ -33,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const svg = select('#neck')
     .append('svg')
     .attr('viewBox', [0, 0, width, height])
-    .style('border', '1px dotted #333')
 
   const openf = svg
     .append('g')
@@ -47,7 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
     .attr('transform', (d, i) => `translate(0, ${sy(i) + 6})`)
     .attr('class', 'open')
 
-  opens.append('text').text((d) => Note.get(d).pc)
+  opens
+    .append('rect')
+    .attr('width', noteRad * 1.5)
+    .attr('height', noteRad * 1.5)
+    .attr('x', 2)
+    .attr('y', -noteRad)
+    .attr('fill', (d) => {
+      return dminor.includes(d) ? '#C48400' : '#eee'
+    })
+
+  opens
+    .append('text')
+    .attr('text-anchor', 'middle')
+    .attr('x', noteRad / 1.5)
+    .text((d) => Note.get(d).pc)
 
   const frets = svg
     .selectAll('.fret')
@@ -72,31 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
     .append('rect')
     .attr('width', fx.bandwidth() + 5)
     .attr('height', (d, i) => sw(i))
-    .attr('fill', '#333')
-
-  // str
-  //   .append('circle')
-  //   .attr('r', noteRad)
-  //   .attr('cx', fx.bandwidth() / 2)
-  //   .attr('cy', 1)
-  //   .attr('fill', '#eee')
+    .attr('fill', '#8E5F00')
 
   str
     .append('rect')
-    .attr('width', noteRad * 2)
+    .attr('width', noteRad * 1.5)
     .attr('height', noteRad)
-    .attr('x', fx.bandwidth() / 2 - (noteRad * 2) / 2)
+    .attr('x', fx.bandwidth() / 2 - (noteRad * 1.5) / 2)
     .attr('y', -noteRad)
-    .attr('fill', '#e1e1e1')
+    .attr('fill', (d) => {
+      return dminor.includes(d) ? '#C48400' : '#eee'
+    })
 
   str
+    .filter((d) => dminor.includes(d))
     .append('text')
     .attr('x', fx.bandwidth() / 2)
-    .attr('y', -5)
+    .attr('y', -4)
     .attr('text-anchor', 'middle')
-    .attr('font-size', 8)
-    .attr('fill', '#555')
-    .text((d) => Note.get(d).pc)
+    .attr('font-size', 10)
+    .attr('fill', (d) => (dminor.includes(d) ? '#fff' : '#333'))
+    .text((d) => Note.get(d).pc.replace('b', '♭'))
 
   const labels = frets
     .append('g')
