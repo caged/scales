@@ -3,7 +3,7 @@ import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
 
 // console.log(Scale.names(), Scale.get('c0 harmonic minor'))
 // console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
-const dminor = Scale.rangeOf('E major')('E0', 'E2')
+const scalenotes = Scale.rangeOf('E major')('E0', 'E2').map(Note.get)
 
 document.addEventListener('DOMContentLoaded', () => {
   const margin = { t: 20, r: 10, b: 30, l: 40 }
@@ -12,13 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const fheight = height - margin.t - margin.b
   const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
   const notes = tuning.map((t) =>
-    Range.chromatic([`${t}0`, `${t}2`], { flats: true })
+    Range.chromatic([`${t}0`, `${t}2`], { flats: true }).map(Note.get)
   )
   const fretData = range(25).map((d) => tuning.map((_, i) => notes[i][d]))
   const openNotes = fretData.splice(0, 1)[0]
-
-  console.log(range(25).map((d) => tuning.map((_, i) => notes[i][d])))
-  console.log(notes)
 
   const fx = scaleBand()
     .domain(fretData)
@@ -50,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .selectAll('.open')
     .data(openNotes)
     .join('g')
-    .attr('transform', (d, i) => `translate(0, ${sy(i) + 6})`)
+    .attr('transform', (_, i) => `translate(0, ${sy(i) + 6})`)
     .attr('class', 'open')
 
   opens
@@ -60,83 +57,87 @@ document.addEventListener('DOMContentLoaded', () => {
     .attr('x', 2)
     .attr('y', -noteRad)
     .attr('fill', (d) => {
-      return dminor.includes(d) ? '#C48400' : '#eee'
+      return scalenotes.some((sn) => sn.chroma === d.chroma)
+        ? '#C48400'
+        : '#eee'
     })
 
   opens
     .append('text')
     .attr('text-anchor', 'middle')
     .attr('x', noteRad / 1.5)
-    .text((d) => Note.get(d).pc)
+    .text((d) => d.pc)
 
-  const frets = svg
-    .selectAll('.fret')
-    .data(fretData)
-    .join('g')
-    .attr('transform', (d) => `translate(${fx(d)}, ${margin.t})`)
-    .attr('class', 'fret')
+  // const frets = svg
+  //   .selectAll('.fret')
+  //   .data(fretData)
+  //   .join('g')
+  //   .attr('transform', (d) => `translate(${fx(d)}, ${margin.t})`)
+  //   .attr('class', 'fret')
 
-  frets
-    .append('rect')
-    .attr('width', fx.bandwidth())
-    .attr('height', height - margin.t - margin.b)
-    .attr('fill', '#eee')
+  // frets
+  //   .append('rect')
+  //   .attr('width', fx.bandwidth())
+  //   .attr('height', height - margin.t - margin.b)
+  //   .attr('fill', '#eee')
 
-  const str = frets
-    .selectAll('.string')
-    .data((d) => d)
-    .join('g')
-    .attr('transform', (d, i) => `translate(0, ${sy(i)})`)
+  // const str = frets
+  //   .selectAll('.string')
+  //   .data((d) => d)
+  //   .join('g')
+  //   .attr('transform', (d, i) => `translate(0, ${sy(i)})`)
 
-  str
-    .append('rect')
-    .attr('width', fx.bandwidth() + 5)
-    .attr('height', (d, i) => sw(i))
-    .attr('fill', '#8E5F00')
+  // str
+  //   .append('rect')
+  //   .attr('width', fx.bandwidth() + 5)
+  //   .attr('height', (d, i) => sw(i))
+  //   .attr('fill', '#8E5F00')
 
-  str
-    .append('rect')
-    .attr('width', noteRad * 1.5)
-    .attr('height', noteRad)
-    .attr('x', fx.bandwidth() / 2 - (noteRad * 1.5) / 2)
-    .attr('y', -noteRad)
-    .attr('fill', (d) => {
-      return dminor.includes(d) ? '#C48400' : '#eee'
-    })
+  // str
+  //   .append('rect')
+  //   .attr('width', noteRad * 1.5)
+  //   .attr('height', noteRad)
+  //   .attr('x', fx.bandwidth() / 2 - (noteRad * 1.5) / 2)
+  //   .attr('y', -noteRad)
+  //   .attr('fill', (d) => {
+  //     return scalenotes.includes(d) ? '#C48400' : '#eee'
+  //   })
 
-  str
-    .filter((d) => dminor.includes(d))
-    .append('text')
-    .attr('x', fx.bandwidth() / 2)
-    .attr('y', -4)
-    .attr('text-anchor', 'middle')
-    .attr('font-size', 10)
-    .attr('fill', (d) => (dminor.includes(d) ? '#fff' : '#333'))
-    .text((d) => Note.get(d).pc.replace('b', '♭'))
+  // str
+  //   // .filter((d) => scalenotes.includes(d))
+  //   .append('text')
+  //   .attr('x', fx.bandwidth() / 2)
+  //   .attr('y', -4)
+  //   .attr('text-anchor', 'middle')
+  //   .attr('font-size', 10)
+  //   .attr('fill', (d) =>
+  //     scalenotes.some((sn) => sn.chroma === d.chroma) ? '#fff' : '#333'
+  //   )
+  //   .text((d) => d.pc.replace('b', '♭'))
 
-  const labels = frets
-    .append('g')
-    .attr(
-      'transform',
-      `translate(${fx.bandwidth() / 2}, ${fheight + margin.b / 2})`
-    )
-    .attr('text-anchor', 'middle')
-    .attr('font-size', 10)
+  // const labels = frets
+  //   .append('g')
+  //   .attr(
+  //     'transform',
+  //     `translate(${fx.bandwidth() / 2}, ${fheight + margin.b / 2})`
+  //   )
+  //   .attr('text-anchor', 'middle')
+  //   .attr('font-size', 10)
 
-  labels.append('text').text((d, i) => i + 1)
+  // labels.append('text').text((d, i) => i + 1)
 
-  frets.each(function (d, i) {
-    const fnum = i + 1
-    if (getsMark(fnum)) {
-      select(this)
-        .append('text')
-        .text(fnum == 12 ? '··' : '·')
-        .attr('text-anchor', 'middle')
-        .attr('font-size', 38)
-        .attr('font-family', 'sans-serif')
-        .attr('fill', '#333')
-        .attr('x', fx.bandwidth() / 2)
-        .attr('y', margin.t / 2 - 5)
-    }
-  })
+  // frets.each(function (d, i) {
+  //   const fnum = i + 1
+  //   if (getsMark(fnum)) {
+  //     select(this)
+  //       .append('text')
+  //       .text(fnum == 12 ? '··' : '·')
+  //       .attr('text-anchor', 'middle')
+  //       .attr('font-size', 38)
+  //       .attr('font-family', 'sans-serif')
+  //       .attr('fill', '#333')
+  //       .attr('x', fx.bandwidth() / 2)
+  //       .attr('y', margin.t / 2 - 5)
+  //   }
+  // })
 })
