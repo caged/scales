@@ -11,8 +11,8 @@
     "prettier": "2.2.1"
   },
   "scripts": {
-    "start": "parcel serve ./src/index.html",
-    "build": "parcel build ./src/index.html",
+    "start": "parcel serve ./src/*.html",
+    "build": "parcel build ./src/*.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Justin Palmer"

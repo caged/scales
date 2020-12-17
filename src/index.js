@@ -1,8 +1,6 @@
 import { Note, Scale, Range, Mode } from '@tonaljs/tonal'
 import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
 
-// console.log(Scale.names(), Scale.get('c0 harmonic minor'))
-// console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
 const scalenotes = Scale.rangeOf('D minor')('D0', 'D2').map(Note.get)
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = window.innerWidth
   const height = 250
   const fheight = height - margin.t - margin.b
-  const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
+  const tuning = ['D', 'A', 'D', 'G', 'B', 'E']
   const notes = tuning.map((t) =>
     Range.chromatic([`${t}0`, `${t}2`], { flats: true }).map(Note.get)
   )
