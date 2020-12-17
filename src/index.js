@@ -8,7 +8,7 @@ const scalenotes = Scale.rangeOf('E major')('E0', 'E2').map(Note.get)
 document.addEventListener('DOMContentLoaded', () => {
   const margin = { t: 20, r: 10, b: 30, l: 40 }
   const width = window.innerWidth
-  const height = Math.round(width / 5)
+  const height = 250
   const fheight = height - margin.t - margin.b
   const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
   const notes = tuning.map((t) =>
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const openNotes = fretData.splice(0, 1)[0]
 
   const fx = scaleBand()
-    .domain(fretData)
+    .domain(range(fretData.length))
     .rangeRound([margin.l, width - margin.r])
     .paddingInner(0.05)
 
@@ -68,76 +68,77 @@ document.addEventListener('DOMContentLoaded', () => {
     .attr('x', noteRad / 1.5)
     .text((d) => d.pc)
 
-  // const frets = svg
-  //   .selectAll('.fret')
-  //   .data(fretData)
-  //   .join('g')
-  //   .attr('transform', (d) => `translate(${fx(d)}, ${margin.t})`)
-  //   .attr('class', 'fret')
+  const frets = svg
+    .selectAll('.fret')
+    .data(fretData)
+    .join('g')
+    .attr('transform', (_, i) => `translate(${fx(i)}, ${margin.t})`)
+    .attr('class', 'fret')
 
-  // frets
-  //   .append('rect')
-  //   .attr('width', fx.bandwidth())
-  //   .attr('height', height - margin.t - margin.b)
-  //   .attr('fill', '#eee')
+  frets
+    .append('rect')
+    .attr('width', fx.bandwidth())
+    .attr('height', height - margin.t - margin.b)
+    .attr('fill', '#eee')
 
-  // const str = frets
-  //   .selectAll('.string')
-  //   .data((d) => d)
-  //   .join('g')
-  //   .attr('transform', (d, i) => `translate(0, ${sy(i)})`)
+  const str = frets
+    .selectAll('.string')
+    .data((d) => d)
+    .join('g')
+    .attr('transform', (d, i) => `translate(0, ${sy(i)})`)
 
-  // str
-  //   .append('rect')
-  //   .attr('width', fx.bandwidth() + 5)
-  //   .attr('height', (d, i) => sw(i))
-  //   .attr('fill', '#8E5F00')
+  str
+    .append('rect')
+    .attr('width', fx.bandwidth() + 5)
+    .attr('height', (d, i) => sw(i))
+    .attr('fill', '#8E5F00')
 
-  // str
-  //   .append('rect')
-  //   .attr('width', noteRad * 1.5)
-  //   .attr('height', noteRad)
-  //   .attr('x', fx.bandwidth() / 2 - (noteRad * 1.5) / 2)
-  //   .attr('y', -noteRad)
-  //   .attr('fill', (d) => {
-  //     return scalenotes.includes(d) ? '#C48400' : '#eee'
-  //   })
+  str
+    .append('rect')
+    .attr('width', noteRad * 1.5)
+    .attr('height', noteRad)
+    .attr('x', fx.bandwidth() / 2 - (noteRad * 1.5) / 2)
+    .attr('y', -noteRad)
+    .attr('fill', (d) => {
+      return scalenotes.some((sn) => sn.chroma === d.chroma)
+        ? '#C48400'
+        : '#eee'
+    })
 
-  // str
-  //   // .filter((d) => scalenotes.includes(d))
-  //   .append('text')
-  //   .attr('x', fx.bandwidth() / 2)
-  //   .attr('y', -4)
-  //   .attr('text-anchor', 'middle')
-  //   .attr('font-size', 10)
-  //   .attr('fill', (d) =>
-  //     scalenotes.some((sn) => sn.chroma === d.chroma) ? '#fff' : '#333'
-  //   )
-  //   .text((d) => d.pc.replace('b', '♭'))
+  str
+    .append('text')
+    .attr('x', fx.bandwidth() / 2)
+    .attr('y', -4)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 10)
+    .attr('fill', (d) =>
+      scalenotes.some((sn) => sn.chroma === d.chroma) ? '#fff' : '#333'
+    )
+    .text((d) => d.pc.replace('b', '♭'))
 
-  // const labels = frets
-  //   .append('g')
-  //   .attr(
-  //     'transform',
-  //     `translate(${fx.bandwidth() / 2}, ${fheight + margin.b / 2})`
-  //   )
-  //   .attr('text-anchor', 'middle')
-  //   .attr('font-size', 10)
+  const labels = frets
+    .append('g')
+    .attr(
+      'transform',
+      `translate(${fx.bandwidth() / 2}, ${fheight + margin.b / 2})`
+    )
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 10)
 
-  // labels.append('text').text((d, i) => i + 1)
+  labels.append('text').text((d, i) => i + 1)
 
-  // frets.each(function (d, i) {
-  //   const fnum = i + 1
-  //   if (getsMark(fnum)) {
-  //     select(this)
-  //       .append('text')
-  //       .text(fnum == 12 ? '··' : '·')
-  //       .attr('text-anchor', 'middle')
-  //       .attr('font-size', 38)
-  //       .attr('font-family', 'sans-serif')
-  //       .attr('fill', '#333')
-  //       .attr('x', fx.bandwidth() / 2)
-  //       .attr('y', margin.t / 2 - 5)
-  //   }
-  // })
+  frets.each(function (d, i) {
+    const fnum = i + 1
+    if (getsMark(fnum)) {
+      select(this)
+        .append('text')
+        .text(fnum == 12 ? '··' : '·')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 38)
+        .attr('font-family', 'sans-serif')
+        .attr('fill', '#333')
+        .attr('x', fx.bandwidth() / 2)
+        .attr('y', margin.t / 2 - 5)
+    }
+  })
 })
