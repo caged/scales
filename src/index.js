@@ -3,7 +3,7 @@ import { select, range, scaleBand, scalePoint, scaleLinear } from 'd3'
 
 // console.log(Scale.names(), Scale.get('c0 harmonic minor'))
 // console.log(Mode.get('minor').intervals.map(Note.transposeFrom('D')))
-const scalenotes = Scale.rangeOf('E major')('E0', 'E2').map(Note.get)
+const scalenotes = Scale.rangeOf('D minor')('D0', 'D2').map(Note.get)
 
 document.addEventListener('DOMContentLoaded', () => {
   const margin = { t: 20, r: 10, b: 30, l: 40 }
@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   opens
     .append('rect')
-    .attr('width', noteRad * 1.5)
-    .attr('height', noteRad * 1.5)
+    .attr('width', noteRad * 1.2)
+    .attr('height', noteRad * 1.2)
     .attr('x', 2)
     .attr('y', -noteRad)
     .attr('fill', (d) => {
