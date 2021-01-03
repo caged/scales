@@ -8,12 +8,13 @@
   },
   "devDependencies": {
     "parcel": "^2.0.0-nightly.506",
-    "prettier": "2.2.1"
+    "prettier": "2.2.1",
+    "tape": "^5.1.0"
   },
   "scripts": {
-    "start": "parcel serve ./src/*.html",
-    "build": "parcel build ./src/*.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "parcel serve './src/*.html'",
+    "build": "parcel build './src/*.html'",
+    "test": "set NODE_ENV=test && rm -rf ./dist && parcel build './src/index.js' && tape 'tests/**/*.js'"
   },
   "author": "Justin Palmer"
 }

@@ -1,5 +1,13 @@
-import { Note, Scale, Range, Mode } from '@tonaljs/tonal'
-import { chunk, rotate } from '../utils'
+import { chunk, rotate } from '../../utils'
+
+const getAtPosition = (items, strings, scale, position) => {
+  const out = []
+  const itemset = rotate(scale[items], position)
+  for (let string = 0; string < strings; string++) {
+    out.push(chunk(itemset, (string * 3) % itemset.length, 3))
+  }
+  return out
+}
 
 // const tuning = ['B', 'E', 'A', 'D', 'G', 'B', 'E']
 // const scale = Scale.get('minor')
@@ -29,6 +37,8 @@ const getNotesAtPosition = (strings, scale, position) => {
   }
   return notes
 }
+
+export default { getIntervalsAtPosition, getNotesAtPosition }
 
 // for (let position = 0; position < positions; position++) {
 //   // console.log(getIntervalsAtPosition(6, scale, position))
