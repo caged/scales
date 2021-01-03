@@ -1,16 +1,36 @@
 import { Note, Scale, Range, Mode } from '@tonaljs/tonal'
 import { chunk, rotate } from '../utils'
 
-const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
-const scale = Scale.get('major')
-const intervals = scale.intervals
-const positions = 7
-
-for (let position = 0; position < positions; position++) {
-  const notes = []
-  const intset = rotate(intervals, position)
-  for (let [string, note] of tuning.entries()) {
-    notes.push(chunk(intset, (string * 3) % intset.length, 3))
+// const tuning = ['B', 'E', 'A', 'D', 'G', 'B', 'E']
+// const scale = Scale.get('minor')
+// const positions = 7
+//
+// strings - number of strings
+// scale - A tonal Scale object
+// position - A number 1..7 representing which 3nps scale position
+const getIntervalsAtPosition = (strings, scale, position) => {
+  const intervals = []
+  const intset = rotate(scale.intervals, position)
+  for (let string = 0; string < strings; string++) {
+    intervals.push(chunk(intset, (string * 3) % intset.length, 3))
   }
-  console.log(position + 1, notes)
+  return intervals
 }
+
+//
+// strings - number of strings
+// scale - A tonal Scale object
+// position - A number 1..7 representing which 3nps scale position
+const getNotesAtPosition = (strings, scale, position) => {
+  const notes = []
+  const noteset = rotate(scale.notes, position)
+  for (let string = 0; string < strings; string++) {
+    notes.push(chunk(noteset, (string * 3) % noteset.length, 3))
+  }
+  return notes
+}
+
+// for (let position = 0; position < positions; position++) {
+//   // console.log(getIntervalsAtPosition(6, scale, position))
+//   console.log(getNotesAtPosition(6, Scale.get('D minor'), position))
+// }
