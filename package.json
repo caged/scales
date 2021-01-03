@@ -7,7 +7,7 @@
     "d3": "^6.3.0"
   },
   "devDependencies": {
-    "parcel": "^2.0.0-nightly.466",
+    "parcel": "^2.0.0-nightly.506",
     "prettier": "2.2.1"
   },
   "scripts": {
