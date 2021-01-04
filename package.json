@@ -7,14 +7,18 @@
     "d3": "^6.3.0"
   },
   "devDependencies": {
-    "parcel": "^2.0.0-nightly.506",
+    "@snowpack/web-test-runner-plugin": "^0.1.5",
+    "@web/test-runner": "^0.11.7",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1",
     "prettier": "2.2.1",
+    "snowpack": "^3.0.0-rc.2",
     "tape": "^5.1.0"
   },
   "scripts": {
-    "start": "parcel serve './src/*.html'",
-    "build": "parcel build './src/*.html'",
-    "test": "set NODE_ENV=test && rm -rf ./dist && parcel build './src/index.js' && tape 'tests/**/*.js'"
+    "start": "snowpack dev",
+    "build": "snowpack build",
+    "test": "web-test-runner \"src/**/*.test.js\""
   },
   "author": "Justin Palmer"
 }
