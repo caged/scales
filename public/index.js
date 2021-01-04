@@ -52,7 +52,6 @@ class FretData {
     if (last > 12) last--
 
     return [first, last]
-    // console.log(firstStringIndex, lastStringIndex)
   }
 }
 
@@ -69,12 +68,13 @@ function draw() {
     // Numerical position of three note per string, caged, or mode
     const pos = Number(el.dataset.pos)
 
-    const [start, fin] = fd.getFretRangeForScaleAndPosition(
-      Scale.get('F major'),
-      pos
-    )
+    const scale = Scale.get('F major')
+
+    const [start, fin] = fd.getFretRangeForScaleAndPosition(scale, pos)
     // Get fret note data between the start and fin frets
     const fdata = fd.between(start, fin)
+    const scaleNotes = tnps.getNotesAtPosition(fd.tuning.length, scale, pos - 1)
+    console.log(scaleNotes)
 
     const isHeadStock = (el, i) => el.datum() == 1 && i == 0
 
