@@ -63,6 +63,7 @@ function draw() {
       .attr('viewBox', [0, 0, width, height])
       .style('border', '1px solid #ccc')
       .style('border-radius', '3px')
+      .style('font', '0.8rem sans-serif')
 
     const fretGroup = svg.append('g').datum(pos)
 
@@ -98,6 +99,20 @@ function draw() {
         .attr('width', 6)
         .attr('height', height - margin.t - margin.b)
         .attr('fill', '#333')
+
+      const labels = fretGroup
+        .selectAll('.note')
+        .data(tuning.split(''))
+        .join('g')
+        .attr('transform', (d, i) => `translate(0, ${fretY(i)})`)
+
+      labels
+        .append('text')
+        .attr('x', fretX.bandwidth())
+        .attr('dx', -fretX.bandwidth() / 2)
+        .attr('text-anchor', 'end')
+        .attr('dominant-baseline', 'middle')
+        .text(String)
     }
 
     const strings = frets
