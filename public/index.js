@@ -16,7 +16,43 @@ class FretData {
       out.push(c.slice(start, fin + 1))
       return out
     }, [])
-    return zip(...notes)
+    return zip(...notes).map((d, i) => {
+      return { fret: start + i, data: d }
+    })
+  }
+
+  // This is kinda nasty.  Essentially looks at each string's note pitch to determine
+  // the fret start and end for each position range
+  //
+  // scale - Scale object
+  // position -  1-7 of a three note per string scale
+  getFretRangeForScaleAndPosition(scale, position) {
+    const snotes = tnps.getNotesAtPosition(
+      this.tuning.length,
+      scale,
+      position - 1
+    )
+
+    const topString = this.notes[0]
+    const botString = this.notes[this.notes.length - 1]
+    const [snotesTop, snotesBot] = [snotes[0], snotes[snotes.length - 1]]
+    const firstScaleNote = snotesTop[0]
+    const lastScaleNote = snotesBot[snotesBot.length - 1]
+
+    const first =
+      position == 7
+        ? 12
+        : topString.findIndex((n) => Note.pitchClass(n) == firstScaleNote)
+
+    let last =
+      first >= 6
+        ? first + 6
+        : botString.findIndex((n) => Note.pitchClass(n) == lastScaleNote)
+
+    if (last > 12) last--
+
+    return [first, last]
+    // console.log(firstStringIndex, lastStringIndex)
   }
 }
 
@@ -29,17 +65,21 @@ function draw() {
   const height = positions[0].offsetHeight
 
   function render(el) {
-    const margin = { t: 0, r: 0, b: 0, l: 0 }
+    const margin = { t: 0, r: 0, b: 40, l: 0 }
     // Numerical position of three note per string, caged, or mode
     const pos = Number(el.dataset.pos)
-    // start fret to render where 0 is the open position
-    const start = pos - 1
-    // finish fret to end on.  Alwqys render 7
-    const fin = pos - 1 + 6
+
+    const [start, fin] = fd.getFretRangeForScaleAndPosition(
+      Scale.get('F major'),
+      pos
+    )
     // Get fret note data between the start and fin frets
     const fdata = fd.between(start, fin)
 
     const isHeadStock = (el, i) => el.datum() == 1 && i == 0
+
+    const getsMark = (fnum) =>
+      (fnum % 2 != 0 && fnum != 1 && fnum != 11 && fnum != 13) || fnum == 12
 
     // Lay out frets horizontally
     const fretX = scaleBand()
@@ -50,7 +90,7 @@ function draw() {
     // Lay out strings and notes vertically
     const fretY = scalePoint()
       .domain(range(tuning.length))
-      .rangeRound([height, 0])
+      .rangeRound([height - margin.t - margin.b, 0])
       .padding(0.5)
 
     // Vary thickness of strings
@@ -91,6 +131,22 @@ function draw() {
       .attr('x', fretX.bandwidth() - 1)
       .attr('fill', '#ccc')
 
+    frets
+      .filter((d) => getsMark(d.fret))
+      .append('circle')
+      .attr('cx', fretX.bandwidth() / 2)
+      .attr('cy', (height - margin.t - margin.b) / 2 + 4 / 2)
+      .attr('r', 4)
+      .attr('fill', '#ccc')
+
+    frets
+      .filter((d) => getsMark(d.fret))
+      .append('text')
+      .attr('y', height - margin.t - margin.b)
+      .attr('dy', margin.b / 2)
+      .attr('x', fretX.bandwidth() / 2)
+      .text((d) => d.fret)
+
     // Draw headstock
     if (pos == 1) {
       fretGroup
@@ -121,7 +177,7 @@ function draw() {
         return !isHeadStock(select(this.parentNode), i)
       })
       .selectAll('.string')
-      .data((d) => d)
+      .data((d) => d.data)
       .join('g')
       .attr('transform', (d, i) => `translate(0, ${fretY(i)})`)
       .attr('class', 'string')
