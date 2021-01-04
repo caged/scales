@@ -1,3 +1,4 @@
+import { zip } from 'd3'
 import { chunk, rotate } from '../utils'
 
 const getAtPosition = (items, strings, scale, position) => {

@@ -1,6 +1,14 @@
 'use strict'
 import { Note, Scale, Range, Mode } from '@tonaljs/tonal'
-import { select, range, scaleBand, scalePoint, scaleLinear, zip } from 'd3'
+import {
+  select,
+  selectAll,
+  range,
+  scaleBand,
+  scalePoint,
+  scaleLinear,
+  zip,
+} from 'd3'
 import { tnps } from '/dist/index'
 
 class FretData {
@@ -64,17 +72,16 @@ function draw() {
   const height = positions[0].offsetHeight
 
   function render(el) {
-    const margin = { t: 0, r: 0, b: 40, l: 0 }
+    const margin = { t: 40, r: 0, b: 40, l: 0 }
     // Numerical position of three note per string, caged, or mode
     const pos = Number(el.dataset.pos)
 
-    const scale = Scale.get('F major')
+    const scale = Scale.get('D minor')
 
     const [start, fin] = fd.getFretRangeForScaleAndPosition(scale, pos)
     // Get fret note data between the start and fin frets
     const fdata = fd.between(start, fin)
     const scaleNotes = tnps.getNotesAtPosition(fd.tuning.length, scale, pos - 1)
-    console.log(scaleNotes)
 
     const isHeadStock = (el, i) => el.datum() == 1 && i == 0
 
@@ -104,6 +111,18 @@ function draw() {
       .style('border', '1px solid #ccc')
       .style('border-radius', '3px')
       .style('font', '0.8rem sans-serif')
+
+    const figure = svg
+      .append('g')
+      .attr('transform', `translate(${width / 2}, ${margin.t / 2})`)
+      .attr('class', 'figure')
+
+    figure
+      .append('text')
+      .attr('fill', '#777')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .text(`Position ${pos}`)
 
     const fretGroup = svg.append('g').datum(pos)
 
@@ -145,37 +164,35 @@ function draw() {
       .attr('y', height - margin.t - margin.b)
       .attr('dy', margin.b / 2)
       .attr('x', fretX.bandwidth() / 2)
+      .attr('fill', '#555')
+      .style('font-size', '0.6rem')
       .text((d) => d.fret)
 
     // Draw headstock
-    if (pos == 1) {
-      fretGroup
-        .append('rect')
-        .attr('x', fretX.bandwidth() - 1)
-        .attr('width', 6)
-        .attr('height', height - margin.t - margin.b)
-        .attr('fill', '#333')
+    // if (pos == 1) {
+    //   fretGroup
+    //     .append('rect')
+    //     .attr('x', fretX.bandwidth() - 1)
+    //     .attr('width', 6)
+    //     .attr('height', height - margin.t - margin.b)
+    //     .attr('fill', '#333')
 
-      const labels = fretGroup
-        .selectAll('.note')
-        .data(tuning.split(''))
-        .join('g')
-        .attr('transform', (d, i) => `translate(0, ${fretY(i)})`)
+    //   const labels = fretGroup
+    //     .selectAll('.note')
+    //     .data(tuning.split(''))
+    //     .join('g')
+    //     .attr('transform', (d, i) => `translate(0, ${fretY(i)})`)
 
-      labels
-        .append('text')
-        .attr('x', fretX.bandwidth())
-        .attr('dx', -fretX.bandwidth() / 2)
-        .attr('text-anchor', 'end')
-        .attr('dominant-baseline', 'middle')
-        .text(String)
-    }
+    //   labels
+    //     .append('text')
+    //     .attr('x', fretX.bandwidth())
+    //     .attr('dx', -fretX.bandwidth() / 2)
+    //     .attr('text-anchor', 'end')
+    //     .attr('dominant-baseline', 'middle')
+    //     .text(String)
+    // }
 
     const strings = frets
-      .filter(function (d, i, e) {
-        // First fret of  first position is the open strings
-        return !isHeadStock(select(this.parentNode), i)
-      })
       .selectAll('.string')
       .data((d) => d.data)
       .join('g')
@@ -189,6 +206,39 @@ function draw() {
       .attr('width', fretX.bandwidth() + 1)
       .attr('height', (d, i) => stringThickness(i))
       .attr('fill', '#444')
+
+    // strings
+    //   .append('text')
+    //   .attr('fill', '#ccc')
+    //   .text((d) => Note.pitchClass(d))
+
+    // This is terrible becase strings are grouped by frets, but the scale note
+    // data is grouped by string. Remedying this will require rearchitecting.
+    strings.each(function (d, i) {
+      const el = select(this)
+      const note = Note.pitchClass(d)
+      const snotes = scaleNotes[i]
+      if (note == snotes[0]) {
+        const snote = snotes.shift()
+        const snoteg = el
+          .append('g')
+          .attr('transform', `translate(${fretX.bandwidth() / 2})`)
+
+        snoteg.append('circle').attr('cy', 2).attr('r', 10)
+        snoteg
+          .append('text')
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .attr('dy', 3)
+          .attr('fill', '#fff')
+          .attr('font-size', '0.7rem')
+          .text(snote)
+      }
+    })
+
+    // select('.string:nth-of-type(1)').each(function (d) {
+    //   console.log(d, this)
+    // })
   }
 
   for (let container of positions) {
