@@ -1,4 +1,4 @@
-import { chunk, rotate } from '../../utils'
+import { chunk, rotate } from '../utils'
 
 const getAtPosition = (items, strings, scale, position) => {
   const out = []
@@ -9,7 +9,7 @@ const getAtPosition = (items, strings, scale, position) => {
   return out
 }
 
-// const tuning = ['B', 'E', 'A', 'D', 'G', 'B', 'E']
+// const tuning = ['E', 'A', 'D', 'G', 'B', 'E']
 // const scale = Scale.get('minor')
 // const positions = 7
 //
