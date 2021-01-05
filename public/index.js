@@ -1,5 +1,5 @@
 'use strict'
-import { Note, Scale, Range, Mode } from '@tonaljs/tonal'
+import { Note, Scale, ScaleType, Range, Mode } from '@tonaljs/tonal'
 import {
   select,
   selectAll,
@@ -56,22 +56,22 @@ class FretData {
     let last =
       first >= 6
         ? first + 6
-        : botString.findIndex((n) => Note.pitchClass(n) == lastScaleNote)
+        : botString.findIndex((n) => isNotesEqual(n, lastScaleNote))
 
     if (last > 12) last--
-    console.log(first, last)
+    // console.log(first, last)
     return [first, last]
   }
 }
 
 var params = new URLSearchParams(location.search)
-const scaleString = params.has('scale') ? params.get('scale') : 'F major'
+const key = params.has('key') ? params.get('key') : 'F'
+const sname = params.has('scale') ? params.get('scale') : 'major'
+const scaleString = `${key} ${sname}`
 
 const tuning = 'EADGBE'
 const fd = new FretData(tuning)
 const scale = Scale.get(scaleString)
-
-console.log(Note)
 
 function draw() {
   const positions = document.querySelectorAll('.scale')
@@ -80,6 +80,8 @@ function draw() {
 
   function render(el) {
     const margin = { t: 40, r: 0, b: 40, l: 0 }
+
+    const markerRad = 4
     // Numerical position of three note per string, caged, or mode
     const pos = Number(el.dataset.pos)
 
@@ -87,8 +89,6 @@ function draw() {
     // Get fret note data between the start and fin frets
     const fdata = fd.between(start, fin)
     const scaleNotes = tnps.getNotesAtPosition(fd.tuning.length, scale, pos - 1)
-
-    const isHeadStock = (el, i) => el.datum() == 1 && i == 0
 
     const getsMark = (fnum) =>
       (fnum % 2 != 0 && fnum != 1 && fnum != 11 && fnum != 13) || fnum == 12
@@ -119,15 +119,16 @@ function draw() {
 
     const figure = svg
       .append('g')
-      .attr('transform', `translate(${width / 2}, ${margin.t / 2})`)
+      .attr('transform', `translate(${width - 10}, ${margin.t / 2})`)
       .attr('class', 'figure')
 
     figure
       .append('text')
-      .attr('fill', '#777')
-      .attr('text-anchor', 'middle')
+      .attr('fill', '#000')
+      .attr('text-anchor', 'end')
       .attr('dominant-baseline', 'middle')
-      .text(`Position ${pos}`)
+      .attr('font-weight', 'bold')
+      .text(`#${pos}`)
 
     const fretGroup = svg.append('g').datum(pos)
 
@@ -160,8 +161,19 @@ function draw() {
     frets
       .filter((d) => getsMark(d.fret))
       .append('circle')
-      .attr('cx', fretX.bandwidth() / 2)
-      .attr('cy', (height - margin.t - margin.b) / 2 + 4 / 2)
+      .attr(
+        'cx',
+        (d) => fretX.bandwidth() / 2 + (d.fret == 12 ? markerRad * 1.5 : 0)
+      )
+      .attr('cy', (height - margin.t - margin.b) / 2 + markerRad / 2)
+      .attr('r', markerRad)
+      .attr('fill', '#ccc')
+
+    frets
+      .filter((d) => d.fret == 12)
+      .append('circle')
+      .attr('cy', (height - margin.t - margin.b) / 2 + markerRad / 2)
+      .attr('cx', fretX.bandwidth() / 2 - markerRad * 1.5)
       .attr('r', 4)
       .attr('fill', '#ccc')
 
@@ -205,10 +217,10 @@ function draw() {
       .attr('height', (d, i) => stringThickness(i))
       .attr('fill', '#444')
 
-    strings
-      .append('text')
-      .attr('fill', '#ccc')
-      .text((d) => Note.pitchClass(d))
+    // strings
+    //   .append('text')
+    //   .attr('fill', '#ccc')
+    //   .text((d) => Note.pitchClass(d))
 
     // console.log(Note.get('Gb'), Note.get('F#'))
 
@@ -249,4 +261,49 @@ function draw() {
   }
 }
 
-setTimeout(draw, 10)
+draw()
+
+const detEl = select('.js-details')
+const form = detEl.append('form')
+
+form
+  .append('input')
+  .attr('name', 'key')
+  .attr('value', scale.tonic)
+  .attr('size', 2)
+
+form
+  .append('select')
+  .attr('name', 'scale')
+  .selectAll('option')
+  .data(
+    ScaleType.all()
+      .filter((s) => s.intervals.length == 7)
+      .map((s) => s.name)
+      .sort()
+  )
+  .join('option')
+  .text(String)
+  .property('selected', (d) => d == scale.type)
+
+form.append('button').html('&rarr;')
+
+select('.info h1').html(scale.name)
+
+const scaleData = ['notes', 'intervals', 'aliases'].map((m) => {
+  return { k: m, v: scale[m] }
+})
+
+detEl
+  .selectAll('.detail')
+  .data(scaleData)
+  .join('div')
+  .html((d) => {
+    return `<strong>${d.k}:</strong>  ${
+      Array.isArray(d.v) ? d.v.join(', ') : d.v
+    }`
+  })
+
+detEl.append('div').html(() => {
+  return `<strong>Chords:</strong> ${Scale.scaleChords(scaleString).join(', ')}`
+})

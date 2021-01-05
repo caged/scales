@@ -16,6 +16,7 @@
     body {
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
     }
 
     svg {
@@ -25,7 +26,8 @@
     .positions {
       box-sizing: border-box;
       display: grid;
-      grid-template-columns: auto auto auto;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(250px, 1fr);
       gap: 1rem;
       padding: 10px;
       height: 100%;
@@ -33,6 +35,29 @@
 
     .scale {
       box-sizing: border-box;
+    }
+
+    .info {
+      padding: 1rem;
+      box-sizing: border-box;
+      border: 1px solid #eee;
+      font-size: 0.8rem;
+    }
+
+    .info div {
+      padding: 0.5rem;
+      color: #555;
+    }
+
+    .info strong {
+      text-transform: capitalize;
+      color: #111;
+    }
+
+    h1 {
+      padding: 0;
+      margin: 0 0 1rem 0;
+      font-size: 1.2rem;
     }
   </style>
 </head>
@@ -46,6 +71,10 @@
     <div class="scale" data-pos="5"></div>
     <div class="scale" data-pos="6"></div>
     <div class="scale" data-pos="7"></div>
+    <div class="info">
+      <h1></h1>
+      <span class="js-details"></span>
+    </div>
   </div>
 
   <script type="module" src="./index.js"></script>
