@@ -12,7 +12,9 @@ import {
 import { tnps } from '/dist/index'
 
 const isNotesEqual = (a, b) =>
-  [b, Note.enharmonic(b)].includes(Note.pitchClass(a))
+  [Note.pitchClass(b), Note.enharmonic(Note.pitchClass(b))].includes(
+    Note.pitchClass(a)
+  )
 
 class FretData {
   constructor(tuning) {
@@ -44,21 +46,62 @@ class FretData {
       position - 1
     )
 
-    const topString = this.notes[0]
-    const botString = this.notes[this.notes.length - 1]
-    const [snotesTop, snotesBot] = [snotes[0], snotes[snotes.length - 1]]
-    const firstScaleNote = snotesTop[0]
-    const lastScaleNote = snotesBot[snotesBot.length - 1]
+    const indexes = this.notes.map((string, strIdx) => {
+      const firstNoteInPosition = snotes[strIdx][0]
+      // const lastNoteInPosition = snotes[strIdx].slice(-1)[0]
+      const sidx = string.findIndex((note) =>
+        isNotesEqual(firstNoteInPosition, note)
+      )
+      // const eidx = string.findIndex((note) =>
+      //   isNotesEqual(lastNoteInPosition, note)
+      // )
 
-    const sindex = topString.findIndex((n) => isNotesEqual(n, firstScaleNote))
-    const first = position === 7 && sindex === 0 ? 12 : sindex
+      // if (sidx === 0 && scale.key !== firstNoteInPosition) return
 
-    let last =
-      first >= 6
-        ? first + 6
-        : botString.findIndex((n) => isNotesEqual(n, lastScaleNote))
+      // const start = Math.min(...sidx)
+      // const snoteStarts = snotes.map((sns) => sns[0])
+      // const snoteEnds = snotes.map((sns) => sns[sns.length - 1])
+      // const sidx = snoteStarts.map((sns) =>
+      //   string.findIndex((a) => isNotesEqual(a, sns))
+      // )
+      // const eidx = snoteEnds.map((sne) =>
+      //   string.findIndex((a) => isNotesEqual(a, sne))
+      // )
 
-    if (last > 12) last--
+      // return [Math.min(...sidx), Math.max(...eidx)]
+      // return string.map((note) => {
+      //   const snoteStarts = snotes.map((sns) => sns[0])
+      //   const snoteEnds = snotes.map((sns) => sns[sns.length - 1])
+
+      //   // return snotes.map((snstr) => {
+      //   //   // return snstr.findIndex((snn) => {
+      //   //   //   // console.log(snn, note)
+      //   //   //   return isNotesEqual(snn, note)
+      //   //   // })
+      //   // })
+      // })
+      return [sidx, firstNoteInPosition]
+    })
+
+    console.log(indexes)
+
+    const first = 10
+    const last = 15
+    // const topString = this.notes[0]
+    // const botString = this.notes[this.notes.length - 1]
+    // const [snotesTop, snotesBot] = [snotes[0], snotes[snotes.length - 1]]
+    // const firstScaleNote = snotesTop[0]
+    // const lastScaleNote = snotesBot[snotesBot.length - 1]
+
+    // const sindex = topString.findIndex((n) => isNotesEqual(n, firstScaleNote))
+    // const first = position === 7 && sindex === 0 ? 12 : sindex
+
+    // let last =
+    //   first >= 6
+    //     ? first + 6
+    //     : botString.findIndex((n) => isNotesEqual(n, lastScaleNote))
+
+    // if (last > 12) last--
     // console.log(first, last)
     return [first, last]
   }
