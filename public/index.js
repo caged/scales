@@ -11,6 +11,9 @@ import {
 } from 'd3'
 import { tnps } from '/dist/index'
 
+const isNotesEqual = (a, b) =>
+  [b, Note.enharmonic(b)].includes(Note.pitchClass(a))
+
 class FretData {
   constructor(tuning) {
     this.tuning = tuning.split('')
@@ -47,9 +50,7 @@ class FretData {
     const firstScaleNote = snotesTop[0]
     const lastScaleNote = snotesBot[snotesBot.length - 1]
 
-    const sindex = topString.findIndex(
-      (n) => Note.pitchClass(n) == firstScaleNote
-    )
+    const sindex = topString.findIndex((n) => isNotesEqual(n, firstScaleNote))
     const first = position === 7 && sindex === 0 ? 12 : sindex
 
     let last =
@@ -58,13 +59,19 @@ class FretData {
         : botString.findIndex((n) => Note.pitchClass(n) == lastScaleNote)
 
     if (last > 12) last--
-
+    console.log(first, last)
     return [first, last]
   }
 }
 
+var params = new URLSearchParams(location.search)
+const scaleString = params.has('scale') ? params.get('scale') : 'F major'
+
 const tuning = 'EADGBE'
 const fd = new FretData(tuning)
+const scale = Scale.get(scaleString)
+
+console.log(Note)
 
 function draw() {
   const positions = document.querySelectorAll('.scale')
@@ -75,8 +82,6 @@ function draw() {
     const margin = { t: 40, r: 0, b: 40, l: 0 }
     // Numerical position of three note per string, caged, or mode
     const pos = Number(el.dataset.pos)
-
-    const scale = Scale.get('D minor')
 
     const [start, fin] = fd.getFretRangeForScaleAndPosition(scale, pos)
     // Get fret note data between the start and fin frets
@@ -181,30 +186,6 @@ function draw() {
       .attr('dominant-baseline', 'middle')
       .text(String)
 
-    // Draw headstock
-    // if (pos == 1) {
-    //   fretGroup
-    //     .append('rect')
-    //     .attr('x', fretX.bandwidth() - 1)
-    //     .attr('width', 6)
-    //     .attr('height', height - margin.t - margin.b)
-    //     .attr('fill', '#333')
-
-    //   const labels = fretGroup
-    //     .selectAll('.note')
-    //     .data(tuning.split(''))
-    //     .join('g')
-    //     .attr('transform', (d, i) => `translate(0, ${fretY(i)})`)
-
-    //   labels
-    //     .append('text')
-    //     .attr('x', fretX.bandwidth())
-    //     .attr('dx', -fretX.bandwidth() / 2)
-    //     .attr('text-anchor', 'end')
-    //     .attr('dominant-baseline', 'middle')
-    //     .text(String)
-    // }
-
     const strings = frets
       .selectAll('.string')
       .data((d) => d.data)
@@ -224,10 +205,12 @@ function draw() {
       .attr('height', (d, i) => stringThickness(i))
       .attr('fill', '#444')
 
-    // strings
-    //   .append('text')
-    //   .attr('fill', '#ccc')
-    //   .text((d) => Note.pitchClass(d))
+    strings
+      .append('text')
+      .attr('fill', '#ccc')
+      .text((d) => Note.pitchClass(d))
+
+    // console.log(Note.get('Gb'), Note.get('F#'))
 
     // This is terrible becase strings are grouped by frets, but the scale note
     // data is grouped by string. Remedying this will require rearchitecting.
@@ -235,19 +218,26 @@ function draw() {
       const el = select(this)
       const note = Note.pitchClass(d)
       const snotes = scaleNotes[i]
-      if (note == snotes[0]) {
+
+      if (isNotesEqual(note, snotes[0])) {
         const snote = snotes.shift()
         const snoteg = el
           .append('g')
           .attr('transform', `translate(${fretX.bandwidth() / 2})`)
 
-        snoteg.append('circle').attr('cy', 2).attr('r', 10)
+        snoteg
+          .append('circle')
+          .attr('cy', 2)
+          .attr('r', 10)
+          .attr('stroke', snote === scale.tonic ? '#FE54C1' : 'black')
+          .attr('stroke-width', snote === scale.tonic ? 2 : 1)
         snoteg
           .append('text')
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
           .attr('dy', 3)
-          .attr('fill', '#fff')
+          .attr('fill', snote === scale.tonic ? '#FE54C1' : '#fff')
+          .attr('font-weight', snote === scale.tonic ? 'bold' : 'normal')
           .attr('font-size', '0.7rem')
           .text(snote)
       }
