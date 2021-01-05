@@ -47,10 +47,10 @@ class FretData {
     const firstScaleNote = snotesTop[0]
     const lastScaleNote = snotesBot[snotesBot.length - 1]
 
-    const first =
-      position == 7
-        ? 12
-        : topString.findIndex((n) => Note.pitchClass(n) == firstScaleNote)
+    const sindex = topString.findIndex(
+      (n) => Note.pitchClass(n) == firstScaleNote
+    )
+    const first = position === 7 && sindex === 0 ? 12 : sindex
 
     let last =
       first >= 6
@@ -251,20 +251,11 @@ function draw() {
           .text(snote)
       }
     })
-
-    // select('.string:nth-of-type(1)').each(function (d) {
-    //   console.log(d, this)
-    // })
   }
 
   for (let container of positions) {
     render(container)
   }
-
-  // for (let position = 0; position < 7; position++) {
-  //   // console.log(getIntervalsAtPosition(6, scale, position))
-  //   console.log(tnps.getNotesAtPosition(6, Scale.get('D minor'), position))
-  // }
 }
 
 setTimeout(draw, 10)
