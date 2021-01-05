@@ -135,6 +135,7 @@ function draw() {
 
     // Fret background
     frets
+      .filter((d) => d.fret !== 0)
       .append('rect')
       .attr('width', fretX.bandwidth())
       .attr('height', height - margin.t - margin.b)
@@ -167,6 +168,17 @@ function draw() {
       .attr('fill', '#555')
       .style('font-size', '0.6rem')
       .text((d) => d.fret)
+
+    frets
+      .filter((d) => d.fret === 0)
+      .selectAll('.tuning')
+      .data(fd.tuning)
+      .join('text')
+      .attr('y', (d, i) => fretY(i))
+      .attr('x', fretX.bandwidth() / 2)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .text(String)
 
     // Draw headstock
     // if (pos == 1) {
@@ -201,6 +213,10 @@ function draw() {
 
     // Offset these just a little to draw over the fret bars
     strings
+      .filter(function (d) {
+        const pdata = select(this.parentNode).datum()
+        return pdata.fret !== 0
+      })
       .append('rect')
       .attr('x', -1)
       .attr('width', fretX.bandwidth() + 1)
