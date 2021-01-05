@@ -140,15 +140,16 @@ function draw() {
       .attr('width', fretX.bandwidth())
       .attr('height', height - margin.t - margin.b)
       .attr('fill', '#f9f9f9')
-      .attr('rx')
 
     // Fret bars
     frets
       .filter((_, i) => !!(i != fdata.length - 1))
       .append('rect')
-      .attr('width', 1)
+      .attr('width', (d) => (d.fret === 0 ? 5 : 1))
       .attr('height', height - margin.t - margin.b)
-      .attr('x', fretX.bandwidth() - 1)
+      .attr('x', (d) =>
+        d.fret == 0 ? fretX.bandwidth() - 5 : fretX.bandwidth() - 1
+      )
       .attr('fill', '#ccc')
 
     frets
