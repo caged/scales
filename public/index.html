@@ -10,13 +10,24 @@
   <style>
     html,
     body {
+      margin: 0;
       height: 100%;
+
     }
 
     body {
       margin: 0;
-      padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+    }
+
+    .size {
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border: 2px solid green;
     }
 
     svg {
@@ -24,13 +35,14 @@
     }
 
     .positions {
+      height: 100%;
+      padding: 10px;
       box-sizing: border-box;
+      position: relative;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: minmax(250px, 1fr);
+      grid-auto-rows: repeat(4, 1fr);
       gap: 1rem;
-      padding: 10px;
-      height: 100%;
     }
 
     .scale {
@@ -58,6 +70,23 @@
       padding: 0;
       margin: 0 0 1rem 0;
       font-size: 1.2rem;
+    }
+
+    @page {
+      size: auto;
+      margin: 0;
+
+    }
+
+    @media print {
+      body {
+        padding: 10px;
+        margin: 0;
+      }
+
+      .info {
+        display: none;
+      }
     }
   </style>
 </head>

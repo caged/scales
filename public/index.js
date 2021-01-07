@@ -1,15 +1,7 @@
 'use strict'
 import { Note, Scale, ScaleType, Range, Mode } from '@tonaljs/tonal'
-import {
-  select,
-  selectAll,
-  range,
-  scaleBand,
-  scalePoint,
-  scaleLinear,
-  zip,
-} from 'd3'
-import { tnps } from '/dist/index'
+import { select, range, scaleBand, scalePoint, scaleLinear, zip } from 'd3'
+import { tnps, utils } from '/dist/index'
 
 const isNotesEqual = (a, b) =>
   [b, Note.enharmonic(b)].includes(Note.pitchClass(a))
@@ -79,7 +71,7 @@ function draw() {
   const height = positions[0].offsetHeight
 
   function render(el) {
-    const margin = { t: 40, r: 0, b: 40, l: 0 }
+    const margin = { t: 0, r: 0, b: 40, l: 0 }
 
     const markerRad = 4
     // Numerical position of three note per string, caged, or mode
@@ -115,20 +107,20 @@ function draw() {
       .attr('viewBox', [0, 0, width, height])
       .style('border', '1px solid #ccc')
       .style('border-radius', '3px')
-      .style('font', '0.8rem sans-serif')
+      .style('font', '12px Helvetica')
 
-    const figure = svg
-      .append('g')
-      .attr('transform', `translate(${width - 10}, ${margin.t / 2})`)
-      .attr('class', 'figure')
+    // const figure = svg
+    //   .append('g')
+    //   .attr('transform', `translate(${width - 10}, ${margin.t / 2})`)
+    //   .attr('class', 'figure')
 
-    figure
-      .append('text')
-      .attr('fill', '#000')
-      .attr('text-anchor', 'end')
-      .attr('dominant-baseline', 'middle')
-      .attr('font-weight', 'bold')
-      .text(`#${pos}`)
+    // figure
+    //   .append('text')
+    //   .attr('fill', '#000')
+    //   .attr('text-anchor', 'end')
+    //   .attr('dominant-baseline', 'middle')
+    //   .attr('font-weight', 'bold')
+    //   .text(`#${pos}`)
 
     const fretGroup = svg.append('g').datum(pos)
 
@@ -184,7 +176,7 @@ function draw() {
       .attr('dy', margin.b / 2)
       .attr('x', fretX.bandwidth() / 2)
       .attr('fill', '#555')
-      .style('font-size', '0.6rem')
+      .style('font-size', '10px')
       .text((d) => d.fret)
 
     frets
@@ -240,7 +232,7 @@ function draw() {
         snoteg
           .append('circle')
           .attr('cy', 2)
-          .attr('r', 10)
+          .attr('r', 14)
           .attr('stroke', snote === scale.tonic ? '#FE54C1' : 'black')
           .attr('stroke-width', snote === scale.tonic ? 2 : 1)
         snoteg
@@ -250,9 +242,17 @@ function draw() {
           .attr('dy', 3)
           .attr('fill', snote === scale.tonic ? '#FE54C1' : '#fff')
           .attr('font-weight', snote === scale.tonic ? 'bold' : 'normal')
-          .attr('font-size', '0.7rem')
+          .attr('font-size', '10px')
           .text(snote)
       }
+    })
+
+    svg.on('click', function (e) {
+      e.preventDefault()
+      const name = `${scale.name
+        .toLowerCase()
+        .replace(/\s+/, '-')}-position-${pos}`
+      utils.getSVGFile(this, name)
     })
   }
 
@@ -278,7 +278,7 @@ form
   .selectAll('option')
   .data(
     ScaleType.all()
-      .filter((s) => s.intervals.length == 7)
+      .filter((s) => s.intervals.length >= 7)
       .map((s) => s.name)
       .sort()
   )
@@ -307,3 +307,13 @@ detEl
 detEl.append('div').html(() => {
   return `<strong>Chords:</strong> ${Scale.scaleChords(scaleString).join(', ')}`
 })
+
+// var svgData = $("#figureSvg")[0].outerHTML;
+// var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+// var svgUrl = URL.createObjectURL(svgBlob);
+// var downloadLink = document.createElement("a");
+// downloadLink.href = svgUrl;
+// downloadLink.download = "newesttree.svg";
+// document.body.appendChild(downloadLink);
+// downloadLink.click();
+// document.body.removeChild(downloadLink);
