@@ -109,18 +109,17 @@ function draw() {
       .style('border-radius', '3px')
       .style('font', '12px Helvetica')
 
-    // const figure = svg
-    //   .append('g')
-    //   .attr('transform', `translate(${width - 10}, ${margin.t / 2})`)
-    //   .attr('class', 'figure')
+    const figure = svg
+      .append('g')
+      .attr('transform', `translate(${6}, ${height - margin.b / 3})`)
+      .attr('class', 'figure')
 
-    // figure
-    //   .append('text')
-    //   .attr('fill', '#000')
-    //   .attr('text-anchor', 'end')
-    //   .attr('dominant-baseline', 'middle')
-    //   .attr('font-weight', 'bold')
-    //   .text(`#${pos}`)
+    figure
+      .append('text')
+      .attr('fill', '#aaa')
+      .attr('dominant-baseline', 'middle')
+      .attr('font-weight', 'bold')
+      .text(`#${pos}`)
 
     const fretGroup = svg.append('g').datum(pos)
 
@@ -278,7 +277,7 @@ form
   .selectAll('option')
   .data(
     ScaleType.all()
-      .filter((s) => s.intervals.length >= 7)
+      // .filter((s) => s.intervals.length >= 7)
       .map((s) => s.name)
       .sort()
   )
