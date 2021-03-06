@@ -1,9 +1,12 @@
-// import { default as tnps } from './system/tnps'
-export { default as tnps } from './system/tnps'
-export { default as utils } from './utils'
-// export { default as caged } from './system/caged'
-// export { default as mode } from './system/mode'
+export default class FretBoard {
+  get tuning() {
+    return this.tuning
+  }
 
+  set tuning(value) {
+    this.tuning = value
+  }
+}
 // export default function () {
 //   function scale() {}
 
@@ -17,5 +20,3 @@ export { default as utils } from './utils'
 
 //   return scale
 // }
-
-// export { tnps }
