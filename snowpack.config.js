@@ -3,7 +3,7 @@ module.exports = {
   plugins: [
     /* ... */
   ],
-  installOptions: {
+  packageOptions: {
     polyfillNode: true,
     /* ... */
   },
@@ -20,11 +20,9 @@ module.exports = {
   alias: {
     /* ... */
   },
-  experiments: {
-    optimize: {
-      bundle: true,
-      minify: true,
-      target: 'es2018',
-    },
+  optimize: {
+    bundle: true,
+    minify: true,
+    target: 'es2018',
   },
 }
