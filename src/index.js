@@ -13,7 +13,9 @@ export function frets(
 
   const notes = tuning.map((t) => {
     const { oct, letter } = Note.get(t);
-    return Range.chromatic([t, `${letter}${oct + 2}`]).map(Note.get);
+    return Range.chromatic([t, `${letter}${oct + 2}`]).map((n) =>
+      Object.assign({}, Note.get(n))
+    );
   });
   function fb() {}
 
