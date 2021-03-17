@@ -1,5 +1,4 @@
 import { zip } from "d3";
-import utils from "../utils";
 
 export default function tnps(notes, scale) {
   const numPositions = 7;

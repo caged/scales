@@ -1,12 +1,18 @@
 // Partition each array item into a group of chunks with siblings
 //
+//
+// list - the array
+// len - the partition length
+// count - how many partitions to create
+//
 // Example:
 //
-//  partition([1, 2, 3], 2)
+//  partition([1, 2, 3], 2, 3)
 //  // [1, 2], [2, 3], [3, 1]
+//
 const partition = (list, len, count) => {
   const out = [];
-  for (let index = 0, start = 0; index < count; index++) {
+  for (let index = 0; index < count; index++) {
     out.push(chunk(list, index, len));
   }
 

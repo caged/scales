@@ -1,4 +1,3 @@
-import { Note } from "@tonaljs/tonal";
 import tnps from "./tnps";
 import { frets, scale } from "../";
 import { assert } from "chai";
