@@ -2,7 +2,15 @@ import { zip } from "d3";
 import utils from "../utils";
 
 export default function tnps() {
-  function tnps() {}
+  const numPositions = 7;
+
+  function tnps(notes, scale) {
+    function _() {}
+
+    _.positions = function () {};
+
+    return _;
+  }
 
   return tnps;
 }
