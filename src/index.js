@@ -1,7 +1,7 @@
-import { Note, Scale, ScaleType, Range, Mode } from "@tonaljs/tonal";
-export { default as utils } from "./utils";
+import { Note, Range } from "@tonaljs/tonal";
 export { default as tnps } from "./system/tnps";
 export { default as scale } from "./scale";
+export { chunk, rotate, getSVGFile, partition } from "./utils";
 
 export function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
