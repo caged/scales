@@ -30,6 +30,7 @@ describe("fretboard tests", () => {
     const fb = frets();
     const notes = fb.notes();
     assert.isArray(notes);
+    assert.equal(notes[0].length, 25);
 
     fb.tuning().forEach((note, i) => {
       const { letter, oct } = Note.get(note);
