@@ -1,4 +1,4 @@
-import { Note, Scale, ScaleType, Range, Mode } from "@tonaljs/tonal";
+import { Note } from "@tonaljs/tonal";
 import { frets, tnps } from "./";
 import { assert } from "chai";
 
@@ -18,7 +18,7 @@ import { assert } from "chai";
 //   step: 2
 // }
 
-describe("some test", () => {
+describe("fretboard tests", () => {
   it("should initialize with standard tuning", () => {
     const fb = frets();
     assert.deepEqual(fb.tuning(), ["E2", "A2", "D3", "G3", "B3", "E4"]);
