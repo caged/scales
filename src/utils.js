@@ -1,3 +1,17 @@
+// Partition each array item into a group of chunks with siblings
+//
+// Example:
+//
+//  partition([1, 2, 3], 2)
+//  // [1, 2], [2, 3], [3, 1]
+const partition = (list, len, count) => {
+  const out = [];
+  for (let index = 0, start = 0; index < count; index++) {
+    out.push(chunk(list, index, len));
+  }
+
+  return out;
+};
 // Split an array into a chunk, starting over at the beginning if the
 // length exceeds the length of the array
 //
