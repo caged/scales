@@ -1,15 +1,35 @@
 import { zip } from "d3";
 import utils from "../utils";
 
-export default function tnps() {
+export default function tnps(notes, scale) {
   const numPositions = 7;
+  const positions = getPositions();
+  function tnps() {}
 
-  function tnps(notes, scale) {
-    function _() {}
+  tnps.positions = () => positions;
 
-    _.positions = function () {};
+  function getPositions() {
+    const intervals = scale.intervals();
+    const snotes = scale.notes();
+    const scaleNotes = snotes.map((n, i) => {
+      return {
+        note: n,
+        interval: intervals[i],
+      };
+    });
 
-    return _;
+    let scaleNoteIndex = 0;
+
+    // const out = [];
+    // for (let i = 1; i <= numPositions; i++) {
+    //   const notes = [];
+    //   out.push({
+    //     number: i,
+    //     notes: [],
+    //   });
+    // }
+
+    return scaleNotes;
   }
 
   return tnps;
