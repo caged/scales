@@ -1,4 +1,4 @@
-import { Note } from "@tonaljs/tonal";
+import { Note, Range } from "@tonaljs/tonal";
 import { frets, tnps } from "./";
 import { assert } from "chai";
 
@@ -37,6 +37,15 @@ describe("fretboard tests", () => {
       assert.equal(notes[i][0].name, note);
       assert.equal(notes[i][notes[i].length - 1].name, `${letter}${oct + 2}`);
     });
+  });
+
+  it("should create a chromatic range of notes for string", () => {
+    const fb = frets();
+    const strings = fb.notes();
+    const e = strings[0];
+    const enames = e.map((n) => n.name);
+
+    assert.deepEqual(enames, Range.chromatic(["E2", "E4"]));
   });
 
   it("should set a system", () => {
