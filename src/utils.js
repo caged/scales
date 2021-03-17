@@ -4,16 +4,17 @@
 // list - the array
 // len - the partition length
 // count - how many partitions to create
+// start - the start list index
 //
 // Example:
 //
 //  partition([1, 2, 3], 2, 3)
 //  // [1, 2], [2, 3], [3, 1]
 //
-const partition = (list, len, count) => {
+const partition = (list, len, count, start = 0) => {
   const out = [];
   for (let index = 0; index < count; index++) {
-    out.push(chunk(list, index, len));
+    out.push(chunk(list, start + index, len));
   }
 
   return out;
