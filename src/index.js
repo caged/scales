@@ -1,5 +1,5 @@
 import { Note, Scale, ScaleType, Range, Mode } from "@tonaljs/tonal";
-import { fsum } from "d3-array";
+export { default as utils } from "./utils";
 export { default as tnps } from "./system/tnps";
 export { default as scale } from "./scale";
 
@@ -9,6 +9,7 @@ export function frets(
 ) {
   const count = octaves * 12;
   let system;
+  let scale;
 
   const notes = tuning.map((t) => {
     const { oct, letter } = Note.get(t);
