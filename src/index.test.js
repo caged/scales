@@ -1,5 +1,5 @@
 import { Note, Scale, ScaleType, Range, Mode } from "@tonaljs/tonal";
-import { frets } from "./";
+import { frets, tnps } from "./";
 import { assert } from "chai";
 
 // {
@@ -36,5 +36,11 @@ describe("some test", () => {
       assert.equal(notes[i][0].name, note);
       assert.equal(notes[i][notes[i].length - 1].name, `${letter}${oct + 2}`);
     });
+  });
+
+  it("should set a system", () => {
+    const fb = frets().system(tnps);
+    assert.deepEqual(fb.system(), tnps);
+    assert.isFunction(fb.system());
   });
 });
