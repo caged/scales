@@ -1,9 +1,7 @@
 import { Note, Scale, ScaleType, Range, Mode } from "@tonaljs/tonal";
 import { fsum } from "d3-array";
 export { default as tnps } from "./system/tnps";
-export { default as utils } from "./utils";
-export { default as caged } from "./system/caged";
-export { default as mode } from "./system/mode";
+export { default as scale } from "./scale";
 
 export function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
@@ -25,6 +23,10 @@ export function frets(
 
   fb.system = function (_) {
     return arguments.length ? ((system = _), fb) : system;
+  };
+
+  fb.scale = function (_) {
+    return arguments.length ? ((scale = _), fb) : scale;
   };
 
   return fb;
