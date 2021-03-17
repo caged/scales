@@ -11,6 +11,7 @@ export default function scale(name) {
     writable: false,
   });
 
+  // Delegate most of the methods to Tonal's Scale object
   scale.setNum = () => s.setNum;
   scale.chroma = () => s.chroma;
   scale.normalized = () => s.normalized;
