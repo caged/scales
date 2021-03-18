@@ -21,7 +21,8 @@
     "prettier": "2.2.1",
     "snowpack": "^3.0.13",
     "svelte": "^3.35.0",
-    "svelte-preprocess": "^4.6.9"
+    "svelte-preprocess": "^4.6.9",
+    "svelte-select": "^3.17.0"
   },
   "scripts": {
     "start": "snowpack dev",
