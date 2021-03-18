@@ -1,7 +1,16 @@
-"use strict";
-import { frets, scale, tnps, getSVGFile } from "./dist/index";
+import App from "./app/App.svelte";
 
-const fb = frets(["D2", "A2", "D3", "G3", "B3", "E4"]);
-const notes = fb.notes();
-const sn = scale("D minor");
-console.log(tnps(notes, sn));
+let app = new App({
+  target: document.body,
+});
+
+export default app;
+
+// Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
+// Learn more: https://www.snowpack.dev/concepts/hot-module-replacement
+if (import.meta.hot) {
+  import.meta.hot.accept();
+  import.meta.hot.dispose(() => {
+    app.$destroy();
+  });
+}
