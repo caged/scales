@@ -2,9 +2,11 @@
 import Tailwind from './Tailwind.svelte'
 import KeySelector from './KeySelector.svelte'
 import ScaleSelector from  './ScaleSelector.svelte'
+import FretBoard from './FretBoard.svelte'
 
 let key = 'A'
 let scale = ''
+$: scaleName = `${key} ${scale}`
 </script>
 
 
@@ -21,4 +23,7 @@ let scale = ''
   <div class="flex items-center">
     {key} {scale}
   </div>
+</div>
+<div class="p-5">
+  <FretBoard bind:scaleName />
 </div>
