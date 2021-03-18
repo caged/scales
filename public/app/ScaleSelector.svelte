@@ -1,13 +1,34 @@
 <script>
-import {ScaleType} from '@tonaljs/tonal'
+  import Select from 'svelte-select';
+  import {ScaleType} from '@tonaljs/tonal'
 
-const scales = ScaleType.all().sort((a, b) => {
-  return b.intervals.length - a.intervals.length
-})
-</script>
+  export let value
+  
+  const scales = ScaleType.all().sort((a, b) => {
+    return b.intervals.length - a.intervals.length
+  }).map(s => {
+    return { value: s.name , label: s.name }
+  })
 
-<select name="scale" class="rounded-lg border-gray-300">
-  {#each scales as s}
-    <option value="{s.name}">{s.name}</option>
-  {/each}
-</select>
+  function handleSelect(event) {
+    value = event.detail.value
+  } 
+
+  function handleClear() {
+    value = ''
+  }
+
+  </script>
+
+<style>
+.themed {
+    --border: theme('borderWidth.DEFAULT') solid theme('borderColor.gray.300');
+    --borderRadius: theme('borderRadius.lg');
+    --placeholderColor: theme('colors.gray.500');
+  }
+</style>
+
+<div class="themed w-full">
+  <Select items={scales} placeholder="Select a scale..." on:select={handleSelect} on:clear={handleClear}  />
+</div>
+

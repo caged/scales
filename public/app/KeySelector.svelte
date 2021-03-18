@@ -1,7 +1,7 @@
 <script>
 export let key
 
-let note = 'C'
+let note = key
 let modifier = null
 
 const notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
