@@ -14,6 +14,10 @@ export function frets(
   const notes = tuning.map((t) => {
     const { oct, letter } = Note.get(t);
     return Range.chromatic([t, `${letter}${oct + 2}`]).map((n) =>
+      // Note.get uses a lookup cache that references the same object.
+      // This causes problems if you try to add additional propertieis to Note
+      // which we do when assigning scale modes.  To work around this, we create a new
+      // object for every note.
       Object.assign({}, Note.get(n))
     );
   });
