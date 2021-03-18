@@ -1,6 +1,7 @@
 // Example Configuration File
 module.exports = {
   plugins: [
+    "@snowpack/plugin-svelte",
     /* ... */
   ],
   packageOptions: {
@@ -14,8 +15,8 @@ module.exports = {
     /* ... */
   },
   mount: {
-    public: { url: '/' },
-    src: { url: '/dist' },
+    public: { url: "/" },
+    src: { url: "/dist" },
   },
   alias: {
     /* ... */
@@ -23,6 +24,6 @@ module.exports = {
   optimize: {
     bundle: true,
     minify: true,
-    target: 'es2018',
+    target: "es2018",
   },
-}
+};
