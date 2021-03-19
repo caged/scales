@@ -24,6 +24,6 @@ $: scaleName = `${key} ${scale}`
     {key} {scale}
   </div>
 </div>
-<div class="p-5">
+<div>
   <FretBoard bind:scaleName />
 </div>
