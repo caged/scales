@@ -19,7 +19,11 @@ export default function scale(name) {
   scale.aliases = () => s.aliases;
   scale.type = () => s.type;
   scale.tonic = () => s.tonic;
-  scale.notes = () => s.notes.map(Note.get);
+  scale.notes = () => {
+    return s.notes.map((n, i) => {
+      return Object.assign(Note.get(n), { interval: s.intervals[i] });
+    });
+  };
 
   return scale;
 }

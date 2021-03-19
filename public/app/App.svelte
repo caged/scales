@@ -4,7 +4,7 @@ import KeySelector from './KeySelector.svelte'
 import ScaleSelector from  './ScaleSelector.svelte'
 import FretBoard from './FretBoard.svelte'
 
-let key = 'A'
+let key = 'D'
 let scale = 'minor'
 $: scaleName = `${key} ${scale}`
 </script>
