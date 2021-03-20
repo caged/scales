@@ -5,7 +5,8 @@ export { chunk, rotate, getSVGFile, partition } from "./utils";
 
 export function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
-  octaves = 2
+  octaves = 2,
+  sharps = false
 ) {
   const count = octaves * 12;
   let system;
@@ -13,7 +14,7 @@ export function frets(
 
   const notes = tuning.map((t) => {
     const { oct, letter } = Note.get(t);
-    return Range.chromatic([t, `${letter}${oct + 2}`]).map((n) =>
+    return Range.chromatic([t, `${letter}${oct + 2}`], { sharps }).map((n) =>
       // Note.get uses a lookup cache that references the same object.
       // This causes problems if you try to add additional propertieis to Note
       // which we do when assigning scale modes.  To work around this, we create a new

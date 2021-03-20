@@ -32,8 +32,10 @@
     lineW;
 
   $: if (scaleName) {
-    fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"]);
     scale = createScale(scaleName);
+    const sharps = scale.notes().some((n) => n.acc === "#");
+
+    fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
     fbnotes = fb.notes();
     strings = tnps(fbnotes, scale).reverse();
     scaleLen = scale.notes().length;
