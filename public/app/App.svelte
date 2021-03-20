@@ -6,22 +6,29 @@
   import FretBoard from "./FretBoard.svelte";
   import ScaleInfo from "./ScaleInfo.svelte";
   import PositionSelector from "./PositionSelector.svelte";
+  import TuningSelector from "./TuningSelector.svelte";
 
   let key = "D";
   let scaleLabel = "minor";
   let system = tnps;
   let position;
+  let selectedTuning = "E2 A2 D3 G3 B3 E4";
 
   $: scaleName = `${key} ${scaleLabel}`;
   $: scale = getScale(scaleName);
+  $: tuning = selectedTuning.split(" ");
 </script>
 
 <div class="flex border-b border-gray-300">
-  <div class="flex flex-none flex-col p-5 border-r border-gray-200">
+  <div class="p-5 border-r border-gray-200">
+    <h3 class="mb-2 font-bold">Tuning</h3>
+    <div><TuningSelector bind:value={selectedTuning} /></div>
+  </div>
+  <div class="p-5 border-r border-gray-200">
     <h3 class="mb-2 font-bold">Key</h3>
     <div><KeySelector bind:key /></div>
   </div>
-  <div class="flex flex-col w-1/3 p-5 pb-6 border-r border-gray-200">
+  <div class="w-1/4 p-5 pb-6 border-r border-gray-200">
     <h3 class="font-bold mb-2">Scale</h3>
     <div><ScaleSelector bind:value={scaleLabel} /></div>
   </div>
@@ -44,6 +51,6 @@
     </div>
   {/if}
   <div class="py-10">
-    <FretBoard bind:scale bind:system bind:position />
+    <FretBoard bind:scale bind:system bind:position bind:tuning />
   </div>
 </div>

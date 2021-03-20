@@ -13,17 +13,20 @@
   export let scale = null;
   export let system = tnps;
   export let position = null;
+  export let tuning;
 
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
-  const height = 240;
+  let defaultHeight = 240;
+  let height;
 
   let fb, fbnotes, strings, fretX, strY, lineW;
 
-  $: if (scale || position) {
+  $: if ((scale || position) && tuning) {
     const sharps = scale.notes().some((n) => n.acc === "#");
+    height = defaultHeight + (tuning.length - 6) * 32;
 
-    fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
+    fb = frets(tuning, 2, sharps);
     fbnotes = fb.notes();
     strings = system(fbnotes, scale).reverse();
 

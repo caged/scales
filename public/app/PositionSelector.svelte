@@ -1,5 +1,5 @@
 <script>
-  export let system;
+  export let system = null;
   export let position = null;
 
   const positions = 7;
