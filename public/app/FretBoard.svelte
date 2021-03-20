@@ -19,17 +19,7 @@
   const dotR = 24;
   const minorW = width / 4;
 
-  let fb,
-    fbnotes,
-    scale,
-    scaleLen,
-    strings,
-    fretX,
-    strY,
-    dotX,
-    color,
-    colorFixed,
-    lineW;
+  let fb, fbnotes, scale, scaleLen, strings, fretX, strY, dotX, color, lineW;
 
   $: if (scaleName) {
     scale = createScale(scaleName);
@@ -54,17 +44,13 @@
 
     color = scaleSequential(interpolator).domain([0, scaleLen]);
 
-    colorFixed = scaleOrdinal()
-      .domain(scale.notes().map((n) => n.name))
-      .range(range(scaleLen).map(color));
-
     lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
   }
 </script>
 
 <div>
   {#if scale}
-    <div class="flex mb-10 border-b border-gray-300">
+    <div class="flex mb-5 border-b border-gray-300">
       <div class="p-5">
         <svg viewBox="0 0 {minorW} {dotR * 2}" width={minorW}>
           {#each scale.notes() as note, i}
@@ -92,15 +78,6 @@
             </g>
           {/each}
         </svg>
-      </div>
-      <div class="flex-1 p-5">
-        <h3 class="font-bold">Forms the foundation of the scales</h3>
-        <span class="text-gray-600">{Scale.extended(scaleName).join(", ")}</span
-        >
-      </div>
-      <div class="flex-1 p-5">
-        <h3 class="font-bold">Contains the scales</h3>
-        <span class="text-gray-600">{Scale.reduced(scaleName).join(", ")}</span>
       </div>
     </div>
   {/if}
