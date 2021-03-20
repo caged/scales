@@ -11,7 +11,7 @@
   import { frets, tnps } from "../dist/index";
 
   export let scale = null;
-  export let system = null;
+  export let system = tnps;
   export let position = null;
 
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
@@ -19,15 +19,14 @@
   const height = 240;
   const minorW = width / 4;
 
-  let fb, fbnotes, scaleLen, strings, fretX, strY, dotX, color, lineW;
+  let fb, fbnotes, strings, fretX, strY, lineW;
 
   $: if (scale || position) {
     const sharps = scale.notes().some((n) => n.acc === "#");
 
-    fb = frets(["A1", "E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
+    fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
     fbnotes = fb.notes();
-    strings = tnps(fbnotes, scale).reverse();
-    scaleLen = scale.notes().length;
+    strings = system(fbnotes, scale).reverse();
 
     fretX = scaleBand()
       .domain(range(fb.count() + 1))
@@ -36,12 +35,6 @@
     strY = scalePoint()
       .domain(range(fbnotes.length))
       .range([margin.top, height - margin.bottom]);
-
-    dotX = scalePoint()
-      .domain(range(scale.notes().length))
-      .range([20, minorW - 20]);
-
-    color = scaleSequential(interpolator).domain([0, scaleLen]);
 
     lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
   }
