@@ -1,5 +1,5 @@
 <script>
-  import { Scale } from "@tonaljs/tonal";
+  import { note, Scale } from "@tonaljs/tonal";
   import {
     scaleBand,
     scalePoint,
@@ -11,8 +11,8 @@
   import { frets, tnps } from "../dist/index";
 
   export let scale = null;
-  export let system;
-  export let position;
+  export let system = null;
+  export let position = null;
 
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
@@ -21,10 +21,10 @@
 
   let fb, fbnotes, scaleLen, strings, fretX, strY, dotX, color, lineW;
 
-  $: if (scale) {
+  $: if (scale || position) {
     const sharps = scale.notes().some((n) => n.acc === "#");
 
-    fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
+    fb = frets(["A1", "E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
     fbnotes = fb.notes();
     strings = tnps(fbnotes, scale).reverse();
     scaleLen = scale.notes().length;
@@ -61,20 +61,23 @@
         {#each str as note, j}
           <g transform="translate({fretX(j)}, 0)">
             {#if j > 0}
-              <circle
-                r="10"
-                stroke={note.interval ? "black" : "white"}
-                stroke-width="1"
-                fill={note.interval
-                  ? note.interval === "1P"
-                    ? "rgb(50, 50, 50)"
-                    : "rgb(87, 45, 146)"
-                  : "#fff"}
-              />
+              {#if !position || (position && note.positions && note.positions.includes(+position))}
+                <circle
+                  r="10"
+                  stroke={note.interval ? "black" : "white"}
+                  stroke-width="1"
+                  fill={note.interval
+                    ? note.interval === "1P"
+                      ? "rgb(50, 50, 50)"
+                      : "rgb(87, 45, 146)"
+                    : "#fff"}
+                />
+              {/if}
             {/if}
             <text
               dy="1"
-              class="{note.interval
+              class="{(note.interval && !position) ||
+              (position && note.positions && note.positions.includes(+position))
                 ? j == 0
                   ? 'text-purple-500'
                   : 'text-white'

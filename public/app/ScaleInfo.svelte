@@ -11,7 +11,7 @@
 
   onMount(() => {
     width = container.clientWidth;
-    height = 50;
+    height = 45;
     dotX.range([margin.left, width - margin.right]);
   });
 </script>

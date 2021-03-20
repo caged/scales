@@ -36,17 +36,29 @@
   <div class="flex flex-col w-1/3 p-5">
     <div><ScaleSelector bind:value={scaleLabel} /></div>
   </div>
-  <div class="flex items-center">
-    <h1 class="font-bold text-2xl">{key} {scaleLabel} scale</h1>
-  </div>
 </div>
 <div>
-  <div class="flex mb-5 border-b border-gray-200">
+  <div class="flex items-center mb-5 border-b border-gray-200">
+    <div class="p-5">
+      <h1 class="font-bold text-2xl">{key} {scaleLabel} scale</h1>
+    </div>
     <div class="flex-initial w-1/3 p-5">
       <ScaleInfo bind:scale />
     </div>
+    <div>
+      <span class="font-bold">Three note per string position: </span>
+      <select bind:value={position} class="rounded-lg border-gray-300 border">
+        <option value="">none</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+      </select>
+    </div>
   </div>
-
   <div>
     <FretBoard bind:scale bind:system bind:position />
   </div>
