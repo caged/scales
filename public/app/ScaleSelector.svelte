@@ -1,16 +1,46 @@
 <script>
   import Select from "svelte-select";
-  import { ScaleType } from "@tonaljs/tonal";
+  import { Scale, ScaleType } from "@tonaljs/tonal";
 
   export let value;
 
-  const scales = ScaleType.all()
-    .sort((a, b) => {
-      return b.intervals.length - a.intervals.length;
-    })
+  const allScales = ScaleType.all();
+  console.log(allScales.map((s) => Scale.get(s.name)));
+  const commonScales = [
+    "minor pentatonic",
+    "major pentatonic",
+    "minor",
+    "major",
+    "phrygian",
+    "lydian",
+    "mixolydian",
+    "locrian",
+    "harmonic minor",
+    "phrygian dominant",
+  ].map((name) => {
+    return { group: "Popular", ...ScaleType.get(name) };
+  });
+
+  const otherScales = allScales
+    .filter(
+      (a) =>
+        !commonScales.find((b) => {
+          return b.setNum == a.setNum;
+        })
+    )
     .map((s) => {
-      return { value: s.name, label: s.name };
+      return { ...s, group: "Other" };
     });
+
+  const scales = [...commonScales, ...otherScales].map((s) => {
+    return {
+      label: `${s.name}${s.aliases.length ? " (" + s.aliases[0] + ")" : ""}`,
+      value: s.name,
+      group: s.group,
+    };
+  });
+
+  const groupBy = (s) => s.group;
 
   function handleSelect(event) {
     value = event.detail.value;
@@ -27,6 +57,10 @@
     placeholder="Select a scale..."
     on:select={handleSelect}
     on:clear={handleClear}
+    containerClasses="text-sm"
+    containerStyles="text-transform: capitalize"
+    selectedValue={value}
+    {groupBy}
   />
 </div>
 
@@ -35,5 +69,6 @@
     --border: theme("borderWidth.DEFAULT") solid theme("borderColor.gray.300");
     --borderRadius: theme("borderRadius.lg");
     --placeholderColor: theme("colors.gray.500");
+    --height: theme("height.11");
   }
 </style>

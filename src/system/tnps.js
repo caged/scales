@@ -27,10 +27,13 @@ export default function tnps(strings, scale) {
     const strScalePositions = notesForString(strnum);
 
     for (const semitone of str) {
-      const scaleNote = scaleNotes.find((sn) => semitone.pc === sn.note.pc);
+      const scaleNote = scaleNotes.find((sn) => {
+        return semitone.chroma === sn.note.chroma;
+      });
+
       const positions = strScalePositions
         .map((ssp, i) =>
-          ssp.some((n) => n.note.pc === semitone.pc) ? i + 1 : -1
+          ssp.some((n) => n.note.chroma === semitone.chroma) ? i + 1 : -1
         )
         .filter((i) => i !== -1);
 

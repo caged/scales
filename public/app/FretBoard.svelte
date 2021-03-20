@@ -7,7 +7,6 @@
     scaleOrdinal,
     scaleLinear,
     range,
-    rgb,
   } from "d3";
   import { interpolatePurples as interpolator } from "d3-scale-chromatic";
   import { frets, scale as createScale, tnps } from "../dist/index";
