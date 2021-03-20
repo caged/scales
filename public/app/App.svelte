@@ -8,7 +8,7 @@
   import PositionSelector from "./PositionSelector.svelte";
   import TuningSelector from "./TuningSelector.svelte";
 
-  let key = "D";
+  let key = "A";
   let scaleLabel = "minor";
   let system = tnps;
   let position;
@@ -18,6 +18,12 @@
   $: scale = getScale(scaleName);
   $: tuning = selectedTuning.split(" ");
 </script>
+
+<svelte:head>
+  <title>{scaleName}</title>
+  <meta name="Description" content="{scaleName} guitar scale" />
+  <html lang="en" />
+</svelte:head>
 
 <div class="flex border-b border-gray-300">
   <div class="p-5 border-r border-gray-200">
