@@ -38,7 +38,7 @@
             <text
               text-anchor="middle"
               dy="25"
-              font-size="8"
+              font-size="10"
               class="text-black"
               fill="currentColor">{note.interval}</text
             >

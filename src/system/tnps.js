@@ -1,7 +1,6 @@
 import { partition } from "../utils";
 
 export default function tnps(strings, scale) {
-  strings = [...strings];
   const numPositions = 7;
   const notesPerString = 3;
   const intervals = scale.intervals();

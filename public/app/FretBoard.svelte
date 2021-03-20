@@ -17,7 +17,6 @@
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
   const height = 240;
-  const minorW = width / 4;
 
   let fb, fbnotes, strings, fretX, strY, lineW;
 
