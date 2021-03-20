@@ -2,6 +2,7 @@
   "name": "scales",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "dependencies": {
     "@tonaljs/tonal": "^4.6.0",
     "d3": "^6.3.0"
