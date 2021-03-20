@@ -1,12 +1,18 @@
 <script>
+  import { scale as getScale } from "../dist/index";
   import Tailwind from "./Tailwind.svelte";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
   import FretBoard from "./FretBoard.svelte";
+  import ScaleInfo from "./ScaleInfo.svelte";
 
   let key = "D";
-  let scale = "minor";
-  $: scaleName = `${key} ${scale}`;
+  let scaleLabel = "minor";
+  let system;
+  let position;
+
+  $: scaleName = `${key} ${scaleLabel}`;
+  $: scale = getScale(scaleName);
 </script>
 
 <div class="flex items-center border-b border-gray-200">
@@ -28,12 +34,20 @@
     <div><KeySelector bind:key /></div>
   </div>
   <div class="flex flex-col w-1/3 p-5">
-    <div><ScaleSelector bind:value={scale} /></div>
+    <div><ScaleSelector bind:value={scaleLabel} /></div>
   </div>
   <div class="flex items-center">
-    <h1 class="font-bold text-2xl">{key} {scale} scale</h1>
+    <h1 class="font-bold text-2xl">{key} {scaleLabel} scale</h1>
   </div>
 </div>
 <div>
-  <FretBoard bind:scaleName />
+  <div class="flex mb-5 border-b border-gray-200">
+    <div class="flex-initial w-1/3 p-5">
+      <ScaleInfo bind:scale />
+    </div>
+  </div>
+
+  <div>
+    <FretBoard bind:scale bind:system bind:position />
+  </div>
 </div>

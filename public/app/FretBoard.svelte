@@ -4,25 +4,24 @@
     scaleBand,
     scalePoint,
     scaleSequential,
-    scaleOrdinal,
     scaleLinear,
     range,
   } from "d3";
   import { interpolatePurples as interpolator } from "d3-scale-chromatic";
-  import { frets, scale as createScale, tnps } from "../dist/index";
+  import { frets, tnps } from "../dist/index";
 
-  export let scaleName = "";
+  export let scale = null;
+  export let system;
+  export let position;
 
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
   const height = 240;
-  const dotR = 24;
   const minorW = width / 4;
 
-  let fb, fbnotes, scale, scaleLen, strings, fretX, strY, dotX, color, lineW;
+  let fb, fbnotes, scaleLen, strings, fretX, strY, dotX, color, lineW;
 
-  $: if (scaleName) {
-    scale = createScale(scaleName);
+  $: if (scale) {
     const sharps = scale.notes().some((n) => n.acc === "#");
 
     fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 2, sharps);
@@ -49,39 +48,6 @@
 </script>
 
 <div>
-  {#if scale}
-    <div class="flex mb-5 border-b border-gray-300">
-      <div class="p-5">
-        <svg viewBox="0 0 {minorW} {dotR * 2}" width={minorW}>
-          {#each scale.notes() as note, i}
-            <g transform="translate({dotX(i)}, {20})">
-              <circle
-                r="12"
-                fill={note.interval === "1P"
-                  ? "rgb(50, 50, 50)"
-                  : "rgb(87, 45, 146)"}
-              />
-              <text
-                text-anchor="middle"
-                dy="4"
-                font-size="10"
-                class="text-white"
-                fill="currentColor">{note.name}</text
-              >
-              <text
-                text-anchor="middle"
-                dy="25"
-                font-size="8"
-                class="text-black"
-                fill="currentColor">{note.interval}</text
-              >
-            </g>
-          {/each}
-        </svg>
-      </div>
-    </div>
-  {/if}
-
   <svg viewBox="0 0 {width} {height}">
     {#each strings as str, i}
       <g transform="translate({margin.left}, {strY(i)})">
