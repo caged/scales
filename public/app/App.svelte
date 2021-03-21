@@ -8,12 +8,18 @@
   import PositionSelector from "./PositionSelector.svelte";
   import TuningSelector from "./TuningSelector.svelte";
   import { Chord, Scale } from "@tonaljs/tonal";
+  import ScaleChords from "./ScaleChords.svelte";
 
   let key = "A";
   let scaleLabel = "minor";
   let system = tnps;
   let position;
+  let chord;
   let selectedTuning = "E2 A2 D3 G3 B3 E4";
+
+  function handleChordChange(event) {
+    chord = event.detail;
+  }
 
   $: scaleName = `${key} ${scaleLabel}`;
   $: scale = getScale(scaleName);
@@ -46,7 +52,7 @@
 </div>
 <div>
   {#if scaleLabel != ""}
-    <div class="flex border-b border-gray-100 bg-gray-50 space-x-10">
+    <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
       <div class="p-5  flex-initial">
         <h1 class="font-bold text-2xl">{key} {scaleLabel} scale</h1>
         <span class="text-sm text-gray-500 capitalize">{scale.aliases()}</span>
@@ -57,17 +63,11 @@
       </div>
       <div class="p-5">
         <h3 class="font-bold">Chords</h3>
-        <ul
-          class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-1"
-        >
-          {#each Scale.scaleChords(scaleLabel) as chord}
-            <li class="px-1 py-1 rounded text-center bg-gray-200">{chord}</li>
-          {/each}
-        </ul>
+        <ScaleChords on:chordchange={handleChordChange} {scaleLabel} />
       </div>
     </div>
   {/if}
   <div class="py-10">
-    <FretBoard bind:scale bind:system bind:position bind:tuning />
+    <FretBoard bind:scale bind:system bind:position bind:tuning bind:chord />
   </div>
 </div>

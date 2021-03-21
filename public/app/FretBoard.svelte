@@ -1,5 +1,5 @@
 <script>
-  import { note } from "@tonaljs/core";
+  import { Chord } from "@tonaljs/tonal";
 
   import { scaleBand, scalePoint, scaleLinear, range } from "d3";
   import { frets, tnps } from "../dist/index";
@@ -8,6 +8,7 @@
   export let system = tnps;
   export let position = null;
   export let tuning;
+  export let chord = null;
 
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
@@ -20,6 +21,18 @@
 
   const noteInPosition = (note, position) =>
     position && note.positions && note.positions.includes(+position);
+
+  const classesForNote = (note, chordNotes) => {
+    if (note.interval === "1P") {
+      return chordNotes.includes(note.pc) ? "text-gray-700" : "text-black";
+    }
+
+    if (note.interval) {
+      return chordNotes.includes(note.pc) ? "text-gray-600" : "text-purple-800";
+    }
+
+    return "text-white";
+  };
 
   $: if ((scale || position) && tuning) {
     const sharps = scale.notes().some((n) => n.acc === "#");
@@ -39,6 +52,8 @@
 
     lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
   }
+
+  $: chordNotes = Chord.getChord(chord, scale.tonic()).notes;
 </script>
 
 <div>
@@ -58,13 +73,8 @@
               {#if !position || noteInPosition(note, position)}
                 <circle
                   r="10"
-                  stroke={note.interval ? "black" : "white"}
-                  stroke-width="1"
-                  fill={note.interval
-                    ? note.interval === "1P"
-                      ? "rgb(50, 50, 50)"
-                      : "rgb(87, 45, 146)"
-                    : "#fff"}
+                  fill="currentColor"
+                  class={classesForNote(note, chordNotes)}
                 />
               {:else if noteInPosition(note, position === 7 ? 1 : position + 1) || noteInPosition(note, position === 1 ? 7 : position - 1)}
                 <circle r="10" fill="currentColor" class="text-gray-200" />
@@ -118,3 +128,9 @@
     {/each}
   </svg>
 </div>
+
+<style>
+  .chord {
+    @apply font-bold bg-pink-500 text-pink-500;
+  }
+</style>
