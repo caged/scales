@@ -7,6 +7,7 @@
   import ScaleInfo from "./ScaleInfo.svelte";
   import PositionSelector from "./PositionSelector.svelte";
   import TuningSelector from "./TuningSelector.svelte";
+  import { Chord, Scale } from "@tonaljs/tonal";
 
   let key = "A";
   let scaleLabel = "minor";
@@ -46,13 +47,21 @@
 <div>
   {#if scaleLabel != ""}
     <div class="flex border-b border-gray-100 bg-gray-50 space-x-10">
-      <div class="p-5">
+      <div class="p-5  flex-initial">
         <h1 class="font-bold text-2xl">{key} {scaleLabel} scale</h1>
         <span class="text-sm text-gray-500 capitalize">{scale.aliases()}</span>
       </div>
-      <div class="flex-initial w-1/3 p-5">
+      <div class="w-1/3  p-5">
         <h3 class="font-bold">Notes and intervals</h3>
         <ScaleInfo bind:scale />
+      </div>
+      <div class="p-5">
+        <h3 class="font-bold">Chords</h3>
+        <ul class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 gap-1">
+          {#each Scale.scaleChords(scaleLabel) as chord}
+            <li class="px-1 py-1 rounded text-center bg-gray-200">{chord}</li>
+          {/each}
+        </ul>
       </div>
     </div>
   {/if}
