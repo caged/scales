@@ -1,13 +1,7 @@
 <script>
-  import { note, Scale } from "@tonaljs/tonal";
-  import {
-    scaleBand,
-    scalePoint,
-    scaleSequential,
-    scaleLinear,
-    range,
-  } from "d3";
-  import { interpolatePurples as interpolator } from "d3-scale-chromatic";
+  import { note } from "@tonaljs/core";
+
+  import { scaleBand, scalePoint, scaleLinear, range } from "d3";
   import { frets, tnps } from "../dist/index";
 
   export let scale = null;
@@ -19,8 +13,13 @@
   const width = 1200;
   let defaultHeight = 240;
   let height;
-
   let fb, fbnotes, strings, fretX, strY, lineW;
+
+  const getsFretMarker = (i) =>
+    ((i + 1) % 2 !== 0 && ![1, 11, 13].includes(i + 1)) || i + 1 == 12;
+
+  const noteInPosition = (note, position) =>
+    position && note.positions && note.positions.includes(+position);
 
   $: if ((scale || position) && tuning) {
     const sharps = scale.notes().some((n) => n.acc === "#");
@@ -56,7 +55,7 @@
         {#each str as note, j}
           <g transform="translate({fretX(j)}, 0)">
             {#if j > 0}
-              {#if !position || (position && note.positions && note.positions.includes(+position))}
+              {#if !position || noteInPosition(note, position)}
                 <circle
                   r="10"
                   stroke={note.interval ? "black" : "white"}
@@ -67,12 +66,14 @@
                       : "rgb(87, 45, 146)"
                     : "#fff"}
                 />
+              {:else if noteInPosition(note, position === 7 ? 1 : position + 1) || noteInPosition(note, position === 1 ? 7 : position - 1)}
+                <circle r="10" fill="currentColor" class="text-gray-200" />
               {/if}
             {/if}
             <text
               dy="1"
               class="{(note.interval && !position) ||
-              (position && note.positions && note.positions.includes(+position))
+              noteInPosition(note, position)
                 ? j == 0
                   ? 'text-purple-500'
                   : 'text-white'
@@ -104,7 +105,7 @@
           class={i + 1 === 11 ? "text-gray-900" : "text-gray-400"}
           width="3"
         />
-        {#if ((i + 1) % 2 !== 0 && ![1, 11, 13].includes(i + 1)) || i + 1 == 12}
+        {#if getsFretMarker(i)}
           <circle
             cx="10"
             cy={height - margin.bottom + 10}
