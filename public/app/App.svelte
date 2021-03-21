@@ -57,7 +57,9 @@
       </div>
       <div class="p-5">
         <h3 class="font-bold">Chords</h3>
-        <ul class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 gap-1">
+        <ul
+          class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-1"
+        >
           {#each Scale.scaleChords(scaleLabel) as chord}
             <li class="px-1 py-1 rounded text-center bg-gray-200">{chord}</li>
           {/each}
