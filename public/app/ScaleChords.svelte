@@ -1,8 +1,8 @@
 <script>
-  import { ChordType, Scale } from "@tonaljs/tonal";
+  import { Scale } from "@tonaljs/tonal";
   import { createEventDispatcher } from "svelte";
 
-  export let scaleLabel;
+  export let scale;
 
   const dispatch = createEventDispatcher();
 
@@ -19,7 +19,7 @@
 <ul
   class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-1"
 >
-  {#each Scale.scaleChords(scaleLabel) as chord}
+  {#each Scale.scaleChords(scale.type()) as chord}
     <li
       on:mouseenter={handleMouseEnter}
       on:mouseleave={handleMouseLeave}

@@ -7,7 +7,6 @@
   import ScaleInfo from "./ScaleInfo.svelte";
   import PositionSelector from "./PositionSelector.svelte";
   import TuningSelector from "./TuningSelector.svelte";
-  import { Chord, Scale } from "@tonaljs/tonal";
   import ScaleChords from "./ScaleChords.svelte";
 
   let key = "A";
@@ -63,7 +62,7 @@
       </div>
       <div class="p-5">
         <h3 class="font-bold">Chords</h3>
-        <ScaleChords on:chordchange={handleChordChange} {scaleLabel} />
+        <ScaleChords on:chordchange={handleChordChange} {scale} />
       </div>
     </div>
   {/if}
