@@ -1,6 +1,7 @@
 <script>
   import { Scale } from "@tonaljs/tonal";
   import { createEventDispatcher } from "svelte";
+  import { Howl, Howler } from "howler";
 
   export let scale;
 
