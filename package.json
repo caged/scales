@@ -16,6 +16,7 @@
     "autoprefixer": "^10.2.5",
     "chai": "^4.2.0",
     "d3-scale-chromatic": "^2.0.0",
+    "howler": "^2.2.1",
     "mocha": "^8.2.1",
     "postcss": "^8.2.8",
     "postcss-cli": "^8.3.1",
