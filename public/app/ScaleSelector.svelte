@@ -5,7 +5,6 @@
   export let value;
 
   const allScales = ScaleType.all();
-  console.log(allScales.map((s) => Scale.get(s.name)));
   const commonScales = [
     "minor pentatonic",
     "major pentatonic",
