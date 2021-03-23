@@ -27,7 +27,7 @@
       const note = theNotes.shift();
 
       sound.play(note.name);
-      await delay(30);
+      await delay(20);
     }
   }
 
