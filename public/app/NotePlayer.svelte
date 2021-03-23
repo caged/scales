@@ -1,9 +1,10 @@
 <script>
   import { Chord, Range } from "@tonaljs/tonal";
   import { Howl, Howler } from "howler";
-  import { delay } from "./utils";
+  import { delay as pauseFor } from "./utils";
 
   export let notes = "";
+  export let delay = 20;
 
   const noteRange = (sharps) =>
     Range.chromatic(["C1", "B5"], { sharps }).reduce((acc, cur, i) => {
@@ -27,7 +28,7 @@
       const note = theNotes.shift();
 
       sound.play(note.name);
-      await delay(20);
+      await pauseFor(delay);
     }
   }
 

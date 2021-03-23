@@ -1,13 +1,22 @@
 <script>
-  import { Scale } from "@tonaljs/tonal";
+  import { Scale, Chord, Note } from "@tonaljs/tonal";
   import { createEventDispatcher } from "svelte";
 
   export let scale;
+  export let tuning;
 
   const dispatch = createEventDispatcher();
 
   function handleMouseEnter(event) {
-    const chord = event.target.dataset.chord;
+    const chordName = event.target.dataset.chord;
+    const chord = Chord.getChord(
+      chordName,
+      Note.get(tuning[0]).height > Note.get(`${key}2`).height
+        ? `${key}3`
+        : `${key}2`
+    );
+
+    console.log(chord);
     dispatch("chordchange", chord);
   }
 
