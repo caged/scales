@@ -1,6 +1,4 @@
 <script>
-  import { Chord } from "@tonaljs/tonal";
-
   import { scaleBand, scalePoint, scaleLinear, range } from "d3";
   import { frets, tnps } from "../dist/index";
 
@@ -8,7 +6,7 @@
   export let system = tnps;
   export let position = null;
   export let tuning;
-  export let chord = null;
+  export let notes = null;
 
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
@@ -22,13 +20,14 @@
   const noteInPosition = (note, position) =>
     position && note.positions && note.positions.includes(+position);
 
-  const classesForNote = (note, chordNotes) => {
+  const classesForNote = (note, notes) => {
+    const names = notes.map((n) => n.name);
     if (note.interval === "1P") {
-      return chordNotes.includes(note.pc) ? "text-gray-700" : "text-black";
+      return names.includes(note.name) ? "text-pink-700" : "text-black";
     }
 
     if (note.interval) {
-      return chordNotes.includes(note.pc) ? "text-gray-600" : "text-purple-800";
+      return names.includes(note.name) ? "text-gray-600" : "text-purple-800";
     }
 
     return "text-white";
@@ -52,8 +51,6 @@
 
     lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
   }
-
-  $: chordNotes = Chord.getChord(chord, scale.tonic()).notes;
 </script>
 
 <div>
@@ -74,7 +71,7 @@
                 <circle
                   r="10"
                   fill="currentColor"
-                  class={classesForNote(note, chordNotes)}
+                  class={classesForNote(note, notes)}
                 />
               {:else if noteInPosition(note, position === 7 ? 1 : position + 1) || noteInPosition(note, position === 1 ? 7 : position - 1)}
                 <circle r="10" fill="currentColor" class="text-gray-200" />

@@ -1,4 +1,5 @@
 <script>
+  import { Chord, Note } from "@tonaljs/tonal";
   import { scale as getScale, tnps } from "../dist/index";
   import Tailwind from "./Tailwind.svelte";
   import KeySelector from "./KeySelector.svelte";
@@ -8,21 +9,29 @@
   import PositionSelector from "./PositionSelector.svelte";
   import TuningSelector from "./TuningSelector.svelte";
   import ScaleChords from "./ScaleChords.svelte";
+  import NotePlayer from "./NotePlayer.svelte";
 
   let key = "A";
   let scaleLabel = "minor";
   let system = tnps;
   let position;
-  let chord;
+  let chordName;
   let selectedTuning = "E2 A2 D3 G3 B3 E4";
 
   function handleChordChange(event) {
-    chord = event.detail;
+    chordName = event.detail;
   }
 
   $: scaleName = `${key} ${scaleLabel}`;
   $: scale = getScale(scaleName);
   $: tuning = selectedTuning.split(" ");
+  $: chord = Chord.getChord(
+    chordName,
+    Note.get(tuning[0]).height > Note.get(`${key}2`).height
+      ? `${key}3`
+      : `${key}2`
+  );
+  $: notes = chord.notes.map(Note.get);
 </script>
 
 <svelte:head>
@@ -67,6 +76,7 @@
     </div>
   {/if}
   <div class="py-10">
-    <FretBoard bind:scale bind:system bind:position bind:tuning bind:chord />
+    <FretBoard bind:scale bind:system bind:position bind:tuning bind:notes />
   </div>
+  <NotePlayer bind:notes />
 </div>

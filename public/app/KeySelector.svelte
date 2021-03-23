@@ -4,7 +4,7 @@
   let note = key;
   let modifier = null;
 
-  const notes = ["A", "B", "C", "D", "E", "F", "G"];
+  const notes = ["E", "F", "G", "A", "B", "C", "D"];
 
   $: key = [note, modifier].join("");
 
