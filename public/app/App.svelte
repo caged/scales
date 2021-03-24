@@ -11,22 +11,30 @@
   import TuningSelector from "./TuningSelector.svelte";
   import ScaleChords from "./ScaleChords.svelte";
   import NotePlayer from "./NotePlayer.svelte";
-  import Context from "./Context.svelte";
+  import AppContext from "./AppContext.svelte";
+  import { tonic as tonicStore, tuning as tuningStore } from "./store";
 
-  let key = "A";
+  let key;
   let scaleLabel = "minor";
   let system = tnps;
   let position;
   let chordName;
-  let selectedTuning = "E2 A2 D3 G3 B3 E4";
+  let tuning;
 
   function handleChordChange(event) {
     chordName = event.detail;
   }
 
+  tonicStore.subscribe((value) => {
+    key = value;
+  });
+
+  tuningStore.subscribe((value) => {
+    tuning = value;
+  });
+
   $: scaleName = `${key} ${scaleLabel}`;
   $: scale = getScale(scaleName);
-  $: tuning = selectedTuning.split(" ");
   $: chord = Chord.getChord(
     chordName,
     Note.get(tuning[0]).height > Note.get(`${key}2`).height
@@ -42,11 +50,11 @@
   <html lang="en" />
 </svelte:head>
 
-<Context {tuning} tonic={key}>
+<AppContext>
   <div class="flex border-b border-gray-300">
     <div class="p-5 border-r border-gray-200">
       <h3 class="mb-2 font-bold">Tuning</h3>
-      <div><TuningSelector bind:value={selectedTuning} /></div>
+      <div><TuningSelector bind:value={tuning} /></div>
     </div>
     <div class="p-5 border-r border-gray-200">
       <h3 class="mb-2 font-bold">Key</h3>
@@ -84,4 +92,4 @@
     </div>
     <NotePlayer bind:notes />
   </div>
-</Context>
+</AppContext>

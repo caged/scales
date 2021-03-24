@@ -1,4 +1,5 @@
 <script>
+  import { tonic } from "./store";
   export let key;
 
   let note = key;
@@ -7,6 +8,7 @@
   const notes = ["E", "F", "G", "A", "B", "C", "D"];
 
   $: key = [note, modifier].join("");
+  $: tonic.set(key);
 
   function toggleEnabled(event) {
     if (modifier === event.target.value) modifier = null;
