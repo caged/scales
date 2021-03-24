@@ -19,7 +19,7 @@
 
     const chord = Chord.getChord(chordName, startNote);
     const midi = chord.notes.map(Midi.toMidi);
-    player.play(midi, 10);
+    player.play(midi, 15);
 
     dispatch("chordchange", chord);
   }

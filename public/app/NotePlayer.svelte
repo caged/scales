@@ -33,23 +33,6 @@
   }
 
   $: {
-    console.log(
-      "Play notes",
-      notes.map((n) => n.name)
-    );
     playNotes(notes);
   }
-
-  // sound.on("load", async (event) => {
-  //   while (notes.length) {
-  //     const note = notes.shift();
-  //     console.log(note);
-  //     sound.play(note);
-  //     await delay(50);
-  //   }
-  //   // console.log(sound);
-  //   // ["A2", "E3", "C3"].forEach((n) => {
-  //   //   sound.play(n);
-  //   // });
-  // });
 </script>

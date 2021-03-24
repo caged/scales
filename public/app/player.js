@@ -11,8 +11,6 @@ export default function player() {
     return acc;
   }, {});
 
-  console.log(midiRange);
-
   var sound = new Howl({
     src: "guitar-notes.mp3",
     sprite: midiRange,

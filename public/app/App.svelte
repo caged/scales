@@ -56,7 +56,7 @@
       <h3 class="font-bold mb-2">Scale</h3>
       <div><ScaleSelector bind:value={scaleLabel} /></div>
     </div>
-    <div class="p-5">
+    <div class="p-5 border-r border-gray-200">
       <h3 class="mb-2 font-bold">Position</h3>
       <PositionSelector {system} bind:position />
     </div>
