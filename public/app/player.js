@@ -25,7 +25,7 @@ export default function player() {
     loaded = true;
   });
 
-  sound.volume(0.2);
+  player.volume = (vol) => sound.volume(vol);
 
   player.play = async function (notes, delay) {
     if (!loaded) console.error("Sound file not loaded...");

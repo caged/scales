@@ -1,15 +1,15 @@
 <script>
   import { onMount, setContext } from "svelte";
+  import { tonic, tuning } from "./store";
   import player from "./player";
 
-  export let tuning = "E2 A2 D3 G3 B3 E4".split(" ");
-  export let tonic = "A";
+  export let volume = 0.5;
 
   const globalPlayer = player();
-  setContext("player", {
+  globalPlayer.volume(volume);
+
+  setContext("app", {
     player: globalPlayer,
-    tonic,
-    tuning,
   });
 </script>
 
