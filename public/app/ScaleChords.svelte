@@ -8,7 +8,7 @@
   const dispatch = createEventDispatcher();
   const { player } = getContext("app");
 
-  function handleMouseEnter(event) {
+  function handleMouseUp(event) {
     const chordName = event.target.dataset.chord;
     const chord = Chord.getChord(
       chordName,
@@ -21,10 +21,6 @@
 
     dispatch("chordchange", chord);
   }
-
-  function handleMouseLeave(event) {
-    dispatch("chordchange", null);
-  }
 </script>
 
 <ul
@@ -32,8 +28,7 @@
 >
   {#each Scale.scaleChords(scale.type()) as chordLabel}
     <li
-      on:mouseenter={handleMouseEnter}
-      on:mouseleave={handleMouseLeave}
+      on:mouseup={handleMouseUp}
       class="px-2 py-1 rounded-full text-center bg-gray-200 hover:bg-purple-600 hover:text-white cursor-pointer"
       data-chord={chordLabel}
     >
