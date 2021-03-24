@@ -6,19 +6,16 @@ export default function player() {
   function player() {}
 
   let loaded = false;
-  const noteRange = (sharps) =>
-    Range.chromatic(["C1", "B5"], { sharps }).reduce((acc, cur, i) => {
-      acc[cur] = [i * 2000, 2000];
-      return acc;
-    }, {});
+  const midiRange = Range.numeric(["C1", "B5"]).reduce((acc, cur, i) => {
+    acc[cur] = [i * 2000, 2000];
+    return acc;
+  }, {});
 
-  const sharps = noteRange(true);
-  const flats = noteRange();
-  const allNotes = { ...sharps, ...flats };
+  console.log(midiRange);
 
   var sound = new Howl({
     src: "guitar-notes.mp3",
-    sprite: allNotes,
+    sprite: midiRange,
   });
 
   sound.on("load", () => {
@@ -27,12 +24,12 @@ export default function player() {
 
   player.volume = (vol) => sound.volume(vol);
 
-  player.play = async function (notes, delay) {
+  player.play = async function (midi, delay) {
     if (!loaded) console.error("Sound file not loaded...");
 
-    const theNotes = [...notes];
-    while (theNotes.length) {
-      const note = theNotes.shift();
+    const notes = [...midi].map(String);
+    while (notes.length) {
+      const note = notes.shift();
       sound.play(note);
       await pauseFor(delay);
     }

@@ -1,5 +1,5 @@
 <script>
-  import { Note } from "@tonaljs/tonal";
+  import { Note, Midi } from "@tonaljs/tonal";
 
   import { getContext } from "svelte";
   import { tuning } from "./store";
@@ -20,13 +20,11 @@
         ? Note.get(`${rooteNote.name}${rootNote.oct + 1}`)
         : rootNote;
 
-    const notesWithOctaves = scale.notes().map((n) => {
-      return Note.transpose(snote.name, n.interval);
+    const midiNotes = scale.notes().map((n) => {
+      return Midi.toMidi(Note.transpose(snote.name, n.interval));
     });
 
-    console.log(notesWithOctaves);
-
-    player.play(notesWithOctaves, 500);
+    player.play(midiNotes, 500);
   }
 </script>
 
