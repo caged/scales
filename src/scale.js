@@ -20,8 +20,11 @@ export default function scale(name) {
   scale.type = () => s.type;
   scale.tonic = () => s.tonic;
   scale.notes = () => {
+    const intervals = s.intervals;
     return s.notes.map((n, i) => {
-      return Object.assign(Note.get(n), { interval: s.intervals[i] });
+      return Object.assign(Note.get(n), {
+        interval: intervals[i],
+      });
     });
   };
 

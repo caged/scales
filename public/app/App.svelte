@@ -61,7 +61,8 @@
       <PositionSelector {system} bind:position />
     </div>
     <div class="p-5">
-      <Player {scale} {chord} {position} />
+      <h3 class="mb-2 font-bold">Player</h3>
+      <Player {scale} />
     </div>
   </div>
   <div>
