@@ -33,8 +33,7 @@ export default function player() {
     const theNotes = [...notes];
     while (theNotes.length) {
       const note = theNotes.shift();
-
-      sound.play(note.name);
+      sound.play(note);
       await pauseFor(delay);
     }
   };

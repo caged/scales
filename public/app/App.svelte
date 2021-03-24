@@ -12,34 +12,25 @@
   import ScaleChords from "./ScaleChords.svelte";
   import NotePlayer from "./NotePlayer.svelte";
   import AppContext from "./AppContext.svelte";
-  import { tonic as tonicStore, tuning as tuningStore } from "./store";
+  import { tonic, tuning } from "./store";
 
   let key;
   let scaleLabel = "minor";
   let system = tnps;
   let position;
   let chordName;
-  let tuning;
 
   function handleChordChange(event) {
     chordName = event.detail;
   }
 
-  tonicStore.subscribe((value) => {
-    key = value;
-  });
-
-  tuningStore.subscribe((value) => {
-    tuning = value;
-  });
-
-  $: scaleName = `${key} ${scaleLabel}`;
+  $: scaleName = `${$tonic} ${scaleLabel}`;
   $: scale = getScale(scaleName);
   $: chord = Chord.getChord(
     chordName,
-    Note.get(tuning[0]).height > Note.get(`${key}2`).height
-      ? `${key}3`
-      : `${key}2`
+    Note.get($tuning[0]).height > Note.get(`${$tonic}2`).height
+      ? `${$tonic}3`
+      : `${$tonic}2`
   );
   $: notes = chord.notes.map(Note.get);
 </script>
@@ -54,11 +45,11 @@
   <div class="flex border-b border-gray-300">
     <div class="p-5 border-r border-gray-200">
       <h3 class="mb-2 font-bold">Tuning</h3>
-      <div><TuningSelector bind:value={tuning} /></div>
+      <div><TuningSelector defaultTuning={$tuning} /></div>
     </div>
     <div class="p-5 border-r border-gray-200">
       <h3 class="mb-2 font-bold">Key</h3>
-      <div><KeySelector bind:key /></div>
+      <div><KeySelector key={$tonic} /></div>
     </div>
     <div class="w-1/4 p-5 pb-6 border-r border-gray-200">
       <h3 class="font-bold mb-2">Scale</h3>
@@ -73,7 +64,7 @@
     {#if scaleLabel != ""}
       <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
         <div class="p-5  flex-initial">
-          <h1 class="font-bold text-2xl">{key} {scaleLabel} scale</h1>
+          <h1 class="font-bold text-2xl">{$tonic} {scaleLabel} scale</h1>
           <span class="text-sm text-gray-500 capitalize">{scale.aliases()}</span
           >
         </div>
@@ -83,12 +74,18 @@
         </div>
         <div class="p-5">
           <h3 class="font-bold">Chords</h3>
-          <ScaleChords on:chordchange={handleChordChange} {scale} {tuning} />
+          <ScaleChords on:chordchange={handleChordChange} {scale} />
         </div>
       </div>
     {/if}
     <div class="py-10">
-      <FretBoard bind:scale bind:system bind:position bind:tuning bind:notes />
+      <FretBoard
+        bind:scale
+        bind:system
+        bind:position
+        tuning={$tuning}
+        bind:notes
+      />
     </div>
     <NotePlayer bind:notes />
   </div>
