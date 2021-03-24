@@ -12,6 +12,7 @@
   import ScaleChords from "./ScaleChords.svelte";
   import NotePlayer from "./NotePlayer.svelte";
   import AppContext from "./AppContext.svelte";
+  import Player from "./Player.svelte";
   import { tonic, tuning } from "./store";
 
   let key;
@@ -59,14 +60,20 @@
       <h3 class="mb-2 font-bold">Position</h3>
       <PositionSelector {system} bind:position />
     </div>
+    <div class="p-5">
+      <Player {scale} {chord} {position} />
+    </div>
   </div>
   <div>
     {#if scaleLabel != ""}
       <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
-        <div class="p-5  flex-initial">
-          <h1 class="font-bold text-2xl">{$tonic} {scaleLabel} scale</h1>
-          <span class="text-sm text-gray-500 capitalize">{scale.aliases()}</span
-          >
+        <div class="p-5 flex w-1/5">
+          <div>
+            <h1 class="font-bold text-2xl">{$tonic} {scaleLabel} scale</h1>
+            <span class="text-sm text-gray-500 capitalize"
+              >{scale.aliases()}</span
+            >
+          </div>
         </div>
         <div class="w-1/3  p-5">
           <h3 class="font-bold">Notes and intervals</h3>

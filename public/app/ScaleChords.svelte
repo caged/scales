@@ -24,7 +24,7 @@
 </script>
 
 <ul
-  class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2"
+  class="text-xs text-gray-500 grid grid-cols-6 lg:grid-cols-8 xl:grid-cols-8 gap-2"
 >
   {#each Scale.scaleChords(scale.type()) as chordLabel}
     <li
