@@ -13,6 +13,7 @@
   import NotePlayer from "./NotePlayer.svelte";
   import AppContext from "./AppContext.svelte";
   import Player from "./Player.svelte";
+  import Metronome from "./Metronome.svelte";
   import { tonic, tuning } from "./store";
 
   let key;
@@ -43,26 +44,34 @@
 </svelte:head>
 
 <AppContext>
-  <div class="flex border-b border-gray-300">
-    <div class="p-5 border-r border-gray-200">
+  <div class="flex flex-wrap md:flex-nowrap border-b border-gray-300">
+    <div
+      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
+    >
       <h3 class="mb-2 font-bold">Tuning</h3>
-      <div><TuningSelector defaultTuning={$tuning} /></div>
+      <TuningSelector defaultTuning={$tuning} />
     </div>
-    <div class="p-5 border-r border-gray-200">
+    <div
+      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
+    >
       <h3 class="mb-2 font-bold">Key</h3>
       <div><KeySelector key={$tonic} /></div>
     </div>
-    <div class="w-1/4 p-5 pb-6 border-r border-gray-200">
+    <div
+      class="p-5 pb-6 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
+    >
       <h3 class="font-bold mb-2">Scale</h3>
       <div><ScaleSelector bind:value={scaleLabel} /></div>
     </div>
-    <div class="p-5 border-r border-gray-200">
+    <div
+      class="p-5 w-1/2 md:w-auto border-r  border-b sm:border-b-0 border-gray-200"
+    >
       <h3 class="mb-2 font-bold">Position</h3>
       <PositionSelector {system} bind:position />
     </div>
-    <div class="p-5">
-      <h3 class="mb-2 font-bold">Player</h3>
-      <Player {scale} />
+    <div class="p-5  w-1/2 md:w-auto border-r border-gray-200">
+      <h3 class="mb-2 font-bold">Metronome</h3>
+      <Metronome />
     </div>
   </div>
   <div>
@@ -76,11 +85,11 @@
             >
           </div>
         </div>
-        <div class="w-1/3  p-5">
+        <div class="w-1/2 p-5">
           <h3 class="font-bold">Notes and intervals</h3>
           <ScaleInfo bind:scale />
         </div>
-        <div class="p-5">
+        <div class="p-5 hidden lg:block">
           <h3 class="font-bold">Chords</h3>
           <ScaleChords on:chordchange={handleChordChange} {scale} />
         </div>

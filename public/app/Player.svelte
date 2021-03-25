@@ -34,7 +34,7 @@
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
-    class="w-8 h-8 mt-1 mr-1 text-green-500 cursor-pointer"
+    class="w-6 h-6 mt-1 mr-1 text-green-500 cursor-pointer"
     on:mouseup={play}
   >
     <path
@@ -57,7 +57,7 @@
       min={0}
       max={1}
       step={0.05}
-      class="appearance-none h-2 mx-1 bg-gray-200 rounded"
+      class="appearance-none w-20 h-2 mx-1 bg-gray-200 rounded"
     />
     <svg
       xmlns="http://www.w3.org/2000/svg"

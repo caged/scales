@@ -14,7 +14,11 @@
   $: tuning.set(Array.isArray(theTuning) ? theTuning : theTuning.split(" "));
 </script>
 
-<select name="tuning" bind:value={theTuning} class="rounded-lg border-gray-200">
+<select
+  name="tuning"
+  bind:value={theTuning}
+  class="w-full rounded-lg border-gray-200"
+>
   {#each tunings as [name, notes]}
     <option value={notes}>{name}</option>
   {/each}
