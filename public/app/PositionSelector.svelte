@@ -1,8 +1,8 @@
 <script>
-  export let system = null;
+  export let scale;
   export let position = null;
 
-  const positions = 7;
+  $: positions = scale.intervals().length;
 
   function toggleEnabled(event) {
     const { target } = event;

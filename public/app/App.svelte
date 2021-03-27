@@ -1,7 +1,7 @@
 <script>
   import { getContext, onMount } from "svelte";
   import { Chord, Note } from "@tonaljs/tonal";
-  import { scale as getScale, tnps } from "../dist/index";
+  import { scale as getScale, tnps, pentatonic } from "../dist/index";
   import Tailwind from "./Tailwind.svelte";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
@@ -18,7 +18,6 @@
   import Volume from "./Volume.svelte";
 
   let scaleLabel = "aeolian";
-  let system = tnps;
   let position;
   let chordName;
 
@@ -28,6 +27,7 @@
 
   $: scaleName = `${$tonic} ${scaleLabel}`;
   $: scale = getScale(scaleName);
+  $: system = scale.intervals().length === 5 ? pentatonic : tnps;
   $: aliases = scale.aliases();
   $: chord = Chord.getChord(
     chordName,
@@ -68,7 +68,7 @@
       class="p-5 w-1/2 md:w-auto border-r  border-b sm:border-b-0 border-gray-200"
     >
       <h3 class="mb-2 font-bold">Position</h3>
-      <PositionSelector {system} bind:position />
+      <PositionSelector {scale} bind:position />
     </div>
     <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
       <h3 class="mb-2 font-bold">Metronome</h3>
