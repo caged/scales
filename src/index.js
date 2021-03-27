@@ -1,5 +1,6 @@
 import { Note, Range } from "@tonaljs/tonal";
 export { default as tnps } from "./system/tnps";
+export { default as pentatonic } from "./system/pentatonic";
 export { default as scale } from "./scale";
 export { chunk, rotate, getSVGFile, partition } from "./utils";
 
