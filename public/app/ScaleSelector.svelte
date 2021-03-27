@@ -1,6 +1,6 @@
 <script>
   import Select from "svelte-select";
-  import { Scale, ScaleType } from "@tonaljs/tonal";
+  import { ScaleType } from "@tonaljs/tonal";
 
   export let value;
 
