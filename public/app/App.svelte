@@ -15,9 +15,9 @@
   import Player from "./Player.svelte";
   import Metronome from "./Metronome.svelte";
   import { tonic, tuning } from "./store";
+  import Volume from "./Volume.svelte";
 
-  let key;
-  let scaleLabel = "minor";
+  let scaleLabel = "aeolian";
   let system = tnps;
   let position;
   let chordName;
@@ -28,6 +28,7 @@
 
   $: scaleName = `${$tonic} ${scaleLabel}`;
   $: scale = getScale(scaleName);
+  $: aliases = scale.aliases();
   $: chord = Chord.getChord(
     chordName,
     Note.get($tuning[0]).height > Note.get(`${$tonic}2`).height
@@ -58,7 +59,7 @@
       <div><KeySelector key={$tonic} /></div>
     </div>
     <div
-      class="p-5 pb-6 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
+      class="p-5 pb-6 w-1/2 md:w-96 border-r border-b sm:border-b-0 border-gray-200"
     >
       <h3 class="font-bold mb-2">Scale</h3>
       <div><ScaleSelector bind:value={scaleLabel} /></div>
@@ -69,27 +70,37 @@
       <h3 class="mb-2 font-bold">Position</h3>
       <PositionSelector {system} bind:position />
     </div>
-    <div class="p-5  w-1/2 md:w-auto border-r border-gray-200">
+    <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
       <h3 class="mb-2 font-bold">Metronome</h3>
       <Metronome />
+    </div>
+    <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
+      <h3 class="mb-2 font-bold">Volume</h3>
+      <Volume />
     </div>
   </div>
   <div>
     {#if scaleLabel != ""}
       <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
-        <div class="p-5 flex w-1/5">
+        <div class="p-5 flex w-1/5 md:w-1/3">
           <div>
-            <h1 class="font-bold text-2xl">{$tonic} {scaleLabel} scale</h1>
-            <span class="text-sm text-gray-500 capitalize"
-              >{scale.aliases()}</span
-            >
+            <h1 class="text-3xl font-bold i capitalize">
+              <span class="underline">{$tonic.replace("b", "♭")}</span>
+              <span>{scaleLabel} scale</span>
+            </h1>
+            {#if aliases.length > 0}
+              <span class="text-sm text-gray-400"
+                >Also known as
+                <span class="capitalize">{aliases}</span>
+              </span>
+            {/if}
           </div>
         </div>
         <div class="w-1/2 p-5">
           <h3 class="font-bold">Notes and intervals</h3>
           <ScaleInfo bind:scale />
         </div>
-        <div class="p-5 hidden lg:block">
+        <div class="p-5 hidden lg:block w-2/3">
           <h3 class="font-bold">Chords</h3>
           <ScaleChords on:chordchange={handleChordChange} {scale} />
         </div>
