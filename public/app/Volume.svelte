@@ -9,7 +9,7 @@
     min={0}
     max={1}
     step={0.05}
-    class="appearance-none h-1 w-20 bg-gray-200 rounded"
+    class="appearance-none h-1 w-auto mr-1 bg-gray-200 rounded"
   />
   <svg
     xmlns="http://www.w3.org/2000/svg"

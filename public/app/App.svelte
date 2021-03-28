@@ -14,7 +14,7 @@
   import AppContext from "./AppContext.svelte";
   import Player from "./Player.svelte";
   import Metronome from "./Metronome.svelte";
-  import { tonic, tuning } from "./store";
+  import { tonic, tuning, bpm } from "./store";
   import Volume from "./Volume.svelte";
 
   let scaleLabel = "aeolian";
@@ -71,12 +71,7 @@
       <PositionSelector {scale} bind:position />
     </div>
     <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
-      <h3 class="mb-2 font-bold">Metronome</h3>
       <Metronome />
-    </div>
-    <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
-      <h3 class="mb-2 font-bold">Volume</h3>
-      <Volume />
     </div>
   </div>
   <div>
