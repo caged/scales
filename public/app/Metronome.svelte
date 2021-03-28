@@ -19,7 +19,6 @@
   async function play(event) {
     playing = !playing;
     while (!!playing) {
-      console.log("play");
       sound.play("d");
       await delay((60 / bpm) * 1000);
     }
