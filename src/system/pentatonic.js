@@ -27,7 +27,6 @@ export default function pentatonic(strings, scale) {
 
   for (const [strnum, str] of strings.entries()) {
     const strScalePositions = notesForString(strnum);
-    console.log(strScalePositions);
 
     for (const semitone of str) {
       const scaleNote = scaleNotes.find((sn) => {
