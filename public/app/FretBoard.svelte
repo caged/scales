@@ -1,6 +1,9 @@
 <script>
+  import { getContext } from "svelte";
   import { scaleBand, scalePoint, scaleLinear, range } from "d3";
-  import { frets, tnps } from "../dist/index";
+  import { frets, tnps, chunk } from "../dist/index";
+  import { delay } from "./utils";
+  import { bpm } from "./store";
 
   export let scale = null;
   export let system = tnps;
@@ -8,6 +11,7 @@
   export let tuning;
   export let notes = null;
 
+  const { player } = getContext("app");
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
   let defaultHeight = 240;
@@ -33,6 +37,34 @@
     return "text-white";
   };
 
+  async function playNotes(event) {
+    const nstrings = strings.map((s) =>
+      s
+        .filter((n) => {
+          return noteInPosition(n, position);
+        })
+        .map((n) => {
+          return n.midi;
+        })
+    );
+
+    let o1 = [];
+    let o2 = [];
+
+    nstrings.forEach((s) => {
+      o1 = o1.concat(s.slice(0, 3));
+      o2 = o2.concat(s.slice(3));
+    });
+
+    // player.play(o1, (60 / $bpm) * 1000);
+    while (o1.length > 0) {
+      const n = o1.shift();
+      await delay((60 / $bpm) * 1000);
+      console.log(n);
+      player.play([n]);
+    }
+  }
+
   $: if ((scale || position) && tuning) {
     const sharps = scale.notes().some((n) => n.acc === "#");
     height = defaultHeight + (tuning.length - 6) * 32;
@@ -54,6 +86,22 @@
 </script>
 
 <div>
+  <div class="flex items-center mt-2 ml-2">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      class="w-6 h-6 mr-1"
+      on:click={playNotes}
+    >
+      <path
+        fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+        clip-rule="evenodd"
+      />
+    </svg>
+    Play notes
+  </div>
   <svg viewBox="0 0 {width} {height}">
     {#each strings as str, i}
       <g transform="translate({margin.left}, {strY(i)})">

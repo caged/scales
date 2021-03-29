@@ -22,7 +22,7 @@ export default function player() {
 
   player.volume = (vol) => sound.volume(vol);
 
-  player.play = async function (midi, delay) {
+  player.play = async function (midi, delay = 0) {
     if (!loaded) console.error("Sound file not loaded...");
 
     const notes = [...midi].map(String);

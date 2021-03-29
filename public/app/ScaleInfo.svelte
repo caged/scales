@@ -2,20 +2,20 @@
   import { onMount } from "svelte";
   import { scalePoint, range } from "d3";
   export let scale;
+  export let position = null;
 
   let container;
   let width;
   let height;
   const margin = { top: 0, right: 20, bottom: 20, left: 20 };
   const dotX = scalePoint().domain(range(scale.notes().length));
+  const startPosition = position;
 
   onMount(() => {
     width = container.clientWidth;
     height = 45;
     dotX.range([margin.left, width - margin.right]);
   });
-
-  function playNotes() {}
 </script>
 
 {#if scale}

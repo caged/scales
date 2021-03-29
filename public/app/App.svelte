@@ -93,7 +93,7 @@
         </div>
         <div class="w-1/2 p-5">
           <h3 class="font-bold">Notes and intervals</h3>
-          <ScaleInfo bind:scale />
+          <ScaleInfo bind:scale bind:position />
         </div>
         <div class="p-5 hidden lg:block w-2/3">
           <h3 class="font-bold">Chords</h3>
