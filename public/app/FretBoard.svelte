@@ -113,7 +113,10 @@
           stroke-width={lineW(i)}
         />
         {#each str as note, j}
-          <g transform="translate({fretX(j)}, 0)">
+          <g
+            transform="translate({fretX(j)}, 0)"
+            on:click={() => console.log(note)}
+          >
             {#if j > 0}
               {#if !position || noteInPosition(note, position)}
                 <circle
