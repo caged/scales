@@ -6,17 +6,17 @@ export default function player() {
   function player() {}
 
   let loaded = false;
-  const midiRange = Range.numeric(["C1", "B5"]).reduce((acc, cur, i) => {
+  const midiRange = Range.numeric(["C1", "E6"]).reduce((acc, cur, i) => {
     acc[cur] = [i * 2000, 2000];
     return acc;
   }, {});
 
   var sound = new Howl({
-    src: "guitar-notes.mp3",
+    src: "note-crescendo.mp3",
     sprite: midiRange,
   });
 
-  sound.on("load", () => {
+  sound.on("load", async () => {
     loaded = true;
   });
 

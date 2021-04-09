@@ -37,6 +37,11 @@
     return "text-white";
   };
 
+  async function play(n) {
+    console.log(n);
+    await player.play([n.midi]);
+  }
+
   async function playNotes(event) {
     const nstrings = strings.map((s) =>
       s
@@ -51,17 +56,17 @@
     let o1 = [];
     let o2 = [];
 
+    console.log(nstrings);
+
     nstrings.forEach((s) => {
-      o1 = o1.concat(s.slice(0, 3));
-      o2 = o2.concat(s.slice(3));
+      o1 = o1.concat(s.slice(0, 3).reverse());
+      o2 = o2.concat(s.slice(3).reverse());
     });
 
-    // player.play(o1, (60 / $bpm) * 1000);
     while (o1.length > 0) {
-      const n = o1.shift();
+      const n = o1.pop();
       await delay((60 / $bpm) * 1000);
-      console.log(n);
-      player.play([n]);
+      await player.play([n]);
     }
   }
 
@@ -113,10 +118,7 @@
           stroke-width={lineW(i)}
         />
         {#each str as note, j}
-          <g
-            transform="translate({fretX(j)}, 0)"
-            on:click={() => console.log(note)}
-          >
+          <g transform="translate({fretX(j)}, 0)" on:click={() => play(note)}>
             {#if j > 0}
               {#if !position || noteInPosition(note, position)}
                 <circle
