@@ -12,10 +12,8 @@
   import ScaleChords from "./ScaleChords.svelte";
   import NotePlayer from "./NotePlayer.svelte";
   import AppContext from "./AppContext.svelte";
-  import Player from "./Player.svelte";
   import Metronome from "./Metronome.svelte";
-  import { tonic, tuning, bpm } from "./store";
-  import Volume from "./Volume.svelte";
+  import { tonic, tuning } from "./store";
 
   let scaleLabel = "aeolian";
   let position;

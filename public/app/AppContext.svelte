@@ -1,7 +1,6 @@
 <script>
-  import { onMount, setContext } from "svelte";
-  import { tonic, tuning } from "./store";
-  import player from "./player";
+  import { setContext } from "svelte";
+  import player from "./player.js";
 
   export let volume = 0.5;
 

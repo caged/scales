@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte";
   import { scaleBand, scalePoint, scaleLinear, range } from "d3";
-  import { frets, tnps, chunk } from "../dist/index";
+  import { frets, tnps } from "../dist/index";
   import { delay } from "./utils";
   import { bpm } from "./store";
 
