@@ -12,6 +12,7 @@ module.exports = {
     /* ... */
   },
   buildOptions: {
+    baseUrl: "./",
     /* ... */
   },
   mount: {
