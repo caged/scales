@@ -34,6 +34,7 @@
       : `${$tonic}2`
   );
   $: notes = chord.notes.map(Note.get);
+
 </script>
 
 <svelte:head>

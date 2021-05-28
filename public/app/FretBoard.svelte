@@ -88,25 +88,10 @@
 
     lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
   }
+
 </script>
 
 <div>
-  <div class="flex items-center mt-2 ml-2">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      class="w-6 h-6 mr-1"
-      on:click={playNotes}
-    >
-      <path
-        fill-rule="evenodd"
-        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-        clip-rule="evenodd"
-      />
-    </svg>
-    Play notes
-  </div>
   <svg viewBox="0 0 {width} {height}">
     {#each strings as str, i}
       <g transform="translate({margin.left}, {strY(i)})">
@@ -178,9 +163,30 @@
     {/each}
   </svg>
 </div>
+{#if position}
+  <div
+    class="flex items-center  p-2 mx-auto w-32 justify-center bg-gray-50 rounded-lg border border-gray-200"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      class="w-6 h-6 mr-1"
+      on:click={playNotes}
+    >
+      <path
+        fill-rule="evenodd"
+        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+        clip-rule="evenodd"
+      />
+    </svg>
+    Play notes
+  </div>
+{/if}
 
 <style>
   .chord {
     @apply font-bold bg-pink-500 text-pink-500;
   }
+
 </style>
