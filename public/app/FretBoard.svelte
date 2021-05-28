@@ -164,7 +164,7 @@
   </svg>
 </div>
 {#if position}
-  <div
+  <button
     on:click={playNotes}
     class="flex items-center  p-2 mx-auto w-32 justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer"
   >
@@ -181,7 +181,7 @@
       />
     </svg>
     Play notes
-  </div>
+  </button>
 {/if}
 
 <style>
