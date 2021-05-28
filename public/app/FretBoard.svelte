@@ -165,6 +165,7 @@
 </div>
 {#if position}
   <div
+    on:click={playNotes}
     class="flex items-center  p-2 mx-auto w-32 justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer"
   >
     <svg
@@ -172,7 +173,6 @@
       viewBox="0 0 20 20"
       fill="currentColor"
       class="w-6 h-6 mr-1"
-      on:click={playNotes}
     >
       <path
         fill-rule="evenodd"
