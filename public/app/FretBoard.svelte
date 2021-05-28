@@ -165,7 +165,7 @@
 </div>
 {#if position}
   <div
-    class="flex items-center  p-2 mx-auto w-32 justify-center bg-gray-50 rounded-lg border border-gray-200"
+    class="flex items-center  p-2 mx-auto w-32 justify-center bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
