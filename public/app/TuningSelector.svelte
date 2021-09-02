@@ -7,6 +7,7 @@
   const tunings = [
     ["Standard", "E2 A2 D3 G3 B3 E4"],
     ["Drop D", "D2 A2 D3 G3 B3 E4"],
+    ["Drop C", "C2 G2 C3 F3 A3 D4"],
     ["Standard - Seven string", "B2 E2 A2 D3 G3 B3 E4"],
     ["Drop A - Seven string", "A1 E2 A2 D3 G3 B3 E4"],
   ];
