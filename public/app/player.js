@@ -33,5 +33,18 @@ export default function player() {
     }
   };
 
+  // player.playChord = (chord) => {
+  //   const chordName = chord;
+  //   const rootNote = Note.get(`${$tonic}${lowestNote.oct}`);
+  //   const startNote =
+  //     rootNote.height < lowestNote.height
+  //       ? Note.get(`${rootNote.name}${rootNote.oct + 1}`)
+  //       : rootNote;
+
+  //   const chord = Chord.getChord(chordName, startNote);
+  //   const midi = chord.notes.map(Midi.toMidi);
+  //   player.play(midi, 15);
+  // }
+
   return player;
 }

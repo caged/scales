@@ -13,6 +13,7 @@
   import NotePlayer from "./NotePlayer.svelte";
   import AppContext from "./AppContext.svelte";
   import Metronome from "./Metronome.svelte";
+  import Composer from "./Composer.svelte";
   import { tonic, tuning } from "./store";
 
   let scaleLabel = "aeolian";
@@ -109,5 +110,6 @@
       />
     </div>
     <NotePlayer bind:notes />
+    <Composer />
   </div>
 </AppContext>
