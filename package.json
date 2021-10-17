@@ -24,7 +24,8 @@
     "svelte": "^3.35.0",
     "svelte-preprocess": "^4.6.9",
     "svelte-select": "^3.17.0",
-    "tailwindcss": "^2.0.4"
+    "tailwindcss": "^2.0.4",
+    "vexchords": "^1.2.0"
   },
   "scripts": {
     "start": "snowpack dev",
