@@ -108,6 +108,5 @@
         bind:notes
       />
     </div>
-    <NotePlayer bind:notes />
   </div>
 </AppContext>
