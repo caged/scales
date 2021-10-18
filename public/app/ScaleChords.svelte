@@ -2,21 +2,22 @@
   import { Scale, Chord, Note, Midi } from "@tonaljs/tonal";
   import { createEventDispatcher, getContext } from "svelte";
   import { tonic, tuning } from "./store";
+  import ChordShape from "./ChordShape";
 
   export let scale;
 
   const lowestNote = Note.get($tuning[0]);
+  const rootNote = Note.get(`${$tonic}${lowestNote.oct}`);
+  const startNote =
+    rootNote.height < lowestNote.height
+      ? Note.get(`${rootNote.name}${rootNote.oct + 1}`)
+      : rootNote;
+
   const dispatch = createEventDispatcher();
   const { player } = getContext("app");
 
   function handleMouseUp(event) {
     const chordName = event.target.dataset.chord;
-    const rootNote = Note.get(`${$tonic}${lowestNote.oct}`);
-    const startNote =
-      rootNote.height < lowestNote.height
-        ? Note.get(`${rootNote.name}${rootNote.oct + 1}`)
-        : rootNote;
-
     const chord = Chord.getChord(chordName, startNote);
     const midi = chord.notes.map(Midi.toMidi);
     player.play(midi, 15);
@@ -33,6 +34,7 @@
       data-chord={chordLabel}
     >
       {chordLabel}
+      <ChordShape {chordLabel} {startNote} {rootNote} />
     </li>
   {/each}
 </ul>
