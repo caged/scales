@@ -1,6 +1,7 @@
-// Example Configuration File
-module.exports = {
+/** @type {import("snowpack").SnowpackUserConfig } */
+export default {
   plugins: [
+    "@snowpack/plugin-postcss",
     "@snowpack/plugin-svelte",
     /* ... */
   ],
@@ -25,6 +26,5 @@ module.exports = {
   optimize: {
     bundle: true,
     minify: true,
-    target: "es2018",
   },
 };
