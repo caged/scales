@@ -1,5 +1,8 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
 export default {
+  mount: {
+    src: "/",
+  },
   plugins: [
     "@snowpack/plugin-postcss",
     "@snowpack/plugin-svelte",
@@ -15,10 +18,6 @@ export default {
   buildOptions: {
     baseUrl: "./",
     /* ... */
-  },
-  mount: {
-    public: { url: "/" },
-    src: { url: "/dist" },
   },
   alias: {
     /* ... */

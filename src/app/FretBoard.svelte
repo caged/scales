@@ -1,7 +1,7 @@
 <script>
   import { getContext } from "svelte";
   import { scaleBand, scalePoint, scaleLinear, range } from "d3";
-  import { frets, tnps } from "../dist/index";
+  import { frets, tnps } from "../frets/index";
   import { delay } from "./utils";
   import { bpm } from "./store";
 
@@ -178,9 +178,3 @@
     {/each}
   </svg>
 </div>
-
-<style>
-  .chord {
-    @apply font-bold bg-pink-500 text-pink-500;
-  }
-</style>

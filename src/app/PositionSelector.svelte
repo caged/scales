@@ -47,7 +47,7 @@
   {/each}
 </div>
 
-<style>
+<style type="postcss" global>
   .selected {
     @apply bg-purple-900 text-white;
   }

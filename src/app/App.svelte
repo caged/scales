@@ -1,8 +1,6 @@
 <script>
-  import { getContext, onMount } from "svelte";
   import { Chord, Note } from "@tonaljs/tonal";
-  import { scale as getScale, tnps, pentatonic } from "../dist/index";
-  import Tailwind from "./Tailwind.svelte";
+  import { scale as getScale, tnps, pentatonic } from "../frets/index";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
   import FretBoard from "./FretBoard.svelte";
@@ -75,8 +73,8 @@
   <div>
     {#if scaleLabel != ""}
       <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
-        <div class="p-5 flex w-1/5 md:w-1/3">
-          <div>
+        <div class="flex flex-1 flex-col border-r border-gray-200">
+          <div class="p-5 border-b border-gray-200">
             <h1 class="text-3xl font-bold i capitalize">
               <span class="underline">{$tonic.replace("b", "♭")}</span>
               <span>{scaleLabel} scale</span>
@@ -88,10 +86,10 @@
               </span>
             {/if}
           </div>
-        </div>
-        <div class="w-1/2 p-5">
-          <h3 class="font-bold">Notes and intervals</h3>
-          <ScaleInfo bind:scale bind:position />
+          <div class="p-5">
+            <h3 class="font-bold">Notes and intervals</h3>
+            <ScaleInfo bind:scale bind:position />
+          </div>
         </div>
         <div class="p-5 hidden lg:block w-2/3">
           <h3 class="font-bold">Chords</h3>
