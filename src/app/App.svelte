@@ -1,8 +1,6 @@
 <script>
-  import { getContext, onMount } from "svelte";
   import { Chord, Note } from "@tonaljs/tonal";
-  import { scale as getScale, tnps, pentatonic } from "../dist/index";
-  import Tailwind from "./Tailwind.svelte";
+  import { scale as getScale, tnps, pentatonic } from "../frets/index";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
   import FretBoard from "./FretBoard.svelte";
