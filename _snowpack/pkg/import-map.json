@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "@tonaljs/tonal": "./@tonaljs/tonal.js",
+    "d3": "./d3.js",
+    "howler": "./howler.js",
+    "svelte": "./svelte.js",
+    "svelte-select": "./svelte-select.js",
+    "svelte/internal": "./svelte/internal.js",
+    "svelte/store": "./svelte/store.js"
+  }
+}
