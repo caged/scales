@@ -23,7 +23,7 @@ export default {
     /* ... */
   },
   optimize: {
-    // bundle: true,
-    // minify: true,
+    bundle: true,
+    minify: true,
   },
 };

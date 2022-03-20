@@ -178,9 +178,3 @@
     {/each}
   </svg>
 </div>
-
-<style>
-  .chord {
-    @apply font-bold bg-pink-500 text-pink-500;
-  }
-</style>
