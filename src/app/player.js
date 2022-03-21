@@ -1,5 +1,5 @@
-import { Range } from "@tonaljs/tonal";
 import { Howl } from "howler";
+import { Range } from "@tonaljs/tonal";
 import { delay as pauseFor } from "./utils";
 
 export default function player() {

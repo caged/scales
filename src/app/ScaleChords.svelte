@@ -11,7 +11,9 @@
 
   function handleMouseUp(event) {
     const chordName = event.target.dataset.chord;
-    const rootNote = Note.get(`${$tonic}${lowestNote.oct}`);
+    const rootNote = Note.get(
+      `${$tonic}${$tonic === "C" ? lowestNote.oct + 1 : lowestNote.oct}`
+    );
     const startNote =
       rootNote.height < lowestNote.height
         ? Note.get(`${rootNote.name}${rootNote.oct + 1}`)
