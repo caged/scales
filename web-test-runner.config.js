@@ -1,10 +1,10 @@
 // web-test-runner.config.js
+import { esbuildPlugin } from '@web/dev-server-esbuild';
 
-// NOTE: For now, NODE_ENV needs to be set to "test" for Snowpack
-// to build test files properly. We hope to remove this limitation
-// in a future release.
-process.env.NODE_ENV = 'test'
+export default {
+  nodeResolve: {
+    exportConditions: ['default', 'module', 'import']
+  },
+  plugins: [esbuildPlugin({ ts: false, js: true, target: 'auto' })],
+};
 
-module.exports = {
-  plugins: [require('@snowpack/web-test-runner-plugin')()],
-}
