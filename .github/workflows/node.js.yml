@@ -32,7 +32,7 @@ jobs:
         run: npm test
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/copilot/upgrade-to-latest-svelte') && github.event_name == 'push'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages # The branch the action should deploy to.
