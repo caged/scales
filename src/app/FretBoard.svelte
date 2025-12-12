@@ -121,7 +121,13 @@
           stroke-width={lineW(i)}
         />
         {#each str as note, j}
-          <g transform="translate({fretX(j)}, 0)" on:click={() => play(note)}>
+          <g
+            transform="translate({fretX(j)}, 0)"
+            role="button"
+            tabindex="0"
+            on:click={() => play(note)}
+            on:keydown={(e) => e.key === 'Enter' && play(note)}
+          >
             {#if j > 0}
               {#if !position || noteInPosition(note, position)}
                 <circle
