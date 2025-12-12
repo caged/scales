@@ -5,27 +5,28 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@tailwindcss/forms": "^0.5.0",
+    "@tailwindcss/forms": "^0.5.10",
     "@tonaljs/tonal": "^4.6.5",
     "d3": "^7.3.0",
     "d3-scale-chromatic": "^3.0.0",
     "howler": "^2.2.1",
     "svelte": "^5.45.8",
-    "svelte-select": "^5.8.3",
-    "tailwindcss": "^3.0.23"
+    "svelte-select": "^5.8.3"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.4",
+    "@tailwindcss/postcss": "^4.1.18",
     "@web/dev-server-esbuild": "^1.0.4",
     "@web/test-runner": "^0.20.2",
     "@web/test-runner-playwright": "^0.11.1",
-    "autoprefixer": "^10.4.4",
+    "autoprefixer": "^10.4.22",
     "chai": "^6.2.1",
     "mocha": "^11.7.5",
     "nanoid": ">=3.1.31",
     "playwright": "^1.49.1",
-    "postcss": "^8.4.12",
+    "postcss": "^8.5.6",
     "prettier": "2.2.1",
+    "tailwindcss": "^4.1.18",
     "vite": "^6.0.11"
   },
   "scripts": {
