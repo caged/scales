@@ -13,7 +13,7 @@
   import Metronome from "./Metronome.svelte";
   import { tonic, tuning } from "./store";
 
-  let scaleLabel = "aeolian";
+  let scaleLabel = "minor";
   let position;
   let chordName;
 
@@ -29,7 +29,7 @@
     chordName,
     Note.get($tuning[0]).height > Note.get(`${$tonic}2`).height
       ? `${$tonic}3`
-      : `${$tonic}2`
+      : `${$tonic}2`,
   );
   $: notes = chord.notes.map(Note.get);
 </script>
@@ -37,7 +37,7 @@
 <svelte:head>
   <title>{scaleName}</title>
   <meta name="Description" content="{scaleName} guitar scale" />
-  <html lang="en" />
+  <html lang="en"></html>
 </svelte:head>
 
 <AppContext>
@@ -61,7 +61,7 @@
       <div><ScaleSelector bind:value={scaleLabel} /></div>
     </div>
     <div
-      class="p-5 w-1/2 md:w-auto border-r  border-b sm:border-b-0 border-gray-200"
+      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
     >
       <h3 class="mb-2 font-bold">Position</h3>
       <PositionSelector {scale} bind:position />

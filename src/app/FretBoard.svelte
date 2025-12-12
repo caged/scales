@@ -97,7 +97,10 @@
       viewBox="0 0 20 20"
       fill="currentColor"
       class="w-6 h-6 mr-1"
+      role="button"
+      tabindex="0"
       on:click={playNotes}
+      on:keydown={(e) => e.key === 'Enter' && playNotes(e)}
     >
       <path
         fill-rule="evenodd"
@@ -118,7 +121,13 @@
           stroke-width={lineW(i)}
         />
         {#each str as note, j}
-          <g transform="translate({fretX(j)}, 0)" on:click={() => play(note)}>
+          <g
+            transform="translate({fretX(j)}, 0)"
+            role="button"
+            tabindex="0"
+            on:click={() => play(note)}
+            on:keydown={(e) => e.key === 'Enter' && play(note)}
+          >
             {#if j > 0}
               {#if !position || noteInPosition(note, position)}
                 <circle

@@ -48,6 +48,8 @@
   function handleClear() {
     value = "";
   }
+
+  $: selectedItem = scales.find(s => s.value === value);
 </script>
 
 <div class="themed w-full">
@@ -58,7 +60,7 @@
     on:clear={handleClear}
     containerClasses="text-sm"
     containerStyles="text-transform: capitalize"
-    selectedValue={value}
+    value={selectedItem}
     {groupBy}
   />
 </div>
