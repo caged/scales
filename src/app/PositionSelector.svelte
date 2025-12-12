@@ -48,6 +48,8 @@
 </div>
 
 <style type="postcss" global>
+  @reference "tailwindcss";
+
   .selected {
     @apply bg-purple-900 text-white;
   }
