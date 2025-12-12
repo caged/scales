@@ -13,7 +13,7 @@
   import Metronome from "./Metronome.svelte";
   import { tonic, tuning } from "./store";
 
-  let scaleLabel = "aeolian";
+  let scaleLabel = "minor";
   let position;
   let chordName;
 
