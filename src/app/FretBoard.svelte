@@ -97,7 +97,10 @@
       viewBox="0 0 20 20"
       fill="currentColor"
       class="w-6 h-6 mr-1"
+      role="button"
+      tabindex="0"
       on:click={playNotes}
+      on:keydown={(e) => e.key === 'Enter' && playNotes(e)}
     >
       <path
         fill-rule="evenodd"
