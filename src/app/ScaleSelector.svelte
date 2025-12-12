@@ -67,9 +67,9 @@
 
 <style>
   .themed {
-    --border: theme("borderWidth.DEFAULT") solid theme("borderColor.gray.300");
-    --borderRadius: theme("borderRadius.lg");
-    --placeholderColor: theme("colors.gray.500");
-    --height: theme("height.11");
+    --border: 1px solid rgb(209 213 219);
+    --borderRadius: 0.5rem;
+    --placeholderColor: rgb(107 114 128);
+    --height: 2.75rem;
   }
 </style>
