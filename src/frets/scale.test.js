@@ -1,4 +1,4 @@
-import { Scale } from "@tonaljs/tonal";
+import { Scale } from "tonal";
 import scale from "./scale";
 import { assert } from "chai";
 

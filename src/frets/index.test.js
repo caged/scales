@@ -1,4 +1,4 @@
-import { Note, Range } from "@tonaljs/tonal";
+import { Note, Range } from "tonal";
 import { frets, tnps, pentatonic, scale } from "./";
 import { assert } from "chai";
 
