@@ -27,7 +27,7 @@
   }
 </script>
 
-<ul class="text-xs text-gray-500 grid grid-cols-4 xl:grid-cols-8 gap-2">
+<ul class="text-xs text-gray-500 grid grid-cols-6 xl:grid-cols-8 gap-2">
   {#each Scale.scaleChords(scale.type()) as chordLabel}
     <li
       on:mouseup={handleMouseUp}
