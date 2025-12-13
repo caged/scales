@@ -16,7 +16,13 @@
   const width = 1200;
   let defaultHeight = 240;
   let height;
-  let fb, fbnotes, strings, fretX, strY, lineW;
+  let fb,
+    fbnotes,
+    strings,
+    fretX,
+    strY,
+    lineW,
+    positionSelected = false;
 
   const getsFretMarker = (i) =>
     ((i + 1) % 2 !== 0 && ![1, 11, 13].includes(i + 1)) || i + 1 == 12;
@@ -27,18 +33,17 @@
   const classesForNote = (note, notes) => {
     const names = notes.map((n) => n.name);
     if (note.interval === "1P") {
-      return names.includes(note.name) ? "text-pink-700" : "text-black";
+      return names.includes(note.name) ? "fill-pink-700" : "fill-black";
     }
 
     if (note.interval) {
-      return names.includes(note.name) ? "text-gray-600" : "text-purple-800";
+      return names.includes(note.name) ? "fill-gray-600" : "fill-purple-800";
     }
 
-    return "text-white";
+    return "fill-white";
   };
 
   async function play(n) {
-    console.log(n);
     await player.play([n.midi]);
   }
 
@@ -50,13 +55,11 @@
         })
         .map((n) => {
           return n.midi;
-        })
+        }),
     );
 
     let o1 = [];
     let o2 = [];
-
-    console.log(nstrings);
 
     nstrings.forEach((s) => {
       o1 = o1.concat(s.slice(0, 3).reverse());
@@ -87,11 +90,12 @@
       .range([margin.top, height - margin.bottom]);
 
     lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
+    positionSelected = position !== null;
   }
 </script>
 
 <div>
-  <div class="flex items-center mt-2 ml-2">
+  <div class="items-center ml-1 {positionSelected ? 'flex' : 'hidden'}">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
@@ -100,7 +104,7 @@
       role="button"
       tabindex="0"
       on:click={playNotes}
-      on:keydown={(e) => e.key === 'Enter' && playNotes(e)}
+      on:keydown={(e) => e.key === "Enter" && playNotes(e)}
     >
       <path
         fill-rule="evenodd"
@@ -125,15 +129,19 @@
             transform="translate({fretX(j)}, 0)"
             role="button"
             tabindex="0"
+            class="group cursor-pointer focus:outline-0"
             on:click={() => play(note)}
-            on:keydown={(e) => e.key === 'Enter' && play(note)}
+            on:keydown={(e) => e.key === "Enter" && play(note)}
           >
             {#if j > 0}
               {#if !position || noteInPosition(note, position)}
                 <circle
                   r="10"
                   fill="currentColor"
-                  class={classesForNote(note, notes)}
+                  class="{classesForNote(
+                    note,
+                    notes,
+                  )} group-focus:outline-0 group-focus:stroke-2 group-focus:stroke-black"
                 />
               {:else if noteInPosition(note, position === 7 ? 1 : position + 1) || noteInPosition(note, position === 1 ? 7 : position - 1)}
                 <circle r="10" fill="currentColor" class="text-gray-200" />
