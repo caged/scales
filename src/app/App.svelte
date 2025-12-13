@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="p-5 hidden lg:block w-2/3">
-          <h3 class="font-bold">Chords</h3>
+          <h3 class="font-bold mb-2">Chords</h3>
           <ScaleChords onchordchange={handleChordChange} {scale} />
         </div>
       </div>
