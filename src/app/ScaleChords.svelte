@@ -1,5 +1,5 @@
 <script>
-  import { Scale, Chord, Note, Midi } from "@tonaljs/tonal";
+  import { Scale, Chord, Note, Midi } from "tonal";
   import { createEventDispatcher, getContext } from "svelte";
   import { tonic, tuning } from "./store";
 

@@ -1,5 +1,5 @@
 <script>
-  import { Chord, Range } from "@tonaljs/tonal";
+  import { Chord, Range } from "tonal";
   import { Howl, Howler } from "howler";
   import { delay as pauseFor } from "./utils";
 

@@ -1,5 +1,5 @@
 import { Howl } from "howler";
-import { Range } from "@tonaljs/tonal";
+import { Range } from "tonal";
 import { delay as pauseFor } from "./utils";
 import noteCrescendoUrl from "../note-crescendo.mp3?url";
 

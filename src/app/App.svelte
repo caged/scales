@@ -1,5 +1,5 @@
 <script>
-  import { Chord, Note } from "@tonaljs/tonal";
+  import { Chord, Note } from "tonal";
   import { scale as getScale, tnps, pentatonic } from "../frets/index";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
