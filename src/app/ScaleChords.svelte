@@ -31,7 +31,7 @@
   {#each Scale.scaleChords(scale.type()) as chordLabel}
     <li
       on:mouseup={handleMouseUp}
-      class="px-2 py-1 overflow-hidden whitespace-nowrap rounded-full text-center bg-gray-200 hover:bg-purple-600 hover:text-white cursor-pointer"
+      class="px-2 py-1 overflow-hidden whitespace-nowrap text-center bg-gray-200 hover:bg-purple-600 hover:text-white cursor-pointer"
       data-chord={chordLabel}
     >
       {chordLabel}
