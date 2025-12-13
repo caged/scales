@@ -1,18 +1,17 @@
 <script>
-  import { Scale, Chord, Note, Midi } from "@tonaljs/tonal";
-  import { createEventDispatcher, getContext } from "svelte";
+  import { Scale, Chord, Note, Midi } from "tonal";
+  import { getContext } from "svelte";
   import { tonic, tuning } from "./store";
 
-  export let scale;
+  let { scale, onchordchange } = $props();
 
   const lowestNote = Note.get($tuning[0]);
-  const dispatch = createEventDispatcher();
   const { player } = getContext("app");
 
   function handleMouseUp(event) {
     const chordName = event.target.dataset.chord;
     const rootNote = Note.get(
-      `${$tonic}${$tonic === "C" ? lowestNote.oct + 1 : lowestNote.oct}`
+      `${$tonic}${$tonic === "C" ? lowestNote.oct + 1 : lowestNote.oct}`,
     );
     const startNote =
       rootNote.height < lowestNote.height
@@ -20,10 +19,11 @@
         : rootNote;
 
     const chord = Chord.getChord(chordName, startNote);
-    const midi = chord.notes.map(Midi.toMidi);
+    const notesWithOctaves = Chord.notes(chordName, startNote);
+    const midi = notesWithOctaves.map(Midi.toMidi);
     player.play(midi, 15);
 
-    dispatch("chordchange", chord);
+    onchordchange?.(chord);
   }
 </script>
 

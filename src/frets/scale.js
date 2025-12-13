@@ -1,4 +1,4 @@
-import { Scale, Note } from "@tonaljs/tonal";
+import { Scale, Note } from "tonal";
 
 export default function scale(name) {
   const s = Scale.get(name);

@@ -1,5 +1,5 @@
 <script>
-  import { Chord, Note } from "@tonaljs/tonal";
+  import { Chord, Note } from "tonal";
   import { scale as getScale, tnps, pentatonic } from "../frets/index";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
@@ -17,8 +17,8 @@
   let position;
   let chordName;
 
-  function handleChordChange(event) {
-    chordName = event.detail;
+  function handleChordChange(chord) {
+    chordName = chord;
   }
 
   $: scaleName = `${$tonic} ${scaleLabel}`;
@@ -93,7 +93,7 @@
         </div>
         <div class="p-5 hidden lg:block w-2/3">
           <h3 class="font-bold">Chords</h3>
-          <ScaleChords on:chordchange={handleChordChange} {scale} />
+          <ScaleChords onchordchange={handleChordChange} {scale} />
         </div>
       </div>
     {/if}

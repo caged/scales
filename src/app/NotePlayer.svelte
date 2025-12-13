@@ -1,7 +1,8 @@
 <script>
-  import { Chord, Range } from "@tonaljs/tonal";
+  import { Chord, Range } from "tonal";
   import { Howl, Howler } from "howler";
   import { delay as pauseFor } from "./utils";
+  import guitarNotesUrl from "../guitar-notes.mp3?url";
 
   export let notes = "";
   export let delay = 20;
@@ -17,7 +18,7 @@
   const allNotes = { ...sharps, ...flats };
 
   var sound = new Howl({
-    src: "guitar-notes.mp3",
+    src: guitarNotesUrl,
     sprite: allNotes,
   });
   sound.volume(0.2);
