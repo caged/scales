@@ -20,7 +20,8 @@
         : rootNote;
 
     const chord = Chord.getChord(chordName, startNote);
-    const midi = chord.notes.map(Midi.toMidi);
+    const notesWithOctaves = Chord.notes(chordName, startNote);
+    const midi = notesWithOctaves.map(Midi.toMidi);
     player.play(midi, 15);
 
     dispatch("chordchange", chord);
