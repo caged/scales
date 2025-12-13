@@ -1,7 +1,7 @@
 import { Howl } from "howler";
 import { Range } from "tonal";
-import { delay as pauseFor } from "./utils";
 import noteCrescendoUrl from "../note-crescendo.mp3?url";
+import { delay as pauseFor } from "./utils";
 
 export default function player() {
   function player() {}
