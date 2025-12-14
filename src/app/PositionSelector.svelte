@@ -29,7 +29,7 @@
 
 <div class="flex space-x-5">
   {#each { length: positions } as _, i}
-    <div class="flex flex-col text-center">
+    <div class="flex flex-col items-center text-center">
       <input
         bind:group={position}
         type="radio"
@@ -37,7 +37,7 @@
         on:click={toggleEnabled}
       />
       <span
-        class="mt-1 text-xs rounded-full"
+        class="inline-flex items-center size-5 mt-2 justify-center text-xs rounded-full"
         class:selected={position == i + 1}
         class:surrounding={isSurroundingPosition(i + 1, position)}
       >
