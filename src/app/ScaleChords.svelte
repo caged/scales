@@ -2,10 +2,7 @@
   import { Chord, Mode } from "tonal";
   import { getContext, onMount } from "svelte";
   import { SVGuitarChord } from "svguitar";
-  import {
-    getChordFingerings,
-    getChordVariations,
-  } from "../frets/chordFingerings.js";
+  import { getChordFingerings, getChordVariations } from "../frets/chordFingerings.js";
 
   let { scale, onchordchange } = $props();
 
@@ -17,7 +14,7 @@
   function handleMouseUp(event) {
     const chordName = event.currentTarget.dataset.chord;
 
-    // Get the fingering positions from chord-db
+    // Use the first position's MIDI notes from chord-db
     const fingerings = getChordFingerings(chordName);
 
     if (!fingerings || fingerings.length === 0) {
@@ -25,7 +22,6 @@
       return;
     }
 
-    // Use the first position's MIDI notes
     const firstPosition = fingerings[0];
     const midi = firstPosition.midi;
 
@@ -40,8 +36,7 @@
   function renderChord(element, chord) {
     if (!element) return;
 
-    // Get the full chord name with tonic
-
+    // Standard chord rendering
     const variations = getChordVariations(chord);
 
     if (!variations || variations.length === 0) {
@@ -69,7 +64,7 @@
         backgroundColor: "transparent",
         tuning: [],
         nutWidth: 6,
-        sidePadding: 0.1,
+        sidePadding: 0.2,
         barreChordRadius: 0.5,
       })
       .chord({
@@ -112,7 +107,10 @@
       data-chord={chord}
     >
       <div class="font-semibold mb-2">{chord}</div>
-      <div bind:this={chordElements[chord]} class="chord-diagram w-full"></div>
+      <div
+        bind:this={chordElements[chord]}
+        class="chord-diagram w-full"
+      ></div>
     </button>
   {/each}
 </div>
