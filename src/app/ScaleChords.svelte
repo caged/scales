@@ -1,13 +1,14 @@
 <script>
-  import { Scale, Chord, Note, Midi, Mode } from "tonal";
+  import { Chord, Mode } from "tonal";
   import { getContext, onMount } from "svelte";
-  import { tonic, tuning } from "./store";
   import { SVGuitarChord } from "svguitar";
-  import { getChordVariations } from "../frets/chordFingerings.js";
+  import {
+    getChordFingerings,
+    getChordVariations,
+  } from "../frets/chordFingerings.js";
 
   let { scale, onchordchange } = $props();
 
-  const lowestNote = Note.get($tuning[0]);
   const { player } = getContext("app");
 
   let chordElements = $state({});
@@ -15,19 +16,24 @@
 
   function handleMouseUp(event) {
     const chordName = event.currentTarget.dataset.chord;
-    const rootNote = Note.get(
-      `${$tonic}${$tonic === "C" ? lowestNote.oct + 1 : lowestNote.oct}`,
-    );
-    const startNote =
-      rootNote.height < lowestNote.height
-        ? Note.get(`${rootNote.name}${rootNote.oct + 1}`)
-        : rootNote;
 
-    const chord = Chord.getChord(chordName, startNote);
-    const notesWithOctaves = Chord.notes(chordName, startNote);
-    const midi = notesWithOctaves.map(Midi.toMidi);
+    // Get the fingering positions from chord-db
+    const fingerings = getChordFingerings(chordName);
+
+    if (!fingerings || fingerings.length === 0) {
+      console.warn(`No fingerings found for ${chordName}`);
+      return;
+    }
+
+    // Use the first position's MIDI notes
+    const firstPosition = fingerings[0];
+    const midi = firstPosition.midi;
+
+    console.log("Playing chord:", chordName, midi);
     player.play(midi, 15);
 
+    // Get chord info for callback
+    const chord = Chord.get(chordName);
     onchordchange?.(chord);
   }
 
