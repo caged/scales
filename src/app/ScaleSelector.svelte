@@ -6,14 +6,16 @@
 
   const allScales = ScaleType.all();
   const commonScales = [
-    "minor pentatonic",
-    "major pentatonic",
-    "minor",
     "major",
+    "minor",
+    "major pentatonic",
+    "minor pentatonic",
     "phrygian",
     "lydian",
     "mixolydian",
     "locrian",
+    "dorian",
+    "blues",
     "harmonic minor",
     "phrygian dominant",
   ].map((name) => {
@@ -25,7 +27,7 @@
       (a) =>
         !commonScales.find((b) => {
           return b.setNum == a.setNum;
-        })
+        }),
     )
     .map((s) => {
       return { ...s, group: "Other" };
@@ -49,7 +51,7 @@
     value = "";
   }
 
-  $: selectedItem = scales.find(s => s.value === value);
+  $: selectedItem = scales.find((s) => s.value === value);
 </script>
 
 <div class="themed w-full">
