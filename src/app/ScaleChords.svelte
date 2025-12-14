@@ -47,7 +47,7 @@
 
   {#if selectedChord}
     <div class="flex justify-center p-4 bg-gray-50 rounded h-20">
-      <ChordDiagram chordName={selectedChord} />
+      <ChordDiagram chordSymbol={selectedChord} />
     </div>
   {/if}
 </div>

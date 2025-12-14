@@ -1,35 +1,37 @@
 <script>
   import { SVGuitarChord } from "svguitar";
   import guitar from "@tombatossals/chords-db/lib/guitar.json";
+  import { Chord } from "tonal";
 
-  let { chordName = "C" } = $props();
+  let { chordSymbol = "C" } = $props();
   let container;
 
-  // Parse chord name to get key and suffix
-  function parseChordName(name) {
-    console.log(name);
+  // Parse chord symbol using Tonal to get key and suffix
+  function parseChordSymbol(symbol) {
+    const chord = Chord.get(symbol);
 
-    // Handle common chord formats
-    // e.g., "C", "Cm", "C7", "Cmaj7", "Cdim", "Caug", etc.
-    const match = name.match(/^([A-G][#b]?)(.*)?$/);
-    if (!match) return { key: "C", suffix: "major" };
+    if (chord.empty || !chord.tonic) {
+      return { key: "C", suffix: "major" };
+    }
 
-    const key = match[1];
-    let suffix = match[2] || "major";
+    const key = chord.tonic;
+    let suffix = chord.aliases[0] || chord.type;
 
-    // Map common suffixes
+    // Map Tonal chord types to chords-db suffixes
     const suffixMap = {
       "": "major",
-      m: "minor",
-      maj: "major",
-      maj7: "maj7",
-      min: "minor",
-      dim: "dim",
-      aug: "aug",
-      "7": "7",
-      m7: "m7",
-      sus2: "sus2",
-      sus4: "sus4",
+      "major": "major",
+      "minor": "minor",
+      "maj7": "maj7",
+      "major seventh": "maj7",
+      "dominant seventh": "7",
+      "minor seventh": "m7",
+      "diminished": "dim",
+      "augmented": "aug",
+      "sus2": "sus2",
+      "sus4": "sus4",
+      "M": "major",
+      "m": "minor",
     };
 
     suffix = suffixMap[suffix] || suffix;
@@ -93,7 +95,7 @@
 
     container.innerHTML = "";
 
-    const { key, suffix } = parseChordName(chordName);
+    const { key, suffix } = parseChordSymbol(chordSymbol);
     const chordData = findChord(key, suffix);
     const svgChord = convertToSVGuitarFormat(chordData);
 
