@@ -24,7 +24,7 @@ import guitar from '@tombatossals/chords-db/lib/guitar.json';
 export function getChordFingerings(chordName) {
   // Parse the chord using Tonal to get the tonic and suffix
   const chord = Chord.get(chordName);
-  
+
   if (chord.empty) {
     console.warn(`Invalid chord: ${chordName}`);
     return null;
