@@ -1,7 +1,6 @@
 import { Chord } from 'tonal';
 import guitar from '@tombatossals/chords-db/lib/guitar.json';
 
-console.log('Loaded guitar chords database:', guitar);
 /**
  * Get fingering positions for a chord using the chords-db library
  *
@@ -25,9 +24,7 @@ console.log('Loaded guitar chords database:', guitar);
 export function getChordFingerings(chordName) {
   // Parse the chord using Tonal to get the tonic and suffix
   const chord = Chord.get(chordName);
-  console.log(chordName, chord);
   
-
   if (chord.empty) {
     console.warn(`Invalid chord: ${chordName}`);
     return null;
@@ -115,16 +112,46 @@ export function getChordFingerings(chordName) {
  * // }
  */
 export function convertToSVGuitarFormat(position) {
-  const { frets, fingers: fingerPositions, barres, baseFret = 1 } = position;
+  const { frets, barres, baseFret = 1 } = position;
 
-  const svguitarFingers = [];
+  // First, identify which strings are part of barres
+  const barreStringsSet = new Set();
+  const svguitarBarres = [];
+
+  if (barres) {
+    // Handle both number and array formats
+    const barresList = Array.isArray(barres) ? barres : [barres];
+
+    for (const barreFret of barresList) {
+      // Find the range of strings for this barre
+      const barreStrings = [];
+
+      for (let i = 0; i < frets.length; i++) {
+        if (frets[i] === barreFret) {
+          const stringNumber = 6 - i;
+          barreStrings.push(stringNumber);
+          barreStringsSet.add(stringNumber);
+        }
+      }
+
+      if (barreStrings.length > 1) {
+        svguitarBarres.push({
+          fromString: Math.max(...barreStrings),
+          toString: Math.min(...barreStrings),
+          fret: barreFret
+        });
+      }
+    }
+  }
 
   // Convert fret positions to svguitar format
   // String numbering: chords-db uses 0-5 (low to high), svguitar uses 1-6 (high to low)
+  const svguitarFingers = [];
+
   for (let i = 0; i < frets.length; i++) {
     const fret = frets[i];
-    const finger = fingerPositions?.[i];
     const stringNumber = 6 - i; // Reverse string order
+    const isPartOfBarre = barreStringsSet.has(stringNumber);
 
     if (fret === -1 || fret === 'x') {
       // Muted string
@@ -132,32 +159,13 @@ export function convertToSVGuitarFormat(position) {
     } else if (fret === 0) {
       // Open string
       svguitarFingers.push([stringNumber, 0]);
+    } else if (isPartOfBarre) {
+      // Skip fingers that are part of a barre - the barre will handle them
+      // Don't add anything to svguitarFingers for these strings
+      continue;
     } else {
-      // Fretted note
-      const label = finger ? finger.toString() : '';
-      svguitarFingers.push([stringNumber, fret, label]);
-    }
-  }
-
-  // Convert barres if present
-  const svguitarBarres = [];
-  if (barres && typeof barres === 'number') {
-    // Find the range of strings for the barre
-    const barreFret = barres;
-    const barreStrings = [];
-
-    for (let i = 0; i < frets.length; i++) {
-      if (frets[i] === barreFret) {
-        barreStrings.push(6 - i);
-      }
-    }
-
-    if (barreStrings.length > 1) {
-      svguitarBarres.push({
-        fromString: Math.max(...barreStrings),
-        toString: Math.min(...barreStrings),
-        fret: barreFret
-      });
+      // Fretted note not part of a barre - no label
+      svguitarFingers.push([stringNumber, fret]);
     }
   }
 

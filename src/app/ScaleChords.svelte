@@ -48,7 +48,7 @@
 
     // Create the SVGuitar instance
     const chart = new SVGuitarChord(element);
-
+    console.log("Rendering chord:", chord, chordData);
     chart
       .configure({
         strings: 6,
@@ -64,6 +64,7 @@
         tuning: [],
         nutWidth: 6,
         sidePadding: 0.1,
+        barreChordRadius: 0.5,
       })
       .chord({
         fingers: chordData.fingers,
@@ -101,7 +102,8 @@
     <button
       type="button"
       onmouseup={handleMouseUp}
-      class="flex flex-col items-center p-2 bg-gray-100 hover:bg-purple-600 hover:text-white cursor-pointer rounded transition-colors"
+      class="flex flex-col items-center p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded transition-colors"
+      data-chord={chord}
     >
       <div class="font-semibold mb-2">{chord}</div>
       <div bind:this={chordElements[chord]} class="chord-diagram w-full"></div>

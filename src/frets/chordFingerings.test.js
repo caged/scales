@@ -143,5 +143,30 @@ describe("chordFingerings tests", () => {
       // Most chords should have multiple fingering options
       assert.isAbove(variations.length, 1);
     });
+
+    it("should return barre chords for F major", () => {
+      const variations = getChordVariations("F");
+      assert.isNotNull(variations);
+      assert.isArray(variations);
+
+      // F major typically has barre chord positions
+      const hasBarrePosition = variations.some(v => v.barres.length > 0);
+      assert.isTrue(hasBarrePosition, "F major should have at least one barre chord position");
+
+      // Check first position has a barre
+      const firstVariation = variations[0];
+      assert.isAbove(firstVariation.barres.length, 0);
+      assert.property(firstVariation.barres[0], "fromString");
+      assert.property(firstVariation.barres[0], "toString");
+      assert.property(firstVariation.barres[0], "fret");
+      assert.equal(firstVariation.barres[0].fret, 1);
+
+      // Verify strings in the barre are NOT in the fingers array at all
+      const fret1Fingers = firstVariation.fingers.filter(([_, fret]) => fret === 1);
+      assert.equal(fret1Fingers.length, 0, "Barred strings should not appear in fingers array");
+
+      // F major first position should only have 3 finger entries (strings 5,4,3)
+      assert.equal(firstVariation.fingers.length, 3, "Should only have fingers for non-barred strings");
+    });
   });
 });
