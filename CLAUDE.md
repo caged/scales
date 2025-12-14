@@ -8,8 +8,13 @@ The app is structured as a Svelte project which is stored in the `src/app` direc
 
 ## Documentation 
 
-The documentation for the tonal library can be found in subdirectories of the node_modules/@tonaljs.  Each package has its own documentation stored as a markdown file.  For example, the documentation for Chord can be found at node_modules/@tonaljs/chord/README.md
+The documentation for the tonal library can be found in subdirectories of the node_modules/@tonaljs.  Each package has its own documentation stored as a markdown file.  For example, the documentation for Chord can be found at node_modules/@tonaljs/chord/README.md.  Parse and understand these documents to learn about the available functions and features of each package.
+
+The documentation for the Svelte 5 framework can be found at https://svelte.dev/docs/svelte/overview.  In the sidebar there are links to the various features of Svelte including components, stores, reactivity, and context.  Parse and understand these documents to learn how to build Svelte applications.
 
 ## Style Guidelines
 
 * Always prefer built in features of the Tonal library over custom implementations or 3rd party libraries.
+* Prefer local markdown documentation for the relevant packages stored in the directory node_modules.
+* Use the chai library for unit tests and store tests next to the relevant source files with a .test.js suffix.
+* Prefer `assert` statements from the chai library for validations in tests.

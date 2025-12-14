@@ -6,11 +6,13 @@
   "type": "module",
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
+    "@tombatossals/chords-db": "github:tombatossals/chords-db",
     "d3": "^7.3.0",
     "d3-scale-chromatic": "^3.0.0",
     "howler": "^2.2.1",
     "svelte": "^5.45.8",
     "svelte-select": "^5.8.3",
+    "svguitar": "^2.5.0",
     "tonal": "^6.4.2"
   },
   "devDependencies": {
