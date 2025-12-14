@@ -95,25 +95,6 @@
 </script>
 
 <div>
-  <div class="items-center ml-1 {positionSelected ? 'flex' : 'hidden'}">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      class="w-6 h-6 mr-1"
-      role="button"
-      tabindex="0"
-      on:click={playNotes}
-      on:keydown={(e) => e.key === "Enter" && playNotes(e)}
-    >
-      <path
-        fill-rule="evenodd"
-        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-        clip-rule="evenodd"
-      />
-    </svg>
-    Play notes
-  </div>
   <svg viewBox="0 0 {width} {height}">
     {#each strings as str, i}
       <g transform="translate({margin.left}, {strY(i)})">
