@@ -6,6 +6,7 @@
   "type": "module",
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
+    "@tombatossals/chords-db": "github:tombatossals/chords-db",
     "d3": "^7.3.0",
     "d3-scale-chromatic": "^3.0.0",
     "howler": "^2.2.1",
