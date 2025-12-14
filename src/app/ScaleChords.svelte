@@ -2,7 +2,10 @@
   import { Chord, Mode } from "tonal";
   import { getContext, onMount } from "svelte";
   import { SVGuitarChord } from "svguitar";
-  import { getChordFingerings, getChordVariations } from "../frets/chordFingerings.js";
+  import {
+    getChordFingerings,
+    getChordVariations,
+  } from "../frets/chordFingerings.js";
 
   let { scale, onchordchange } = $props();
 
@@ -25,7 +28,6 @@
     const firstPosition = fingerings[0];
     const midi = firstPosition.midi;
 
-    console.log("Playing chord:", chordName, midi);
     player.play(midi, 15);
 
     // Get chord info for callback
@@ -49,7 +51,6 @@
 
     // Create the SVGuitar instance
     const chart = new SVGuitarChord(element);
-    console.log("Rendering chord:", chord, chordData);
     chart
       .configure({
         strings: 6,
@@ -82,8 +83,6 @@
   });
 
   $effect(() => {
-    console.log(scale.type(), scale.tonic());
-
     chords = Mode.triads(scale.type(), scale.tonic());
 
     // Re-render when tonic changes
@@ -107,10 +106,7 @@
       data-chord={chord}
     >
       <div class="font-semibold mb-2">{chord}</div>
-      <div
-        bind:this={chordElements[chord]}
-        class="chord-diagram w-full"
-      ></div>
+      <div bind:this={chordElements[chord]} class="chord-diagram w-full"></div>
     </button>
   {/each}
 </div>
