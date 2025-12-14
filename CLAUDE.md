@@ -13,3 +13,4 @@ The documentation for the tonal library can be found in subdirectories of the no
 ## Style Guidelines
 
 * Always prefer built in features of the Tonal library over custom implementations or 3rd party libraries.
+* Prefer local markdown documentation for the relevant packages stored in the directory node_modules.
