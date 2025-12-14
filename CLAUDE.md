@@ -14,3 +14,4 @@ The documentation for the tonal library can be found in subdirectories of the no
 
 * Always prefer built in features of the Tonal library over custom implementations or 3rd party libraries.
 * Prefer local markdown documentation for the relevant packages stored in the directory node_modules.
+* Use the chai library for unit tests and store tests next to the relevant source files with a .test.js suffix.
