@@ -1,5 +1,5 @@
 <script>
-  import { Scale, Chord, Note, Midi } from "tonal";
+  import { Scale, Chord, Note, Midi, Mode } from "tonal";
   import { getContext, onMount } from "svelte";
   import { tonic, tuning } from "./store";
   import { SVGuitarChord } from "svguitar";
@@ -10,7 +10,8 @@
   const lowestNote = Note.get($tuning[0]);
   const { player } = getContext("app");
 
-  let chordElements = {};
+  let chordElements = $state({});
+  let chords = $state(() => Mode.triads(scale.type(), scale.tonic()));
 
   function handleMouseUp(event) {
     const chordName = event.currentTarget.dataset.chord;
@@ -30,15 +31,15 @@
     onchordchange?.(chord);
   }
 
-  function renderChord(element, chordLabel) {
+  function renderChord(element, chord) {
     if (!element) return;
 
     // Get the full chord name with tonic
-    const fullChordName = `${$tonic}${chordLabel}`;
-    const variations = getChordVariations(fullChordName);
+
+    const variations = getChordVariations(chord);
 
     if (!variations || variations.length === 0) {
-      console.warn(`No fingerings found for ${fullChordName}`);
+      console.warn(`No fingerings found for ${chord}`);
       return;
     }
 
@@ -79,6 +80,10 @@
   });
 
   $effect(() => {
+    console.log(scale.type(), scale.tonic());
+
+    chords = Mode.triads(scale.type(), scale.tonic());
+
     // Re-render when tonic changes
     Object.entries(chordElements).forEach(([chordLabel, element]) => {
       if (element) {
@@ -90,20 +95,16 @@
 </script>
 
 <div
-  class="text-xs text-gray-500 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-10 gap-4"
+  class="text-xs text-gray-500 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"
 >
-  {#each Scale.scaleChords(scale.name()) as chordLabel}
+  {#each chords as chord}
     <button
       type="button"
       onmouseup={handleMouseUp}
       class="flex flex-col items-center p-2 bg-gray-100 hover:bg-purple-600 hover:text-white cursor-pointer rounded transition-colors"
-      data-chord={chordLabel}
     >
-      <div class="font-semibold mb-2">{chordLabel}</div>
-      <div
-        bind:this={chordElements[chordLabel]}
-        class="chord-diagram w-full"
-      ></div>
+      <div class="font-semibold mb-2">{chord}</div>
+      <div bind:this={chordElements[chord]} class="chord-diagram w-full"></div>
     </button>
   {/each}
 </div>
