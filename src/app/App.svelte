@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import { Chord, Note } from "tonal";
   import { scale as getScale, tnps, pentatonic } from "../frets/index";
   import KeySelector from "./KeySelector.svelte";
@@ -16,6 +17,47 @@
   let scaleLabel = "minor";
   let position;
   let chordName;
+  let loaded = false;
+
+  onMount(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const savedTuning = params.get("tuning");
+      const savedTonic = params.get("key");
+      const savedScaleLabel = params.get("scale");
+      const savedPosition = params.get("position");
+
+      if (savedTuning) {
+        try {
+          tuning.set(JSON.parse(savedTuning));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (savedTonic) tonic.set(savedTonic);
+      if (savedScaleLabel) scaleLabel = savedScaleLabel;
+      if (savedPosition) {
+        try {
+          position = JSON.parse(savedPosition);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      loaded = true;
+    }
+  });
+
+  $: if (loaded) {
+    const params = new URLSearchParams(window.location.search);
+    if ($tuning) params.set("tuning", JSON.stringify($tuning));
+    if ($tonic) params.set("key", $tonic);
+    if (scaleLabel) params.set("scale", scaleLabel);
+    if (position !== undefined)
+      params.set("position", JSON.stringify(position));
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+  }
 
   function handleChordChange(chord) {
     chordName = chord;
