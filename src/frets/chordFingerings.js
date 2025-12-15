@@ -114,8 +114,6 @@ export function getChordFingerings(chordName) {
 export function convertToSVGuitarFormat(position) {
   const { frets, barres, baseFret = 1 } = position;
 
-  // First, identify which strings are part of barres
-  const barreStringsSet = new Set();
   const svguitarBarres = [];
 
   if (barres) {
@@ -130,7 +128,6 @@ export function convertToSVGuitarFormat(position) {
         if (frets[i] === barreFret) {
           const stringNumber = 6 - i;
           barreStrings.push(stringNumber);
-          barreStringsSet.add(stringNumber);
         }
       }
 
@@ -138,7 +135,7 @@ export function convertToSVGuitarFormat(position) {
         svguitarBarres.push({
           fromString: Math.max(...barreStrings),
           toString: Math.min(...barreStrings),
-          fret: barreFret
+          fret: barreFret,
         });
       }
     }
@@ -151,7 +148,6 @@ export function convertToSVGuitarFormat(position) {
   for (let i = 0; i < frets.length; i++) {
     const fret = frets[i];
     const stringNumber = 6 - i; // Reverse string order
-    const isPartOfBarre = barreStringsSet.has(stringNumber);
 
     if (fret === -1 || fret === 'x') {
       // Muted string
@@ -159,12 +155,8 @@ export function convertToSVGuitarFormat(position) {
     } else if (fret === 0) {
       // Open string
       svguitarFingers.push([stringNumber, 0]);
-    } else if (isPartOfBarre) {
-      // Skip fingers that are part of a barre - the barre will handle them
-      // Don't add anything to svguitarFingers for these strings
-      continue;
     } else {
-      // Fretted note not part of a barre - no label
+      // Fretted note
       svguitarFingers.push([stringNumber, fret]);
     }
   }
