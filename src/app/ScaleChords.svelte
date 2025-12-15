@@ -48,7 +48,6 @@
 
     // Use the first variation
     const chordData = variations[0];
-
     // Create the SVGuitar instance
     const chart = new SVGuitarChord(element);
     chart
@@ -56,13 +55,13 @@
         strings: 6,
         frets: 4,
         position: chordData.position || 1,
-        style: "normal",
         strokeWidth: 1,
         fingerSize: 0.5,
+        fingerColor: "#222",
         fingerTextSize: 16,
         fretSize: 1.2,
+        fretColor: "#444",
         color: "#333",
-        backgroundColor: "transparent",
         tuning: [],
         nutWidth: 6,
         sidePadding: 0.2,
@@ -125,5 +124,9 @@
   .chord-diagram :global(svg) {
     width: 100%;
     height: auto;
+  }
+
+  .chord-diagram :global(.barre-rectangle) {
+    fill: !important;
   }
 </style>
