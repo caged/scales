@@ -71,7 +71,7 @@
   </div>
   <div>
     {#if scaleLabel != ""}
-      <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
+      <div class="flex border-b border-gray-200 bg-gray-50">
         <div class="flex flex-1 flex-col border-r border-gray-200">
           <div class="p-5 border-b border-gray-200">
             <h1 class="text-3xl font-bold i capitalize">
