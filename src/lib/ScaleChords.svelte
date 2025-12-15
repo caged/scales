@@ -5,7 +5,7 @@
   import {
     getChordFingerings,
     getChordVariations,
-  } from "$lib/../frets/chordFingerings.js";
+  } from "$lib/frets/chordFingerings.js";
 
   let { scale, onchordchange } = $props();
 
@@ -127,6 +127,6 @@
   }
 
   .chord-diagram :global(.barre-rectangle) {
-    fill: !important;
+    fill: #000 !important;
   }
 </style>

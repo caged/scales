@@ -1,6 +1,6 @@
 <script>
   import { Chord, Note } from "tonal";
-  import { scale as getScale, tnps, pentatonic } from "$lib/../frets/index";
+  import { scale as getScale, tnps, pentatonic } from "$lib/frets/index";
   import KeySelector from "./KeySelector.svelte";
   import ScaleSelector from "./ScaleSelector.svelte";
   import FretBoard from "./FretBoard.svelte";
@@ -37,7 +37,6 @@
 <svelte:head>
   <title>{scaleName}</title>
   <meta name="Description" content="{scaleName} guitar scale" />
-  <html lang="en"></html>
 </svelte:head>
 
 <AppContext>

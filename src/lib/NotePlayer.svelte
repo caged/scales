@@ -2,7 +2,7 @@
   import { Chord, Range } from "tonal";
   import { Howl, Howler } from "howler";
   import { delay as pauseFor } from "./utils";
-  import guitarNotesUrl from "$lib/../guitar-notes.mp3?url";
+  import guitarNotesUrl from "../guitar-notes.mp3?url";
 
   export let notes = "";
   export let delay = 20;

@@ -1,6 +1,6 @@
 <script>
   import { Chord, Note } from "tonal";
-  import { scale as getScale, tnps, pentatonic } from "$lib/../frets/index";
+  import { scale as getScale, tnps, pentatonic } from "$lib/frets/index";
   import KeySelector from "$lib/KeySelector.svelte";
   import ScaleSelector from "$lib/ScaleSelector.svelte";
   import FretBoard from "$lib/FretBoard.svelte";
