@@ -3,7 +3,8 @@
   import { delay } from "./utils";
   import Volume from "./Volume.svelte";
   import { bpm } from "./store";
-  import metronomeUrl from "../metronome.mp3?url";
+
+  const metronomeUrl = "/metronome.mp3";
 
   let volume = 0.5;
   let playing = false;

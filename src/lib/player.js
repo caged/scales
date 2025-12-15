@@ -1,8 +1,9 @@
 import { Howl } from "howler";
 import { Range } from "tonal";
-import guitarNotes from "../guitar-notes.mp3?url";
-import noteCrescendoUrl from "../note-crescendo.mp3?url";
 import { delay as pauseFor } from "./utils";
+
+const guitarNotes = "/guitar-notes.mp3";
+const noteCrescendoUrl = "/note-crescendo.mp3";
 
 export default function player() {
   function player() {}
