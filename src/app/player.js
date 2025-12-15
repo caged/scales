@@ -1,5 +1,6 @@
 import { Howl } from "howler";
 import { Range } from "tonal";
+import guitarNotes from "../guitar-notes.mp3?url";
 import noteCrescendoUrl from "../note-crescendo.mp3?url";
 import { delay as pauseFor } from "./utils";
 
@@ -13,7 +14,7 @@ export default function player() {
   }, {});
 
   var sound = new Howl({
-    src: noteCrescendoUrl,
+    src: guitarNotes,
     sprite: midiRange,
   });
 
