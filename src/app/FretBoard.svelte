@@ -14,7 +14,7 @@
   const { player } = getContext("app");
   const margin = { top: 45, right: 10, bottom: 35, left: 10 };
   const width = 1200;
-  let defaultHeight = 240;
+  let defaultHeight = 260;
   let height;
   let fb,
     fbnotes,
@@ -45,32 +45,6 @@
 
   async function play(n) {
     await player.play([n.midi]);
-  }
-
-  async function playNotes(event) {
-    const nstrings = strings.map((s) =>
-      s
-        .filter((n) => {
-          return noteInPosition(n, position);
-        })
-        .map((n) => {
-          return n.midi;
-        }),
-    );
-
-    let o1 = [];
-    let o2 = [];
-
-    nstrings.forEach((s) => {
-      o1 = o1.concat(s.slice(0, 3).reverse());
-      o2 = o2.concat(s.slice(3).reverse());
-    });
-
-    while (o1.length > 0) {
-      const n = o1.pop();
-      await delay((60 / $bpm) * 1000);
-      await player.play([n]);
-    }
   }
 
   $: if ((scale || position) && tuning) {
