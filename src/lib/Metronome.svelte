@@ -3,13 +3,13 @@
   import { delay } from "./utils";
   import Volume from "./Volume.svelte";
   import { bpm } from "./store";
-  import metronomeUrl from "../metronome.mp3?url";
+  import { METRONOME_URL } from "./audioResources";
 
   let volume = 0.5;
   let playing = false;
 
   var sound = new Howl({
-    src: metronomeUrl,
+    src: METRONOME_URL,
     sprite: {
       a: [0, 500],
       b: [500, 500],

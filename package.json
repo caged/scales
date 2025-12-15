@@ -16,7 +16,8 @@
     "tonal": "^6.4.2"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^5.0.4",
+    "@sveltejs/adapter-static": "^3.0.10",
+    "@sveltejs/kit": "^2.49.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@web/dev-server-esbuild": "^1.0.4",
     "@web/test-runner": "^0.20.2",
@@ -32,7 +33,7 @@
     "vite": "^6.0.11"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "test": "web-test-runner \"src/**/*.test.js\""

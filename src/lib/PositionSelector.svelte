@@ -54,6 +54,7 @@
     @apply bg-purple-900 text-white;
   }
 
+
   .surrounding {
     @apply bg-gray-200;
   }
