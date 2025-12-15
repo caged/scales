@@ -1,23 +1,13 @@
-import { Howl } from "howler";
-import { Range } from "tonal";
 import { delay as pauseFor } from "./utils";
+import { getGuitarNotesHowl, NOTE_CRESCENDO_URL } from "./audioResources";
 
-const guitarNotes = "/guitar-notes.mp3";
-const noteCrescendoUrl = "/note-crescendo.mp3";
+const noteCrescendoUrl = NOTE_CRESCENDO_URL;
 
 export default function player() {
   function player() {}
 
+  const sound = getGuitarNotesHowl();
   let loaded = false;
-  const midiRange = Range.numeric(["C1", "E6"]).reduce((acc, cur, i) => {
-    acc[cur] = [i * 2000, 2000];
-    return acc;
-  }, {});
-
-  var sound = new Howl({
-    src: guitarNotes,
-    sprite: midiRange,
-  });
 
   sound.on("load", async () => {
     loaded = true;
