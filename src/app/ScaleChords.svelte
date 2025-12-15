@@ -83,7 +83,17 @@
   });
 
   $effect(() => {
-    chords = Mode.triads(scale.type(), scale.tonic());
+    const triads = Mode.triads(scale.type(), scale.tonic());
+
+    // Sort chords so diminished chords appear last
+    chords = triads.sort((a, b) => {
+      const aIsDim = a.includes("dim") || a.includes("°") || a.includes("o");
+      const bIsDim = b.includes("dim") || b.includes("°") || b.includes("o");
+
+      if (aIsDim && !bIsDim) return 1; // a is dim, move to end
+      if (!aIsDim && bIsDim) return -1; // b is dim, move to end
+      return 0; // maintain original order
+    });
 
     // Re-render when tonic changes
     Object.entries(chordElements).forEach(([chordLabel, element]) => {
@@ -102,7 +112,7 @@
     <button
       type="button"
       onmouseup={handleMouseUp}
-      class="flex flex-col items-center p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded transition-colors"
+      class="flex flex-col justify-between items-center p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded transition-colors"
       data-chord={chord}
     >
       <div class="font-semibold mb-2">{chord}</div>
