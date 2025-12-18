@@ -179,4 +179,29 @@ describe("CAGED system tests", () => {
       );
     }
   });
+
+  it("works with pentatonic scales", () => {
+    const aPentatonic = scale("A minor pentatonic");
+    const pentatonicStrings = caged(frets().notes(), aPentatonic);
+
+    assert.isDefined(pentatonicStrings);
+    assert.equal(pentatonicStrings.length, 6);
+
+    const hasPositions = pentatonicStrings.some((string) =>
+      string.some((note) => note.positions && note.positions.length > 0)
+    );
+    assert.isTrue(hasPositions, "Should have notes with positions assigned");
+
+    // Verify all positions are between 1 and 5
+    for (const string of pentatonicStrings) {
+      for (const note of string) {
+        if (note.positions && note.positions.length > 0) {
+          for (const pos of note.positions) {
+            assert.isAtLeast(pos, 1);
+            assert.isAtMost(pos, 5);
+          }
+        }
+      }
+    }
+  });
 });
