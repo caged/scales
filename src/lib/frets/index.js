@@ -1,6 +1,6 @@
 import { Interval, Note } from "tonal";
 
-export function frets(
+export default function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
   count = 12
 ) {
@@ -20,9 +20,9 @@ export function frets(
 
   function fb() {}
 
-  fb.notes = () => allNotes;
-  fb.tuning = () => tuning;
-  fb.count = () => count;
+  fb.notes = allNotes;
+  fb.tuning = tuning;
+  fb.count =  count;
 
   return fb;
 }

@@ -1,13 +1,13 @@
 import { partition } from "../utils";
 
 export default function pentatonic(strings, scale) {
-  if (scale.intervals().length !== 5)
+  if (scale.intervals.length !== 5)
     throw new Error("Does not appear to be a pentatonic scale");
 
   const numPositions = 5;
   const notesPerString = 2;
-  const intervals = scale.intervals();
-  const snotes = scale.notes();
+  const intervals = scale.intervals;
+  const snotes = scale.notes;
   const scaleNotes = snotes.map((note, i) => {
     return {
       note,

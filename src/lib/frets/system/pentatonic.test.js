@@ -1,6 +1,7 @@
-import { frets, scale } from "../";
+import { beforeEach, describe, expect, it } from "vitest";
 
-import { assert } from "chai";
+import {Scale} from "tonal";
+import { frets } from "../";
 import pentatonic from "./pentatonic";
 
 describe("pentatonic scale tests", () => {
@@ -12,15 +13,13 @@ describe("pentatonic scale tests", () => {
   beforeEach(() => {
     fb = frets();
     notes = fb.notes();
-    dms = scale("A minor pentatonic");
+    dms = Scale.get("A minor pentatonic");
     strings = pentatonic(notes, dms);
   });
 
   it("throws error for non-pentatonic scales", () => {
-    const majorScale = scale("C major");
-    assert.throws(
-      () => pentatonic(notes, majorScale),
-      Error,
+    const majorScale = Scale.get("C major");
+    expect(() => pentatonic(notes, majorScale)).toThrow(
       "Does not appear to be a pentatonic scale"
     );
   });
@@ -29,17 +28,17 @@ describe("pentatonic scale tests", () => {
     const e = strings[0];
     const anote = e[5];
 
-    assert.equal(anote.name, "A2");
-    assert.equal(anote.interval, "1P");
-    assert.deepEqual(anote.positions, [1, 5]);
+    expect(anote.name).toBe("A2");
+    expect(anote.interval).toBe("1P");
+    expect(anote.positions).toEqual([1, 5]);
   });
 
   it("assigns positions property to all scale notes on all strings", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.isArray(note.positions);
-          assert.isTrue(note.positions.every((pos) => pos >= 1 && pos <= 5));
+          expect(Array.isArray(note.positions)).toBe(true);
+          expect(note.positions.every((pos) => pos >= 1 && pos <= 5)).toBe(true);
         }
       }
     }
@@ -50,43 +49,43 @@ describe("pentatonic scale tests", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.interval) {
-          assert.include(scaleIntervals, note.interval);
+          expect(scaleIntervals).toContain(note.interval);
         }
       }
     }
   });
 
   it("processes all 6 strings", () => {
-    assert.equal(strings.length, 6);
+    expect(strings.length).toBe(6);
   });
 
   it("returns the same string array reference that was passed in", () => {
     const originalNotes = fb.notes();
     const result = pentatonic(originalNotes, dms);
-    assert.strictEqual(result, originalNotes);
+    expect(result).toBe(originalNotes);
   });
 
   it("works with different pentatonic scales", () => {
-    const gMajorPent = scale("G major pentatonic");
+    const gMajorPent = Scale.get("G major pentatonic");
     const gStrings = pentatonic(frets().notes(), gMajorPent);
 
-    assert.isDefined(gStrings);
-    assert.equal(gStrings.length, 6);
+    expect(gStrings).toBeDefined();
+    expect(gStrings.length).toBe(6);
 
     const hasPositions = gStrings.some((string) =>
       string.some((note) => note.positions && note.positions.length > 0)
     );
-    assert.isTrue(hasPositions, "Should have notes with positions assigned");
+    expect(hasPositions).toBe(true);
   });
 
   it("assigns position arrays with values between 1 and 5", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.isArray(note.positions);
+          expect(Array.isArray(note.positions)).toBe(true);
           for (const pos of note.positions) {
-            assert.isAtLeast(pos, 1, `Position ${pos} should be >= 1`);
-            assert.isAtMost(pos, 5, `Position ${pos} should be <= 5`);
+            expect(pos).toBeGreaterThanOrEqual(1);
+            expect(pos).toBeLessThanOrEqual(5);
           }
         }
       }
@@ -99,11 +98,7 @@ describe("pentatonic scale tests", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.include(
-            scaleChroma,
-            note.chroma,
-            `Note ${note.name} with positions should be in the scale`
-          );
+          expect(scaleChroma).toContain(note.chroma);
         }
       }
     }
@@ -113,10 +108,7 @@ describe("pentatonic scale tests", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.isDefined(
-            note.interval,
-            `Note ${note.name} at positions ${note.positions} should have an interval`
-          );
+          expect(note.interval).toBeDefined();
         }
       }
     }
@@ -138,15 +130,8 @@ describe("pentatonic scale tests", () => {
     }
 
     for (const chroma of scaleChroma) {
-      assert.isDefined(
-        chromaStringCount[chroma],
-        `Scale note with chroma ${chroma} should appear on at least one string`
-      );
-      assert.isAtLeast(
-        chromaStringCount[chroma].size,
-        1,
-        `Scale note with chroma ${chroma} should appear on at least one string`
-      );
+      expect(chromaStringCount[chroma]).toBeDefined();
+      expect(chromaStringCount[chroma].size).toBeGreaterThanOrEqual(1);
     }
   });
 
@@ -167,11 +152,7 @@ describe("pentatonic scale tests", () => {
         if (notes.length > 1) {
           const firstPositions = JSON.stringify(notes[0].positions);
           for (const note of notes) {
-            assert.equal(
-              JSON.stringify(note.positions),
-              firstPositions,
-              `All notes with chroma ${chroma} on same string should have identical positions`
-            );
+            expect(JSON.stringify(note.positions)).toBe(firstPositions);
           }
         }
       }

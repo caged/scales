@@ -1,0 +1,152 @@
+<script>
+  import { getContext } from "svelte";
+  import { scaleBand, scalePoint, scaleLinear, range } from "d3";
+  import { frets, tnps } from "$lib/frets/index";
+  import { delay } from "./utils";
+  import { bpm } from "./store";
+
+  export let scale = null;
+  export let system = tnps;
+  export let position = null;
+  export let tuning;
+  export let notes = null;
+
+  const { player } = getContext("app");
+  const margin = { top: 45, right: 10, bottom: 35, left: 10 };
+  const width = 1200;
+  let defaultHeight = 260;
+  let height;
+  let fb,
+    fbnotes,
+    strings,
+    fretX,
+    strY,
+    lineW,
+    positionSelected = false;
+
+  const getsFretMarker = (i) =>
+    ((i + 1) % 2 !== 0 && ![1, 11, 13].includes(i + 1)) || i + 1 == 12;
+
+  const noteInPosition = (note, position) =>
+    position && note.positions && note.positions.includes(+position);
+
+  const classesForNote = (note, notes) => {
+    const names = notes.map((n) => n.name);
+    if (note.interval === "1P") {
+      return names.includes(note.name) ? "fill-pink-700" : "fill-black";
+    }
+
+    if (note.interval) {
+      return names.includes(note.name) ? "fill-gray-600" : "fill-purple-800";
+    }
+
+    return "fill-white";
+  };
+
+  async function play(n) {
+    await player.play([n.midi]);
+  }
+
+  $: if ((scale || position) && tuning) {
+    const sharps = scale.notes().some((n) => n.acc === "#");
+    height = defaultHeight + (tuning.length - 6) * 32;
+
+    fb = frets(tuning, 2, sharps);
+    fbnotes = fb.notes();
+    strings = system(fbnotes, scale).reverse();
+
+    fretX = scaleBand()
+      .domain(range(fb.count() + 1))
+      .range([margin.left, width - margin.right]);
+
+    strY = scalePoint()
+      .domain(range(fbnotes.length))
+      .range([margin.top, height - margin.bottom]);
+
+    lineW = scaleLinear().domain([0, strings.length]).range([1, 4]);
+    positionSelected = position !== null;
+  }
+</script>
+
+<div>
+  <svg viewBox="0 0 {width} {height}">
+    {#each strings as str, i}
+      <g transform="translate({margin.left}, {strY(i)})">
+        <line
+          x1={fretX(1)}
+          x2={width - margin.right}
+          stroke="currentColor"
+          class="text-gray-100"
+          stroke-width={lineW(i)}
+        />
+        {#each str as note, j}
+          <g
+            transform="translate({fretX(j)}, 0)"
+            role="button"
+            tabindex="0"
+            class="group cursor-pointer focus:outline-0"
+            on:click={() => play(note)}
+            on:keydown={(e) => e.key === "Enter" && play(note)}
+          >
+            {#if j > 0}
+              {#if !position || noteInPosition(note, position)}
+                <circle
+                  r="10"
+                  fill="currentColor"
+                  class="{classesForNote(
+                    note,
+                    notes,
+                  )} group-focus:outline-0 group-focus:stroke-2 group-focus:stroke-black"
+                />
+              {:else if noteInPosition(note, position === 7 ? 1 : position + 1) || noteInPosition(note, position === 1 ? 7 : position - 1)}
+                <circle r="10" fill="currentColor" class="text-gray-200" />
+              {/if}
+            {/if}
+            <text
+              dy="1"
+              class="{(note.interval && !position) ||
+              noteInPosition(note, position)
+                ? j == 0
+                  ? 'text-purple-500'
+                  : 'text-white'
+                : 'text-gray-400'} {j == 0 ? 'font-bold' : 'font-normal'}"
+              font-size="10"
+              fill="currentColor"
+              text-anchor="middle"
+              dominant-baseline="middle">{note.pc.replace("b", "♭")}</text
+            >
+          </g>
+        {/each}
+      </g>
+    {/each}
+    {#each Array(fb.count()) as _, i}
+      <g transform="translate({fretX(i + 1)}, {margin.top - 30})">
+        <text
+          dx="10"
+          fill="currentColor"
+          class="text-black"
+          font-size="10"
+          text-anchor="middle">{i + 1}</text
+        >
+        <rect
+          rx="2"
+          x={fretX.step() / 1.45}
+          y="20"
+          height={height - margin.bottom - 20}
+          fill="currentColor"
+          class={i + 1 === 11 ? "text-gray-900" : "text-gray-400"}
+          width="3"
+        />
+        {#if getsFretMarker(i)}
+          <circle
+            cx="10"
+            cy={height - margin.bottom + 10}
+            r="3"
+            fill="currentColor"
+            class="text-gray-400"
+          />
+        {/if}
+      </g>
+    {/each}
+  </svg>
+</div>
