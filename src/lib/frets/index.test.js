@@ -1,5 +1,4 @@
-import { Note, Range } from "tonal";
-import { frets, tnps, pentatonic, scale } from "./";
+import { frets } from "./";
 import { assert } from "chai";
 
 describe("fretboard tests", () => {
@@ -7,8 +6,7 @@ describe("fretboard tests", () => {
     it("initializes with standard tuning by default", () => {
       const fb = frets();
       assert.deepEqual(fb.tuning(), ["E2", "A2", "D3", "G3", "B3", "E4"]);
-      assert.equal(fb.count(), 24);
-      assert.equal(fb.octaves(), 2);
+      assert.equal(fb.count(), 12);
     });
 
     it("initializes with custom tuning", () => {
@@ -17,103 +15,90 @@ describe("fretboard tests", () => {
       assert.deepEqual(fb.tuning(), dropD);
     });
 
-    it("initializes with custom octave count", () => {
-      const fb = frets(undefined, 3);
-      assert.equal(fb.octaves(), 3);
-      assert.equal(fb.count(), 36);
+    it("initializes with custom fret count", () => {
+      const fb = frets(undefined, 24);
+      assert.equal(fb.count(), 24);
     });
 
-    it("initializes with sharps instead of flats", () => {
-      const fb = frets(undefined, 2, true);
-      const notes = fb.notes();
-      const firstString = notes[0];
-      const noteNames = firstString.map((n) => n.name);
-
-      const hasSharp = noteNames.some((name) => name.includes("#"));
-      const hasFlat = noteNames.some((name) => name.includes("b"));
-
-      assert.isTrue(hasSharp, "Should contain sharp notes");
-      assert.isFalse(hasFlat, "Should not contain flat notes");
-    });
-
-    it("returns a function object", () => {
+    it("returns a function object with required methods", () => {
       const fb = frets();
       assert.isFunction(fb);
       assert.isFunction(fb.notes);
       assert.isFunction(fb.tuning);
       assert.isFunction(fb.count);
-      assert.isFunction(fb.octaves);
-      assert.isFunction(fb.system);
-      assert.isFunction(fb.scale);
     });
   });
 
   describe("notes generation", () => {
-    it("creates two octaves of notes data by default", () => {
+    it("creates notes for all strings and frets", () => {
       const fb = frets();
       const notes = fb.notes();
       assert.isArray(notes);
       assert.equal(notes.length, 6, "Should have 6 strings");
-      assert.equal(notes[0].length, 25, "Each string should have 25 notes (2 octaves + 1)");
+      assert.equal(notes[0].length, 13, "Each string should have 13 notes (frets 0-12)");
     });
 
-    it("always creates 2 octaves of notes regardless of octaves parameter", () => {
-      const fb = frets(undefined, 3);
+    it("generates correct number of notes based on fret count", () => {
+      const fb = frets(undefined, 24);
       const notes = fb.notes();
-      assert.equal(
-        notes[0].length,
-        25,
-        "Notes are always 2 octaves (hardcoded), octaves param only affects count()"
-      );
-      assert.equal(fb.count(), 36, "count() reflects the octaves parameter");
+      assert.equal(notes[0].length, 25, "Each string should have 25 notes (frets 0-24)");
     });
 
-    it("generates correct start and end notes for each string", () => {
+    it("generates correct start notes for each string", () => {
       const fb = frets();
       const notes = fb.notes();
 
-      fb.tuning().forEach((note, i) => {
-        const { letter, oct } = Note.get(note);
-        assert.equal(notes[i][0].name, note, `String ${i} should start with ${note}`);
+      fb.tuning().forEach((tuningNote, i) => {
         assert.equal(
-          notes[i][notes[i].length - 1].name,
-          `${letter}${oct + 2}`,
-          `String ${i} should end 2 octaves higher`
+          notes[i][0].note.name,
+          tuningNote,
+          `String ${i} should start with ${tuningNote}`
         );
       });
     });
 
-    it("creates chromatic range of notes for each string", () => {
-      const fb = frets();
-      const strings = fb.notes();
-      const e = strings[0];
-      const enames = e.map((n) => n.name);
-
-      assert.deepEqual(enames, Range.chromatic(["E2", "E4"]));
-    });
-
-    it("creates independent note objects (not cached references)", () => {
+    it("generates chromatic progression for each string", () => {
       const fb = frets();
       const notes = fb.notes();
-      const firstE = notes[0][0];
-      const lastE = notes[5][0];
+      const firstString = notes[0];
 
-      firstE.customProperty = "test";
-      assert.isUndefined(lastE.customProperty, "Note objects should be independent");
+      // Check that each fret is one semitone higher than the previous
+      for (let i = 1; i < firstString.length; i++) {
+        const prevMidi = firstString[i - 1].note.midi;
+        const currMidi = firstString[i].note.midi;
+        assert.equal(currMidi - prevMidi, 1, `Fret ${i} should be 1 semitone higher than fret ${i - 1}`);
+      }
     });
 
-    it("generates notes with correct note properties", () => {
+    it("generates notes with correct properties", () => {
       const fb = frets();
       const notes = fb.notes();
       const firstNote = notes[0][0];
 
-      assert.property(firstNote, "name");
-      assert.property(firstNote, "chroma");
-      assert.property(firstNote, "oct");
-      assert.property(firstNote, "letter");
-      assert.property(firstNote, "midi");
-      assert.property(firstNote, "freq");
-      assert.property(firstNote, "pc");
+      assert.property(firstNote, "note", "Should have note property");
+      assert.property(firstNote, "string", "Should have string property");
+      assert.property(firstNote, "fret", "Should have fret property");
+
+      // Check note object properties
+      assert.property(firstNote.note, "name");
+      assert.property(firstNote.note, "chroma");
+      assert.property(firstNote.note, "oct");
+      assert.property(firstNote.note, "letter");
+      assert.property(firstNote.note, "midi");
+      assert.property(firstNote.note, "freq");
+      assert.property(firstNote.note, "pc");
+    });
+
+    it("generates correct string and fret indices", () => {
+      const fb = frets();
+      const notes = fb.notes();
+
+      notes.forEach((string, stringIndex) => {
+        string.forEach((noteObj, fretIndex) => {
+          assert.equal(noteObj.string, stringIndex, `Note should have correct string index`);
+          assert.equal(noteObj.fret, fretIndex, `Note should have correct fret index`);
+        });
+      });
     });
 
     it("generates all 6 strings for standard tuning", () => {
@@ -121,55 +106,22 @@ describe("fretboard tests", () => {
       const notes = fb.notes();
 
       assert.equal(notes.length, 6);
-      assert.equal(notes[0][0].name, "E2");
-      assert.equal(notes[1][0].name, "A2");
-      assert.equal(notes[2][0].name, "D3");
-      assert.equal(notes[3][0].name, "G3");
-      assert.equal(notes[4][0].name, "B3");
-      assert.equal(notes[5][0].name, "E4");
-    });
-  });
-
-  describe("system management", () => {
-    it("sets and gets a system", () => {
-      const fb = frets().system(tnps);
-      assert.deepEqual(fb.system(), tnps);
-      assert.isFunction(fb.system());
+      assert.equal(notes[0][0].note.name, "E2");
+      assert.equal(notes[1][0].note.name, "A2");
+      assert.equal(notes[2][0].note.name, "D3");
+      assert.equal(notes[3][0].note.name, "G3");
+      assert.equal(notes[4][0].note.name, "B3");
+      assert.equal(notes[5][0].note.name, "E4");
     });
 
-    it("supports method chaining for system", () => {
+    it("generates correct notes at specific fret positions", () => {
       const fb = frets();
-      const result = fb.system(tnps);
-      assert.strictEqual(result, fb, "Should return the fretboard for chaining");
-    });
+      const notes = fb.notes();
 
-    it("sets pentatonic system", () => {
-      const fb = frets().system(pentatonic);
-      assert.deepEqual(fb.system(), pentatonic);
-    });
-
-    it("returns undefined when no system is set", () => {
-      const fb = frets();
-      assert.isUndefined(fb.system());
-    });
-  });
-
-  describe("scale management", () => {
-    it("sets and gets a scale", () => {
-      const dMinor = scale("D minor");
-      const fb = frets().scale(dMinor);
-      assert.deepEqual(fb.scale(), dMinor);
-    });
-
-    it("supports method chaining for scale", () => {
-      const fb = frets();
-      const result = fb.scale(scale("A major"));
-      assert.strictEqual(result, fb, "Should return the fretboard for chaining");
-    });
-
-    it("returns undefined when no scale is set", () => {
-      const fb = frets();
-      assert.isUndefined(fb.scale());
+      // Test known notes on the low E string
+      assert.equal(notes[0][0].note.name, "E2", "Fret 0 should be E2");
+      assert.equal(notes[0][5].note.name, "A2", "Fret 5 should be A2");
+      assert.equal(notes[0][12].note.name, "E3", "Fret 12 should be E3 (one octave higher)");
     });
   });
 
@@ -179,7 +131,7 @@ describe("fretboard tests", () => {
       const fb = frets(dropD);
       const notes = fb.notes();
 
-      assert.equal(notes[0][0].name, "D2");
+      assert.equal(notes[0][0].note.name, "D2");
       assert.equal(notes.length, 6);
     });
 
@@ -188,9 +140,9 @@ describe("fretboard tests", () => {
       const fb = frets(dadgad);
       const notes = fb.notes();
 
-      assert.equal(notes[0][0].name, "D2");
-      assert.equal(notes[4][0].name, "A3");
-      assert.equal(notes[5][0].name, "D4");
+      assert.equal(notes[0][0].note.name, "D2");
+      assert.equal(notes[4][0].note.name, "A3");
+      assert.equal(notes[5][0].note.name, "D4");
     });
 
     it("works with 7-string tuning", () => {
@@ -199,35 +151,43 @@ describe("fretboard tests", () => {
       const notes = fb.notes();
 
       assert.equal(notes.length, 7);
-      assert.equal(notes[0][0].name, "B1");
+      assert.equal(notes[0][0].note.name, "B1");
+    });
+
+    it("works with 4-string bass tuning", () => {
+      const bass = ["E1", "A1", "D2", "G2"];
+      const fb = frets(bass);
+      const notes = fb.notes();
+
+      assert.equal(notes.length, 4);
+      assert.equal(notes[0][0].note.name, "E1");
+      assert.equal(notes[3][0].note.name, "G2");
     });
   });
 
   describe("edge cases", () => {
-    it("handles single octave parameter", () => {
+    it("handles single fret count", () => {
       const fb = frets(undefined, 1);
       const notes = fb.notes();
 
-      assert.equal(fb.octaves(), 1);
-      assert.equal(fb.count(), 12);
-      assert.equal(
-        notes[0].length,
-        25,
-        "Notes are always 2 octaves regardless of octaves param"
-      );
+      assert.equal(fb.count(), 1);
+      assert.equal(notes[0].length, 2, "Should have 2 notes (frets 0-1)");
     });
 
-    it("handles large octave parameter", () => {
-      const fb = frets(undefined, 5);
+    it("handles large fret count", () => {
+      const fb = frets(undefined, 36);
       const notes = fb.notes();
 
-      assert.equal(fb.octaves(), 5);
-      assert.equal(fb.count(), 60);
-      assert.equal(
-        notes[0].length,
-        25,
-        "Notes are always 2 octaves regardless of octaves param"
-      );
+      assert.equal(fb.count(), 36);
+      assert.equal(notes[0].length, 37, "Should have 37 notes (frets 0-36)");
+    });
+
+    it("handles zero fret count", () => {
+      const fb = frets(undefined, 0);
+      const notes = fb.notes();
+
+      assert.equal(fb.count(), 0);
+      assert.equal(notes[0].length, 1, "Should have 1 note (fret 0 only)");
     });
   });
 });
