@@ -1,6 +1,7 @@
 import { Note, Range } from "tonal";
 export { default as tnps } from "./system/tnps";
 export { default as pentatonic } from "./system/pentatonic";
+export { default as caged } from "./system/caged";
 export { default as scale } from "./scale";
 export { chunk, rotate, getSVGFile, partition } from "./utils";
 

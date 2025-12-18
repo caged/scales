@@ -1,8 +1,9 @@
 <script>
   import { Chord, Note } from "tonal";
-  import { scale as getScale, tnps, pentatonic } from "$lib/frets/index";
+  import { scale as getScale, tnps, pentatonic, caged } from "$lib/frets/index";
   import KeySelector from "$lib/KeySelector.svelte";
   import ScaleSelector from "$lib/ScaleSelector.svelte";
+  import SystemSelector from "$lib/SystemSelector.svelte";
   import FretBoard from "$lib/FretBoard.svelte";
   import ScaleInfo from "$lib/ScaleInfo.svelte";
   import PositionSelector from "$lib/PositionSelector.svelte";
@@ -13,7 +14,7 @@
   import Metronome from "$lib/Metronome.svelte";
   import { tonic, tuning } from "$lib/store";
 
-  let scaleLabel = "minor";
+  let scaleLabel = "major";
   let position;
   let chordName;
 
@@ -21,9 +22,12 @@
     chordName = chord;
   }
 
+  const systemMap = { tnps, pentatonic, caged };
+
+  $: systemName = "caged";
   $: scaleName = `${$tonic} ${scaleLabel}`;
   $: scale = getScale(scaleName);
-  $: system = scale.intervals().length === 5 ? pentatonic : tnps;
+  $: system = systemMap[systemName];
   $: aliases = scale.aliases();
   $: chord = Chord.getChord(
     chordName,
@@ -62,8 +66,14 @@
     <div
       class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
     >
+      <h3 class="mb-2 font-bold">System</h3>
+      <SystemSelector bind:value={systemName} />
+    </div>
+    <div
+      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
+    >
       <h3 class="mb-2 font-bold">Position</h3>
-      <PositionSelector {scale} bind:position />
+      <PositionSelector {scale} bind:systemName bind:position />
     </div>
     <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
       <Metronome />

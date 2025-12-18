@@ -1,8 +1,11 @@
 <script>
   export let scale;
   export let position = null;
+  export let systemName;
 
-  $: positions = scale.intervals().length;
+  $: positions = ["caged", "pentatonic"].includes(systemName)
+    ? 5
+    : scale.intervals().length;
 
   function toggleEnabled(event) {
     const { target } = event;
@@ -53,7 +56,6 @@
   .selected {
     @apply bg-purple-900 text-white;
   }
-
 
   .surrounding {
     @apply bg-gray-200;
