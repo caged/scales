@@ -1,5 +1,4 @@
 <script>
-  import { get } from "svelte/store";
   import { tunings } from "../lib";
   import frets from "../lib/frets";
   import TuningSelector from "../lib/TuningSelector.svelte";
