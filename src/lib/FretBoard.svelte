@@ -6,30 +6,58 @@
   let { fretData } = $props();
 
   let containerRef = $state(null);
-  let width = $derived(containerRef.clientWidth);
-  let height = $derived(containerRef.clientHeight);
+  let width = $state(0);
+  let height = $state(0);
 
-  let fretX;
-  let strY;
   let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 
-  // onMount(() => {
-  //   width = containerRef.clientWidth;
-  //   height = containerRef.clientHeight;
+  let fretX = $derived(
+    scaleBand()
+      .domain(range(fretData.count))
+      .range([margin.left, width - margin.right])
+      .padding(0.1),
+  );
 
-  //   fretX = scaleBand()
-  //     .domain(range(fretData.count))
-  //     .range([margin.left, width - margin.right])
-  //     .padding(0.1);
+  let strY = $derived(
+    scalePoint()
+      .domain(range(fretData.tuning.length))
+      .range([margin.top, height - margin.bottom]),
+  );
 
-  //   strY = scalePoint()
-  //     .domain(range(fretData.tuning.length))
-  //     .range([margin.top, height - margin.bottom]);
-  // });
+  onMount(() => {
+    width = containerRef.clientWidth;
+    height = containerRef.clientHeight;
+  });
 </script>
 
-<div bind:this={containerRef}>
-  {#if width && height}
-    <svg viewBox="0 0 {width} {height}"> </svg>
+<div bind:this={containerRef} class="h-full w-full">
+  {#if width}
+    <svg viewBox="0 0 {width} {height}">
+      {#each fretX.domain() as fret}
+        <g transform="translate({fretX(fret)}, {margin.top})">
+          <text class="fret-label">{fret}</text>
+          <rect
+            class="fret-line"
+            x="0"
+            y="0"
+            width={1}
+            height={height - margin.top - margin.bottom}></rect>
+        </g>
+      {/each}
+    </svg>
   {/if}
 </div>
+
+<style>
+  @reference "tailwindcss";
+
+  .fret-label {
+    @apply text-sm font-bold fill-gray-800 text-center;
+    text-anchor: middle;
+    dominant-baseline: ideographic;
+  }
+
+  .fret-line {
+    @apply fill-gray-200 stroke-0;
+  }
+</style>
