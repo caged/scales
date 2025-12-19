@@ -2,7 +2,7 @@ import { Interval, Note } from "tonal";
 
 export default function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
-  count = 12
+  count = 13
 ) {
 
   const allNotes = tuning.map((string, stringIndex) => {
