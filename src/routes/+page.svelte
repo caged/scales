@@ -5,7 +5,7 @@
   import FretBoard from "../lib/FretBoard.svelte";
 
   let tuning = $state("Standard");
-  let fretData = $derived(frets(tunings.get(tuning), 12));
+  let fretData = $derived(frets(tunings.get(tuning), 13));
 </script>
 
 <svelte:head>
@@ -19,6 +19,6 @@
   </div>
 </div>
 
-<div class="border">
+<div class=" m-10 h-52 overflow-clip">
   <FretBoard {fretData} />
 </div>
