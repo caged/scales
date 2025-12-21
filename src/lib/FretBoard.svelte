@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { scaleBand, scalePoint } from "d3-scale";
   import { range } from "d3-array";
+  import { Note } from "tonal";
 
   let { fretData } = $props();
 
@@ -57,7 +58,8 @@
                   font-size="10"
                   text-anchor="middle"
                   class="fill-white"
-                  dominant-baseline="middle">{stringNote.note.letter}</text>
+                  dominant-baseline="middle"
+                  >{Note.simplify(stringNote.note.pc)}</text>
               </g>
             </g>
           {/each}
