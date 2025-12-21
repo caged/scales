@@ -5,7 +5,7 @@
   let note = key;
   let modifier = null;
 
-  const notes = ["E", "F", "G", "A", "B", "C", "D"];
+  const notes = ["C", "D", "E", "F", "G", "A", "B"];
 
   $: key = [note, modifier].join("");
   $: tonic.set(key);
@@ -17,7 +17,7 @@
 
 <div class="flex items-center space-x-5">
   <div>
-    <select name="note" bind:value={note} class="rounded-lg border-gray-300">
+    <select name="note" bind:value={note} class=" border-gray-300">
       {#each notes as note}
         <option value={note}>{note}</option>
       {/each}
@@ -29,8 +29,7 @@
       bind:group={modifier}
       on:click={toggleEnabled}
       value="b"
-      class="mr-1"
-    />
+      class="mr-1" />
     <span class="text-2xl">♭</span>
   </div>
   <div class="flex items-center">
@@ -39,8 +38,7 @@
       bind:group={modifier}
       on:click={toggleEnabled}
       value="#"
-      class="mr-1"
-    />
+      class="mr-1" />
     <span>#</span>
   </div>
 </div>
