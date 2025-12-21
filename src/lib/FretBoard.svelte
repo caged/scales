@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { scaleBand, scalePoint, scaleLinear } from "d3-scale";
   import { range } from "d3-array";
-  import { Note } from "tonal";
 
   let { fretData } = $props();
 
@@ -127,18 +126,22 @@
   }
 
   .fret-note[data-fret="0"].in-scale .fret-note-text {
-    @apply fill-green-500;
+    @apply fill-sky-500;
   }
 
   .in-scale .fret-note-background {
-    @apply fill-green-600;
+    @apply fill-sky-600 stroke-1 stroke-sky-800;
   }
 
   .in-scale .fret-note-text {
-    @apply fill-white font-bold;
+    @apply fill-white font-black;
   }
 
   .in-scale[data-interval="1P"] circle {
-    @apply fill-green-800 stroke-emerald-900;
+    @apply fill-gray-800 stroke-gray-900 stroke-2;
+  }
+
+  .in-scale:is([data-interval^="3"], [data-interval^="5"]) circle {
+    @apply fill-sky-800;
   }
 </style>
