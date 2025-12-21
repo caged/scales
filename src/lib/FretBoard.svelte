@@ -10,7 +10,7 @@
   let width = $state(0);
   let height = $state(0);
 
-  let margin = { top: 40, right: 20, bottom: 20, left: 20 };
+  let margin = { top: 40, right: 20, bottom: 20, left: 0 };
 
   let fretX = $derived(
     scaleBand()
@@ -84,7 +84,7 @@
               class="fret-line"
               x="0"
               y="0"
-              width={fret == 1 ? 10 : 2}
+              width={fret == 1 ? 8 : 2}
               height={height - margin.top - margin.bottom}></rect>
           {/if}
         </g>
