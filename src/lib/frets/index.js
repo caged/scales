@@ -2,10 +2,12 @@ import { Interval, Note } from "tonal";
 
 export default function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
-  count = 13
+  count = 13,
+  reverse = true
 ) {
+  const processedTuning = reverse ? [...tuning].reverse() : tuning;
 
-  const strings = tuning.map((string, stringIndex) => {
+  const strings = processedTuning.map((string, stringIndex) => {
     const notes = [];
     for (let fret = 0; fret < count; fret++) {
       const note = Note.transpose(string, Interval.fromSemitones(fret));
