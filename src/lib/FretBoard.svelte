@@ -49,23 +49,25 @@
             class="stroke-gray-100"
             stroke-width={lineW(i)} />
           {#each notes as stringNote}
-            <g transform="translate({fretX(stringNote.fret)}, 0)">
+            <g
+              data-interval={stringNote.interval}
+              data-in-scale={!!stringNote.interval}
+              data-fret={stringNote.fret}
+              class:in-scale={!!stringNote.interval}
+              transform="translate({fretX(stringNote.fret)}, 0)"
+              class="fret-note">
               <g
                 transform="translate({fretX.bandwidth() / 2 - margin.left}, 0)">
                 {#if stringNote.fret > 0}
-                  <circle
-                    dx="0"
-                    r="12"
-                    class="fill-amber-300 stroke-amber-500 stroke-1" />
+                  <circle class="fret-note-background" dx="0" r="12" />
                 {/if}
 
                 <text
                   dy="1"
                   font-size="10"
                   text-anchor="middle"
-                  class="fill-amber-900"
-                  dominant-baseline="middle"
-                  >{Note.simplify(stringNote.note.pc)}</text>
+                  class="fret-note-text"
+                  dominant-baseline="middle">{stringNote.label}</text>
               </g>
             </g>
           {/each}
@@ -114,5 +116,29 @@
 
   .fret-line {
     @apply fill-gray-400 stroke-0;
+  }
+
+  .fret-note-background {
+    @apply fill-white;
+  }
+
+  .fret-note-label {
+    @apply text-sm fill-gray-800;
+  }
+
+  .fret-note[data-fret="0"].in-scale .fret-note-text {
+    @apply fill-green-500;
+  }
+
+  .in-scale .fret-note-background {
+    @apply fill-green-600;
+  }
+
+  .in-scale .fret-note-text {
+    @apply fill-white font-bold;
+  }
+
+  .in-scale[data-interval="1P"] circle {
+    @apply fill-green-800 stroke-emerald-900;
   }
 </style>

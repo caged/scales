@@ -4,9 +4,14 @@
   import TuningSelector from "../lib/TuningSelector.svelte";
   import FretBoard from "../lib/FretBoard.svelte";
   import KeySelector from "../lib/KeySelector.svelte";
+  import ScaleSelector from "../lib/ScaleSelector.svelte";
+  import { Scale } from "tonal";
 
   let tuning = $state("Standard");
-  let fretData = $derived(frets(tunings.get(tuning), 16));
+  let key = $state("F");
+  let scale = $state("minor pentatonic");
+  let fretData = $derived(frets(tunings.get(tuning), 16, `${key} ${scale}`));
+  let scaleObj = $derived(Scale.get(`${key} ${scale}`));
 </script>
 
 <svelte:head>
@@ -19,7 +24,11 @@
     <TuningSelector bind:value={tuning} />
   </div>
   <div>
-    <KeySelector key="C" />
+    <KeySelector bind:value={key} />
+  </div>
+  <div>
+    <ScaleSelector bind:value={scale} />
+    {scaleObj.notes}
   </div>
 </div>
 
