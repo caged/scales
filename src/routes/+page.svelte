@@ -8,8 +8,8 @@
   import { Scale } from "tonal";
 
   let tuning = $state("Standard");
-  let key = $state("F");
-  let scale = $state("minor pentatonic");
+  let key = $state("C");
+  let scale = $state("major");
   let fretData = $derived(frets(tunings.get(tuning), 16, `${key} ${scale}`));
   let scaleObj = $derived(Scale.get(`${key} ${scale}`));
 </script>
