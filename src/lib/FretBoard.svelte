@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { scaleBand, scalePoint } from "d3-scale";
+  import { scaleBand, scalePoint, scaleLinear } from "d3-scale";
   import { range } from "d3-array";
   import { Note } from "tonal";
 
@@ -24,7 +24,9 @@
       .range([margin.top, height - margin.bottom]),
   );
 
-  let fretCenterX = $derived((fret) => fretX(fret) + fretX.bandwidth() / 2);
+  let lineW = $derived(
+    scaleLinear().domain([0, fretData.strings.length]).range([1, 4]),
+  );
 
   onMount(() => {
     width = containerRef.clientWidth;
@@ -44,20 +46,24 @@
           <line
             x1={fretX(1) - margin.left}
             x2={width - margin.right - margin.left}
-            class="stroke-gray-200" />
+            class="stroke-gray-100"
+            stroke-width={lineW(i)} />
           {#each notes as stringNote}
             <g transform="translate({fretX(stringNote.fret)}, 0)">
               <g
                 transform="translate({fretX.bandwidth() / 2 - margin.left}, 0)">
-                <circle
-                  dx="0"
-                  r="12"
-                  class="fill-amber-700 stroke-white stroke-2" />
+                {#if stringNote.fret > 0}
+                  <circle
+                    dx="0"
+                    r="12"
+                    class="fill-amber-300 stroke-amber-500 stroke-1" />
+                {/if}
+
                 <text
                   dy="1"
                   font-size="10"
                   text-anchor="middle"
-                  class="fill-white"
+                  class="fill-amber-900"
                   dominant-baseline="middle"
                   >{Note.simplify(stringNote.note.pc)}</text>
               </g>
@@ -65,21 +71,32 @@
           {/each}
         </g>
       {/each}
+      <!-- draw frets and fret numbers -->
       {#each fretX.domain() as fret}
         <g transform="translate({fretX(fret)}, {margin.top})">
-          <text
-            dx={fretX.bandwidth() / 2}
-            dy={-10}
-            class="fret-label"
-            text-anchor="middle">{fret}</text>
           {#if fret > 0}
+            <text
+              dx={fretX.bandwidth() / 2}
+              dy={-10}
+              class="fret-label"
+              text-anchor="middle">{fret}</text>
             <rect
               class="fret-line"
               x="0"
               y="0"
-              width={1}
+              width={fret == 1 ? 10 : 2}
               height={height - margin.top - margin.bottom}></rect>
           {/if}
+        </g>
+        <g
+          transform="translate({fretX(fretData.count - 1) +
+            fretX.bandwidth()}, {margin.top})">
+          <rect
+            class="fret-line"
+            x="0"
+            y="0"
+            width={2}
+            height={height - margin.top - margin.bottom}></rect>
         </g>
       {/each}
     </svg>
@@ -96,6 +113,6 @@
   }
 
   .fret-line {
-    @apply fill-gray-200 stroke-0;
+    @apply fill-gray-400 stroke-0;
   }
 </style>
