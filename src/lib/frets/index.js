@@ -5,9 +5,9 @@ export default function frets(
   count = 13
 ) {
 
-  const allNotes = tuning.map((string, stringIndex) => {
+  const strings = tuning.map((string, stringIndex) => {
     const notes = [];
-    for (let fret = 0; fret <= count; fret++) {
+    for (let fret = 0; fret < count; fret++) {
       const note = Note.transpose(string, Interval.fromSemitones(fret));
       notes.push({
         note: Note.get(note),
@@ -20,7 +20,7 @@ export default function frets(
 
   function fb() {}
 
-  fb.notes = allNotes;
+  fb.strings = strings;
   fb.tuning = tuning;
   fb.count =  count;
 
