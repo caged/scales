@@ -19,6 +19,6 @@
   </div>
 </div>
 
-<div class=" m-10 h-52 overflow-clip">
+<div class=" m-10 h-60 overflow-clip">
   <FretBoard {fretData} />
 </div>
