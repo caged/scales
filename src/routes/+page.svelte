@@ -5,6 +5,8 @@
   import FretBoard from "../lib/FretBoard.svelte";
   import KeySelector from "../lib/KeySelector.svelte";
   import ScaleSelector from "../lib/ScaleSelector.svelte";
+  import ScaleChords from "../lib/ScaleChords.svelte";
+  import ScaleInfo from "../lib/ScaleInfo.svelte";
   import { Scale } from "tonal";
 
   let tuning = $state("Standard");
@@ -15,8 +17,8 @@
 </script>
 
 <svelte:head>
-  <title>Hey there</title>
-  <meta name="Description" content="Hey there guitar scale" />
+  <title>{key} {scale} Scale</title>
+  <meta name="Description" content="{key} {scale} scale for guitar" />
 </svelte:head>
 
 <div class="flex *:p-5 *:border-r *:border-gray-200 border-b border-gray-200">
@@ -28,10 +30,18 @@
   </div>
   <div>
     <ScaleSelector bind:value={scale} />
-    {scaleObj.notes}
+  </div>
+  <div class="flex-1">
+    <ScaleInfo scale={scaleObj} />
   </div>
 </div>
 
-<div class=" m-10 h-60">
+{#if scaleObj.notes.length === 7}
+  <div class="relative bg-gray-50 p-5">
+    <ScaleChords scale={scaleObj} />
+  </div>
+{/if}
+
+<div class="p-5 h-72">
   <FretBoard {fretData} />
 </div>
