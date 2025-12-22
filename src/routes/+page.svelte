@@ -7,13 +7,14 @@
   import ScaleSelector from "../lib/ScaleSelector.svelte";
   import ScaleChords from "../lib/ScaleChords.svelte";
   import ScaleInfo from "../lib/ScaleInfo.svelte";
-  import { Scale } from "tonal";
+  import { Scale, Mode } from "tonal";
 
   let tuning = $state("Standard");
   let key = $state("C");
   let scale = $state("major");
   let fretData = $derived(frets(tunings.get(tuning), 16, `${key} ${scale}`));
   let scaleObj = $derived(Scale.get(`${key} ${scale}`));
+  let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
 </script>
 
 <svelte:head>
@@ -40,7 +41,7 @@
   <FretBoard {fretData} />
 </div>
 
-{#if scaleObj.notes.length === 7}
+{#if triads.length > 0}
   <div class="relative bg-gray-50 border-t border-gray-200 p-5">
     <ScaleChords scale={scaleObj} />
   </div>
