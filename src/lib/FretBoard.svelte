@@ -63,7 +63,7 @@
 
                 <text
                   dy="1"
-                  font-size="10"
+                  font-size="12"
                   text-anchor="middle"
                   class="fret-note-text"
                   dominant-baseline="middle">{stringNote.label}</text>
@@ -121,8 +121,8 @@
     @apply fill-white;
   }
 
-  .fret-note-label {
-    @apply text-sm fill-gray-800;
+  .fret-note-text {
+    @apply text-xs fill-gray-500;
   }
 
   .fret-note[data-fret="0"].in-scale .fret-note-text {
