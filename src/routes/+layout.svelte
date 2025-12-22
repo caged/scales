@@ -1,5 +1,8 @@
 <script>
   import "../index.css";
+  import AppContext from "../lib/AppContext.svelte";
 </script>
 
-<slot />
+<AppContext>
+  <slot />
+</AppContext>
