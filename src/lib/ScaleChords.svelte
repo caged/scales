@@ -7,12 +7,12 @@
     getChordVariations,
   } from "$lib/frets/chordFingerings.js";
 
-  let { scale, onchordchange } = $props();
+  let { scale } = $props();
 
   const { player } = getContext("app");
 
   let chordElements = $state({});
-  let chords = $state(() => Mode.triads(scale.type(), scale.tonic()));
+  let chords = $state(() => Mode.triads(scale.type, scale.tonic));
 
   function handleMouseUp(event) {
     const chordName = event.currentTarget.dataset.chord;
@@ -32,7 +32,6 @@
 
     // Get chord info for callback
     const chord = Chord.get(chordName);
-    onchordchange?.(chord);
   }
 
   function renderChord(element, chord) {
@@ -82,7 +81,7 @@
   });
 
   $effect(() => {
-    const triads = Mode.triads(scale.type(), scale.tonic());
+    const triads = Mode.triads(scale.type, scale.tonic);
 
     // Sort chords so diminished chords appear last
     chords = triads.sort((a, b) => {
@@ -105,15 +104,13 @@
 </script>
 
 <div
-  class="text-xs text-gray-500 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"
->
+  class="text-xs text-gray-500 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-5">
   {#each chords as chord}
     <button
       type="button"
       onmouseup={handleMouseUp}
-      class="flex flex-col justify-between items-center p-2 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded transition-colors"
-      data-chord={chord}
-    >
+      class="flex flex-col justify-between items-center p-1 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded transition-colors"
+      data-chord={chord}>
       <div class="font-semibold mb-2">{chord}</div>
       <div bind:this={chordElements[chord]} class="chord-diagram w-full"></div>
     </button>
