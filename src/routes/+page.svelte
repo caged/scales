@@ -1,6 +1,6 @@
 <script>
   import { tunings } from "../lib";
-  import frets from "../lib/frets";
+  import frets from "../frets";
   import TuningSelector from "../lib/TuningSelector.svelte";
   import FretBoard from "../lib/FretBoard.svelte";
   import KeySelector from "../lib/KeySelector.svelte";

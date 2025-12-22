@@ -4,7 +4,7 @@ This directory contains the source code for the Scales web application, built us
 
 ## Architecture
 
-The app is structured as a SvelteKit project which is stored in the `src` directory and a frets library in src/lib/frets that handles rendering fret boards and musical notation.  The core of the app is build on top of the Tonal music theory library, which provides functions for generating scales, chords, and notes and can be found here: node_modules/tonal.
+The app is structured as a SvelteKit project which is stored in the `src` directory and a frets library in src/frets that handles rendering fret boards and musical notation.  The core of the app is build on top of the Tonal music theory library, which provides functions for generating scales, chords, and notes and can be found here: node_modules/tonal.
 
 ## Documentation 
 

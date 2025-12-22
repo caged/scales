@@ -5,7 +5,7 @@
   import {
     getChordFingerings,
     getChordVariations,
-  } from "$lib/frets/chordFingerings.js";
+  } from "$frets/chordFingerings.js";
 
   let { scale } = $props();
 
