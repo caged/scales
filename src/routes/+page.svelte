@@ -36,12 +36,12 @@
   </div>
 </div>
 
-{#if scaleObj.notes.length === 7}
-  <div class="relative bg-gray-50 p-5">
-    <ScaleChords scale={scaleObj} />
-  </div>
-{/if}
-
 <div class="p-5 h-72">
   <FretBoard {fretData} />
 </div>
+
+{#if scaleObj.notes.length === 7}
+  <div class="relative bg-gray-50 border-t border-gray-200 p-5">
+    <ScaleChords scale={scaleObj} />
+  </div>
+{/if}
