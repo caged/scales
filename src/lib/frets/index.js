@@ -40,7 +40,7 @@ export default function frets(
         note: noteObject,
         string: stringIndex,
         interval: intervals[label] || null,
-        label: label.replace("b", "♭"),
+        label: label.replace("b", "♭").replace("#", "♯"),
         fret,
       });
     }
