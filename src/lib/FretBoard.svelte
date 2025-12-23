@@ -28,8 +28,18 @@
   );
 
   onMount(() => {
-    width = containerRef.clientWidth;
-    height = containerRef.clientHeight;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        width = entry.contentRect.width;
+        height = entry.contentRect.height;
+      }
+    });
+
+    resizeObserver.observe(containerRef);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   });
 </script>
 
