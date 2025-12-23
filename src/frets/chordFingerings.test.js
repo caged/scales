@@ -4,56 +4,116 @@ import { convertToSVGuitarFormat, getChordFingerings, getChordVariations } from 
 describe("chordFingerings tests", () => {
   describe("getChordFingerings", () => {
     it("should get fingerings for Amin7", () => {
-      const fingerings = getChordFingerings("Amin7");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
-      expect(fingerings.length).toBeGreaterThan(0);
-      expect(fingerings[0]).toHaveProperty("frets");
-      expect(fingerings[0]).toHaveProperty("fingers");
+      const result = getChordFingerings("Amin7");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.positions.length).toBeGreaterThan(0);
+      expect(result.positions[0]).toHaveProperty("frets");
+      expect(result.positions[0]).toHaveProperty("fingers");
     });
 
     it("should get fingerings for C major", () => {
-      const fingerings = getChordFingerings("C");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
-      expect(fingerings.length).toBeGreaterThan(0);
+      const result = getChordFingerings("C");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.positions.length).toBeGreaterThan(0);
     });
 
     it("should get fingerings for Cmaj", () => {
-      const fingerings = getChordFingerings("Cmaj");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
+      const result = getChordFingerings("Cmaj");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
     });
 
     it("should get fingerings for G7", () => {
-      const fingerings = getChordFingerings("G7");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
-      expect(fingerings.length).toBeGreaterThan(0);
+      const result = getChordFingerings("G7");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.positions.length).toBeGreaterThan(0);
     });
 
     it("should get fingerings for Dmaj7", () => {
-      const fingerings = getChordFingerings("Dmaj7");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
-      expect(fingerings.length).toBeGreaterThan(0);
+      const result = getChordFingerings("Dmaj7");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.positions.length).toBeGreaterThan(0);
     });
 
     it("should handle sharp notes (F#)", () => {
-      const fingerings = getChordFingerings("F#");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
+      const result = getChordFingerings("F#");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.name).toBe("Fsharpmajor");
     });
 
     it("should handle flat notes (Bb)", () => {
-      const fingerings = getChordFingerings("Bb");
-      expect(fingerings).not.toBeNull();
-      expect(Array.isArray(fingerings)).toBe(true);
+      const result = getChordFingerings("Bb");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(result).toHaveProperty("name");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.name).toBe("Bbmajor");
+    });
+
+    it("should handle E# (enharmonic to F)", () => {
+      const eSharpResult = getChordFingerings("E#");
+      const fResult = getChordFingerings("F");
+
+      expect(eSharpResult).not.toBeNull();
+      expect(fResult).not.toBeNull();
+      expect(Array.isArray(eSharpResult.positions)).toBe(true);
+      expect(eSharpResult.positions.length).toBeGreaterThan(0);
+
+      // E# and F should return the same fingerings and name
+      expect(eSharpResult).toEqual(fResult);
+    });
+
+    it("should handle B# (enharmonic to C)", () => {
+      const bSharpResult = getChordFingerings("B#");
+      const cResult = getChordFingerings("C");
+
+      expect(bSharpResult).not.toBeNull();
+      expect(cResult).not.toBeNull();
+      expect(Array.isArray(bSharpResult.positions)).toBe(true);
+      expect(bSharpResult.positions.length).toBeGreaterThan(0);
+
+      // B# and C should return the same fingerings and name
+      expect(bSharpResult).toEqual(cResult);
+    });
+
+    it("should handle E#maj7 chord", () => {
+      const eSharpMaj7 = getChordFingerings("E#maj7");
+      const fMaj7 = getChordFingerings("Fmaj7");
+
+      expect(eSharpMaj7).not.toBeNull();
+      expect(fMaj7).not.toBeNull();
+      expect(eSharpMaj7).toEqual(fMaj7);
+    });
+
+    it("should handle B#m chord", () => {
+      const bSharpMin = getChordFingerings("B#m");
+      const cMin = getChordFingerings("Cm");
+
+      expect(bSharpMin).not.toBeNull();
+      expect(cMin).not.toBeNull();
+      expect(bSharpMin).toEqual(cMin);
     });
 
     it("should return null for invalid chord", () => {
-      const fingerings = getChordFingerings("XYZ123");
-      expect(fingerings).toBeNull();
+      const result = getChordFingerings("XYZ123");
+      expect(result).toBeNull();
     });
   });
 

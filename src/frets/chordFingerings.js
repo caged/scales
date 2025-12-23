@@ -5,21 +5,22 @@ import guitar from '@tombatossals/chords-db/lib/guitar.json';
  * Get fingering positions for a chord using the chords-db library
  *
  * @param {string} chordName - The chord name (e.g., "Amin7", "C", "Gmaj7")
- * @returns {Array|null} Array of fingering positions or null if not found
+ * @returns {Object|null} Object with positions array and chord name, or null if not found
  *
  * @example
- * const fingerings = getChordFingerings("Amin7");
- * // Returns array of positions with frets, fingers, barres, etc.
- *
- * const positions = getChordFingerings("C");
+ * const result = getChordFingerings("Amin7");
  * // Returns:
- * // [{
- * //   frets: [-1, 3, 2, 0, 1, 0],
- * //   fingers: [0, 3, 2, 0, 1, 0],
- * //   baseFret: 1,
- * //   barres: [],
- * //   midi: [48, 52, 55, 60, 64]
- * // }, ...]
+ * // {
+ * //   positions: [...],  // Array of positions with frets, fingers, barres, etc.
+ * //   name: "Amin7"
+ * // }
+ *
+ * const result = getChordFingerings("C#");
+ * // Returns:
+ * // {
+ * //   positions: [...],
+ * //   name: "Csharpmajor"
+ * // }
  */
 export function getChordFingerings(chordName) {
   // Parse the chord using Tonal to get the tonic and suffix
@@ -43,6 +44,7 @@ export function getChordFingerings(chordName) {
     'D#': 'Eb',
     'Eb': 'Eb',
     'E': 'E',
+    'E#': 'F',  // Enharmonic: E# = F
     'F': 'F',
     'F#': 'Fsharp',
     'Gb': 'Fsharp',
@@ -52,7 +54,8 @@ export function getChordFingerings(chordName) {
     'A': 'A',
     'A#': 'Bb',
     'Bb': 'Bb',
-    'B': 'B'
+    'B': 'B',
+    'B#': 'C'   // Enharmonic: B# = C
   };
 
   const dbKey = keyMap[tonic];
@@ -81,7 +84,11 @@ export function getChordFingerings(chordName) {
   for (const suffixVariant of suffixVariations) {
     const match = chordData.find(c => c.suffix === suffixVariant);
     if (match) {
-      return match.positions;
+      const name = `${dbKey}${suffixVariant}`;
+      return {
+        positions: match.positions,
+        name
+      };
     }
   }
 
@@ -179,11 +186,14 @@ export function convertToSVGuitarFormat(position) {
  * // Returns multiple fingering options, each ready to use with svguitar
  */
 export function getChordVariations(chordName) {
-  const positions = getChordFingerings(chordName);
+  const result = getChordFingerings(chordName);
 
-  if (!positions) {
+  if (!result) {
     return null;
   }
 
-  return positions.map(pos => convertToSVGuitarFormat(pos));
+  return {
+    name: result.name,
+    positions: result.positions.map(pos => convertToSVGuitarFormat(pos))
+  };  
 }
