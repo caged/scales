@@ -8,6 +8,7 @@ import guitar from '@tombatossals/chords-db/lib/guitar.json';
  * @returns {Object|null} Object with positions array and chord name, or null if not found
  *
  * @example
+ * ```js
  * const result = getChordFingerings("Amin7");
  * // Returns:
  * // {
@@ -15,12 +16,13 @@ import guitar from '@tombatossals/chords-db/lib/guitar.json';
  * //   name: "Amin7"
  * // }
  *
- * const result = getChordFingerings("C#");
+ * const result2 = getChordFingerings("C#");
  * // Returns:
  * // {
  * //   positions: [...],
  * //   name: "Csharpmajor"
  * // }
+ * ```
  */
 export function getChordFingerings(chordName) {
   // Parse the chord using Tonal to get the tonic and suffix
@@ -103,6 +105,7 @@ export function getChordFingerings(chordName) {
  * @returns {Object} Chord data formatted for svguitar
  *
  * @example
+ * ```js
  * const dbPosition = {
  *   frets: [-1, 3, 2, 0, 1, 0],
  *   fingers: [0, 3, 2, 0, 1, 0],
@@ -117,6 +120,7 @@ export function getChordFingerings(chordName) {
  * //   barres: [],
  * //   position: 1
  * // }
+ * ```
  */
 export function convertToSVGuitarFormat(position) {
   const { frets, barres, baseFret = 1 } = position;
@@ -182,8 +186,10 @@ export function convertToSVGuitarFormat(position) {
  * @returns {Array|null} Array of chord positions formatted for svguitar
  *
  * @example
+ * ```js
  * const variations = getChordVariations("C");
  * // Returns multiple fingering options, each ready to use with svguitar
+ * ```
  */
 export function getChordVariations(chordName) {
   const result = getChordFingerings(chordName);

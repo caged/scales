@@ -1,7 +1,5 @@
 import { delay as pauseFor } from "./utils";
-import { getGuitarNotesHowl, NOTE_CRESCENDO_URL } from "./audioResources";
-
-const noteCrescendoUrl = NOTE_CRESCENDO_URL;
+import { getGuitarNotesHowl } from "./audioResources";
 
 export default function player() {
   function player() {}
