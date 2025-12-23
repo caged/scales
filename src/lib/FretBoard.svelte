@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { scaleBand, scalePoint, scaleLinear } from "d3-scale";
   import { range } from "d3-array";
+  import Note from "./Note.svelte";
 
   let { fretData } = $props();
 
@@ -55,25 +56,9 @@
             stroke-width={lineW(i)} />
           {#each notes as stringNote}
             <g
-              data-interval={stringNote.interval}
-              data-in-scale={!!stringNote.interval}
-              data-fret={stringNote.fret}
-              class:in-scale={!!stringNote.interval}
-              transform="translate({fretX(stringNote.fret)}, 0)"
-              class="fret-note">
-              <g
-                transform="translate({fretX.bandwidth() / 2 - margin.left}, 0)">
-                {#if stringNote.fret > 0}
-                  <circle class="fret-note-background" dx="0" r="12" />
-                {/if}
-
-                <text
-                  dy="1"
-                  font-size="12"
-                  text-anchor="middle"
-                  class="fret-note-text"
-                  dominant-baseline="middle">{stringNote.label}</text>
-              </g>
+              transform="translate({fretX(stringNote.fret) +
+                (fretX.bandwidth() / 2 - margin.left)}, 0)">
+              <Note note={stringNote} />
             </g>
           {/each}
         </g>
@@ -121,33 +106,5 @@
 
   .fret-line {
     @apply fill-gray-400 stroke-0;
-  }
-
-  .fret-note-background {
-    @apply fill-white;
-  }
-
-  .fret-note-text {
-    @apply text-xs fill-gray-500;
-  }
-
-  .fret-note[data-fret="0"].in-scale .fret-note-text {
-    @apply fill-sky-500;
-  }
-
-  .in-scale .fret-note-background {
-    @apply fill-sky-600 stroke-1 stroke-sky-800;
-  }
-
-  .in-scale .fret-note-text {
-    @apply fill-white font-black;
-  }
-
-  .in-scale[data-interval="1P"] circle {
-    @apply fill-gray-800 stroke-gray-900 stroke-2;
-  }
-
-  .in-scale:is([data-interval^="3"], [data-interval^="5"]) circle {
-    @apply fill-sky-800;
   }
 </style>
