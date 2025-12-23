@@ -8,6 +8,7 @@
   import ScaleChords from "../lib/ScaleChords.svelte";
   import ScaleInfo from "../lib/ScaleInfo.svelte";
   import { Scale, Mode } from "tonal";
+  import Chord from "../frets/Chord.svelte";
 
   let tuning = $state("Standard");
   let key = $state("C");

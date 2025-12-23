@@ -102,7 +102,7 @@ export function getChordFingerings(chordName) {
  * Convert chords-db format to svguitar format
  *
  * @param {Object} position - A position object from chords-db
- * @returns {Object} Chord data formatted for svguitar
+ * @returns {Object} Chord data formatted for svguitar with MIDI info preserved
  *
  * @example
  * ```js
@@ -111,6 +111,7 @@ export function getChordFingerings(chordName) {
  *   fingers: [0, 3, 2, 0, 1, 0],
  *   baseFret: 1,
  *   barres: [],
+ *   midi: [43, 48, 52, 55, 59, 64]
  * };
  *
  * const svguitarChord = convertToSVGuitarFormat(dbPosition);
@@ -118,12 +119,13 @@ export function getChordFingerings(chordName) {
  * // {
  * //   fingers: [[2, 3, '3'], [3, 2, '2'], [5, 1, '1']],
  * //   barres: [],
- * //   position: 1
+ * //   position: 1,
+ * //   midi: [43, 48, 52, 55, 59, 64]
  * // }
  * ```
  */
 export function convertToSVGuitarFormat(position) {
-  const { frets, barres, baseFret = 1 } = position;
+  const { frets, barres, baseFret = 1, midi } = position;
 
   const svguitarBarres = [];
 
@@ -172,11 +174,18 @@ export function convertToSVGuitarFormat(position) {
     }
   }
 
-  return {
+  const result = {
     fingers: svguitarFingers,
     barres: svguitarBarres,
     position: baseFret
   };
+
+  // Include MIDI data if available
+  if (midi) {
+    result.midi = midi;
+  }
+
+  return result;
 }
 
 /**

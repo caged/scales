@@ -175,46 +175,88 @@ describe("chordFingerings tests", () => {
       expect(result.barres[0]).toHaveProperty("fret");
       expect(result.barres[0].fret).toBe(1);
     });
+
+    it("should preserve MIDI data when present", () => {
+      const position = {
+        frets: [-1, 3, 2, 0, 1, 0],
+        fingers: [0, 3, 2, 0, 1, 0],
+        baseFret: 1,
+        barres: [],
+        midi: [43, 48, 52, 55, 59, 64]
+      };
+
+      const result = convertToSVGuitarFormat(position);
+      expect(result).toHaveProperty("midi");
+      expect(result.midi).toEqual([43, 48, 52, 55, 59, 64]);
+    });
+
+    it("should work without MIDI data", () => {
+      const position = {
+        frets: [-1, 3, 2, 0, 1, 0],
+        fingers: [0, 3, 2, 0, 1, 0],
+        baseFret: 1,
+        barres: []
+      };
+
+      const result = convertToSVGuitarFormat(position);
+      expect(result).not.toHaveProperty("midi");
+    });
   });
 
   describe("getChordVariations", () => {
     it("should return all variations for C major", () => {
-      const variations = getChordVariations("C");
-      expect(variations).not.toBeNull();
-      expect(Array.isArray(variations)).toBe(true);
-      expect(variations.length).toBeGreaterThan(0);
+      const result = getChordVariations("C");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(Array.isArray(result.positions)).toBe(true);
+      expect(result.positions.length).toBeGreaterThan(0);
 
       // Each variation should be in svguitar format
-      variations.forEach(variation => {
+      result.positions.forEach(variation => {
         expect(variation).toHaveProperty("fingers");
         expect(variation).toHaveProperty("barres");
         expect(variation).toHaveProperty("position");
       });
     });
 
+    it("should preserve MIDI data in all variations", () => {
+      const result = getChordVariations("C");
+      expect(result).not.toBeNull();
+      expect(result.positions.length).toBeGreaterThan(0);
+
+      // Each variation should have MIDI data
+      result.positions.forEach(variation => {
+        expect(variation).toHaveProperty("midi");
+        expect(Array.isArray(variation.midi)).toBe(true);
+        expect(variation.midi.length).toBeGreaterThan(0);
+      });
+    });
+
     it("should return null for invalid chord", () => {
-      const variations = getChordVariations("InvalidChord");
-      expect(variations).toBeNull();
+      const result = getChordVariations("InvalidChord");
+      expect(result).toBeNull();
     });
 
     it("should return multiple variations", () => {
-      const variations = getChordVariations("Am");
-      expect(variations).not.toBeNull();
+      const result = getChordVariations("Am");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
       // Most chords should have multiple fingering options
-      expect(variations.length).toBeGreaterThan(1);
+      expect(result.positions.length).toBeGreaterThan(1);
     });
 
     it("should return barre chords for F major", () => {
-      const variations = getChordVariations("F");
-      expect(variations).not.toBeNull();
-      expect(Array.isArray(variations)).toBe(true);
+      const result = getChordVariations("F");
+      expect(result).not.toBeNull();
+      expect(result).toHaveProperty("positions");
+      expect(Array.isArray(result.positions)).toBe(true);
 
       // F major typically has barre chord positions
-      const hasBarrePosition = variations.some(v => v.barres.length > 0);
+      const hasBarrePosition = result.positions.some(v => v.barres.length > 0);
       expect(hasBarrePosition).toBe(true);
 
       // Check first position has a barre
-      const firstVariation = variations[0];
+      const firstVariation = result.positions[0];
       expect(firstVariation.barres.length).toBeGreaterThan(0);
       expect(firstVariation.barres[0]).toHaveProperty("fromString");
       expect(firstVariation.barres[0]).toHaveProperty("toString");
