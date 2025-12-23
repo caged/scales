@@ -1,7 +1,7 @@
 <script>
   import { getChordVariations } from "../frets/chordFingerings.js";
   import { tunings } from "$lib";
-  import { onMount, getContext } from "svelte";
+  import { getContext } from "svelte";
   import { SVGuitarChord } from "svguitar";
 
   let {
@@ -32,8 +32,14 @@
     }
   }
 
-  onMount(() => {
-    // Create the SVGuitar instance once the element is mounted
+  $effect(() => {
+    // Redraw the chord whenever props or chordData changes
+    if (!el || !chordData) return;
+
+    // Clear the existing SVG content
+    el.innerHTML = "";
+
+    // Create a new SVGuitar instance and draw
     const chart = new SVGuitarChord(el);
     chart
       .configure({
