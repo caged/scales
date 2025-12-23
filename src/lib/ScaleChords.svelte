@@ -18,35 +18,32 @@
     const chordName = event.currentTarget.dataset.chord;
 
     // Use the first position's MIDI notes from chord-db
-    const fingerings = getChordFingerings(chordName);
+    const result = getChordFingerings(chordName);
 
-    if (!fingerings || fingerings.length === 0) {
+    if (!result || !result.positions || result.positions.length === 0) {
       console.warn(`No fingerings found for ${chordName}`);
       return;
     }
 
-    const firstPosition = fingerings[0];
+    const firstPosition = result.positions[0];
     const midi = firstPosition.midi;
 
     player.play(midi, 15);
-
-    // Get chord info for callback
-    const chord = Chord.get(chordName);
   }
 
   function renderChord(element, chord) {
     if (!element) return;
 
     // Standard chord rendering
-    const variations = getChordVariations(chord);
+    const { positions } = getChordVariations(chord);
 
-    if (!variations || variations.length === 0) {
+    if (!positions || positions.length === 0) {
       console.warn(`No fingerings found for ${chord}`);
       return;
     }
 
     // Use the first variation
-    const chordData = variations[0];
+    const chordData = positions[0];
     // Create the SVGuitar instance
     const chart = new SVGuitarChord(element);
     chart
@@ -81,7 +78,9 @@
   });
 
   $effect(() => {
-    const triads = Mode.triads(scale.type, scale.tonic);
+    const triads = Mode.triads(scale.type, scale.tonic).map((chord) =>
+      chord.replace("E#", "F").replace("B#", "C"),
+    );
 
     // Sort chords so diminished chords appear last
     chords = triads.sort((a, b) => {
