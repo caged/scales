@@ -31,10 +31,6 @@
     width = containerRef.clientWidth;
     height = containerRef.clientHeight;
   });
-
-  $effect(() => {
-    console.log("fretData changed", fretData.strings);
-  });
 </script>
 
 <div bind:this={containerRef} class="h-full w-full">
