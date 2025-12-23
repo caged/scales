@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { scaleBand, scalePoint, scaleLinear } from "d3-scale";
   import { range } from "d3-array";
-  import Note from "./Note.svelte";
+  import FretNote from "./FretNote.svelte";
 
   let { fretData } = $props();
 
@@ -58,7 +58,7 @@
             <g
               transform="translate({fretX(stringNote.fret) +
                 (fretX.bandwidth() / 2 - margin.left)}, 0)">
-              <Note note={stringNote} />
+              <FretNote note={stringNote} />
             </g>
           {/each}
         </g>

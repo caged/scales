@@ -1,20 +1,5 @@
 import { Interval, Note, Scale } from "tonal";
-
-function getScaleNoteIntervalMap(scale) {
-  return scale.notes.reduce((map, note, index) => {
-    map[note] = scale.intervals[index];
-    return map;
-  }, {});
-}
-
-// Create a map of note chromas to scale note names for label normalization
-function getScaleNoteLabelMap(scale) {
-  return scale.notes.reduce((map, note) => {
-    const noteObj = Note.get(note);
-    map[noteObj.chroma] = note;
-    return map;
-  }, {});
-}
+import { getScaleNoteIntervalMap, getScaleNoteLabelMap } from '$lib/utils';
 
 export default function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],

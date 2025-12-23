@@ -33,7 +33,7 @@
   <div>
     <ScaleSelector bind:value={scale} />
   </div>
-  <div class="flex-1">
+  <div class="">
     <ScaleInfo scale={scaleObj} />
   </div>
 </div>

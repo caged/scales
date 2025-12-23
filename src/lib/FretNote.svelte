@@ -1,5 +1,9 @@
 <script>
   let { note } = $props();
+
+  $effect(() => {
+    console.log("FretNote note:", note);
+  });
 </script>
 
 <g
