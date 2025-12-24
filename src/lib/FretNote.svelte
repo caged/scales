@@ -1,16 +1,17 @@
 <script>
   let { note } = $props();
 
-  $effect(() => {
-    console.log("FretNote note:", note);
-  });
+  // Check if note is in the selected position (for position filtering)
+  let inPosition = $derived(note.inPosition !== false);
 </script>
 
 <g
   data-interval={note.interval}
   data-in-scale={!!note.interval}
+  data-in-position={inPosition}
   data-fret={note.fret}
   class:in-scale={!!note.interval}
+  class:in-position={inPosition}
   class="fret-note">
   <circle class="fret-note-background" r="12"></circle>
   <text
@@ -30,6 +31,14 @@
 
   .fret-note-text {
     @apply text-xs fill-gray-500;
+  }
+
+  .fret-note:not(.in-position):is(.in-scale) .fret-note-background {
+    @apply hidden;
+  }
+
+  .fret-note:not(.in-position):is(.in-scale) .fret-note-text {
+    @apply font-normal fill-gray-500;
   }
 
   .in-scale .fret-note-background {

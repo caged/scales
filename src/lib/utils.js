@@ -10,6 +10,7 @@ export const delay = (duration, value) => {
 
 // Create a map of note names to their scale intervals
 export function getScaleNoteIntervalMap(scale) {
+  if (!scale || !scale.notes) return {};
   return scale.notes.reduce((map, note, index) => {
     map[note] = scale.intervals[index];
     return map;
@@ -18,6 +19,7 @@ export function getScaleNoteIntervalMap(scale) {
 
 // Create a map of note chromas to scale note names for label normalization
 export function getScaleNoteLabelMap(scale) {
+  if (!scale || !scale.notes) return {};
   return scale.notes.reduce((map, note) => {
     const noteObj = Note.get(note);
     map[noteObj.chroma] = note;

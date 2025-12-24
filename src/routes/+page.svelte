@@ -12,12 +12,55 @@
 
   let tuning = $state("Standard");
   let key = $state("C");
-  let scale = $state("major");
+  let scale = $state("minor pentatonic");
   let scaleObj = $derived(Scale.get(`${key} ${scale}`));
+  let system = $state("Pentatonic");
   let position = $state(null);
-  let system = $state("CAGED");
   let fretData = $derived(frets(tunings.get(tuning), 16, scaleObj));
   let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
+
+  // Filter fretData based on selected system and position
+  let filteredFretData = $derived.by(() => {
+    if (!position || !system) return fretData;
+
+    // Check if the current scale has positions for this system
+    const hasSystemPositions = fretData.strings.some(string =>
+      string.some(note => note.positions[system] && note.positions[system].length > 0)
+    );
+
+    if (!hasSystemPositions) return fretData;
+
+    // Create filtered strings with only notes in the selected position
+    const filteredStrings = fretData.strings.map(notes =>
+      notes.map(note => {
+        // Keep the note but mark if it should be in the selected position
+        // Only show notes that are in the scale AND in the selected position
+        const isInPosition = note.positions[system]?.includes(position);
+        return {
+          ...note,
+          inPosition: isInPosition && !!note.interval // Only scale notes in this position
+        };
+      })
+    );
+
+    return {
+      ...fretData,
+      strings: filteredStrings
+    };
+  });
+
+  $effect(() => {
+    console.log("Page state:", {
+      fretData,
+      filteredFretData,
+      tuning,
+      key,
+      scale,
+      system,
+      position,
+      scaleIntervals: scaleObj.intervals?.length,
+    });
+  });
 </script>
 
 <svelte:head>
@@ -45,7 +88,7 @@
 </div>
 
 <div class="p-5 h-72">
-  <FretBoard {fretData} />
+  <FretBoard fretData={filteredFretData} />
 </div>
 
 {#if triads.length > 0}

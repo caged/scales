@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import {Scale} from "tonal";
-import { frets } from "../";
-import pentatonic from "./pentatonic";
+import { Scale, Note } from "tonal";
+import frets from "../index.js";
+import pentatonic from "./pentatonic.js";
 
 describe("pentatonic scale tests", () => {
   let fb;
@@ -12,7 +12,7 @@ describe("pentatonic scale tests", () => {
 
   beforeEach(() => {
     fb = frets();
-    notes = fb.notes();
+    notes = fb.strings;
     dms = Scale.get("A minor pentatonic");
     strings = pentatonic(notes, dms);
   });
@@ -25,27 +25,29 @@ describe("pentatonic scale tests", () => {
   });
 
   it("assigns correct positions to scale notes", () => {
-    const e = strings[0];
-    const anote = e[5];
+    const e = strings[0]; // High E string (E4) - strings are reversed by default
+    const anote = e[5]; // 5th fret on high E string is A4
 
-    expect(anote.name).toBe("A2");
+    expect(anote.note.name).toBe("A4");
     expect(anote.interval).toBe("1P");
-    expect(anote.positions).toEqual([1, 5]);
+    // A is the root, and A appears at fret 5 on low E string, so position 1 starts at fret 5
+    // Fret 5 relative to root (5) = 0, which is in positions 1 and 5
+    expect(anote.positions.Pentatonic).toEqual([1, 5]);
   });
 
   it("assigns positions property to all scale notes on all strings", () => {
     for (const string of strings) {
       for (const note of string) {
-        if (note.positions && note.positions.length > 0) {
-          expect(Array.isArray(note.positions)).toBe(true);
-          expect(note.positions.every((pos) => pos >= 1 && pos <= 5)).toBe(true);
+        if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
+          expect(Array.isArray(note.positions.Pentatonic)).toBe(true);
+          expect(note.positions.Pentatonic.every((pos) => pos >= 1 && pos <= 5)).toBe(true);
         }
       }
     }
   });
 
   it("assigns interval property to scale notes", () => {
-    const scaleIntervals = dms.intervals();
+    const scaleIntervals = dms.intervals;
     for (const string of strings) {
       for (const note of string) {
         if (note.interval) {
@@ -60,20 +62,20 @@ describe("pentatonic scale tests", () => {
   });
 
   it("returns the same string array reference that was passed in", () => {
-    const originalNotes = fb.notes();
+    const originalNotes = fb.strings;
     const result = pentatonic(originalNotes, dms);
     expect(result).toBe(originalNotes);
   });
 
   it("works with different pentatonic scales", () => {
     const gMajorPent = Scale.get("G major pentatonic");
-    const gStrings = pentatonic(frets().notes(), gMajorPent);
+    const gStrings = pentatonic(frets().strings, gMajorPent);
 
     expect(gStrings).toBeDefined();
     expect(gStrings.length).toBe(6);
 
     const hasPositions = gStrings.some((string) =>
-      string.some((note) => note.positions && note.positions.length > 0)
+      string.some((note) => note.positions.Pentatonic && note.positions.Pentatonic.length > 0)
     );
     expect(hasPositions).toBe(true);
   });
@@ -81,9 +83,9 @@ describe("pentatonic scale tests", () => {
   it("assigns position arrays with values between 1 and 5", () => {
     for (const string of strings) {
       for (const note of string) {
-        if (note.positions && note.positions.length > 0) {
-          expect(Array.isArray(note.positions)).toBe(true);
-          for (const pos of note.positions) {
+        if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
+          expect(Array.isArray(note.positions.Pentatonic)).toBe(true);
+          for (const pos of note.positions.Pentatonic) {
             expect(pos).toBeGreaterThanOrEqual(1);
             expect(pos).toBeLessThanOrEqual(5);
           }
@@ -93,12 +95,12 @@ describe("pentatonic scale tests", () => {
   });
 
   it("only assigns positions to notes that are in the scale", () => {
-    const scaleChroma = dms.notes().map((n) => n.chroma);
+    const scaleChroma = dms.notes.map((noteName) => Note.get(noteName).chroma);
 
     for (const string of strings) {
       for (const note of string) {
-        if (note.positions && note.positions.length > 0) {
-          expect(scaleChroma).toContain(note.chroma);
+        if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
+          expect(scaleChroma).toContain(note.note.chroma);
         }
       }
     }
@@ -107,7 +109,7 @@ describe("pentatonic scale tests", () => {
   it("notes with positions have corresponding intervals", () => {
     for (const string of strings) {
       for (const note of string) {
-        if (note.positions && note.positions.length > 0) {
+        if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
           expect(note.interval).toBeDefined();
         }
       }
@@ -115,16 +117,16 @@ describe("pentatonic scale tests", () => {
   });
 
   it("each scale note appears on multiple strings", () => {
-    const scaleChroma = dms.notes().map((n) => n.chroma);
+    const scaleChroma = dms.notes.map((noteName) => Note.get(noteName).chroma);
     const chromaStringCount = {};
 
     for (const [strnum, string] of strings.entries()) {
       for (const note of string) {
-        if (note.positions && note.positions.length > 0) {
-          if (!chromaStringCount[note.chroma]) {
-            chromaStringCount[note.chroma] = new Set();
+        if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
+          if (!chromaStringCount[note.note.chroma]) {
+            chromaStringCount[note.note.chroma] = new Set();
           }
-          chromaStringCount[note.chroma].add(strnum);
+          chromaStringCount[note.note.chroma].add(strnum);
         }
       }
     }
@@ -140,19 +142,19 @@ describe("pentatonic scale tests", () => {
       const notesByChroma = {};
 
       for (const note of string) {
-        if (note.positions && note.positions.length > 0) {
-          if (!notesByChroma[note.chroma]) {
-            notesByChroma[note.chroma] = [];
+        if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
+          if (!notesByChroma[note.note.chroma]) {
+            notesByChroma[note.note.chroma] = [];
           }
-          notesByChroma[note.chroma].push(note);
+          notesByChroma[note.note.chroma].push(note);
         }
       }
 
-      for (const [chroma, notes] of Object.entries(notesByChroma)) {
+      for (const notes of Object.values(notesByChroma)) {
         if (notes.length > 1) {
-          const firstPositions = JSON.stringify(notes[0].positions);
+          const firstPositions = JSON.stringify(notes[0].positions.Pentatonic);
           for (const note of notes) {
-            expect(JSON.stringify(note.positions)).toBe(firstPositions);
+            expect(JSON.stringify(note.positions.Pentatonic)).toBe(firstPositions);
           }
         }
       }

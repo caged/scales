@@ -1,5 +1,6 @@
-import { Interval, Note, Scale } from "tonal";
-import { getScaleNoteIntervalMap, getScaleNoteLabelMap } from '$lib/utils';
+import { Interval, Note } from "tonal";
+import { getScaleNoteIntervalMap, getScaleNoteLabelMap } from '../lib/utils.js';
+import pentatonic from './system/pentatonic.js';
 
 export default function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
@@ -26,10 +27,19 @@ export default function frets(
         interval: intervals[label] || null,
         label: label.replace("b", "♭").replace("#", "♯"),
         fret,
+        positions: {}, // Initialize empty positions object for systems to populate
       });
     }
     return notes;
   })
+
+  // Apply position systems if a scale is provided
+  if (scale && scale.intervals) {
+    // Apply pentatonic positions if it's a pentatonic scale
+    if (scale.intervals.length === 5) {
+      pentatonic(strings, scale);
+    }
+  }
 
   function fb() {}
 
