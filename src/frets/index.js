@@ -7,10 +7,9 @@ export default function frets(
   scale,
   reverse = true
 ) {
-  const scaleObj = Scale.get(scale);
   const processedTuning = reverse ? [...tuning].reverse() : tuning;
-  const intervals = getScaleNoteIntervalMap(scaleObj);
-  const scaleNoteLabelMap = getScaleNoteLabelMap(scaleObj);
+  const intervals = getScaleNoteIntervalMap(scale);
+  const scaleNoteLabelMap = getScaleNoteLabelMap(scale);
 
   const strings = processedTuning.map((string, stringIndex) => {
     const notes = [];
