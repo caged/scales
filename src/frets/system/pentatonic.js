@@ -10,8 +10,7 @@ export default function pentatonic(strings, scale) {
     const noteObj = Note.get(noteName);
     return {
       note: noteObj,
-      interval: intervals[i],
-      name: noteName,
+      interval: intervals[i]
     };
   });
 
