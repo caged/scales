@@ -14,19 +14,19 @@
   <div class="flex items-center space-x-2">
     {#if system === "CAGED"}
       <label
-        ><input type="radio" name="position" bind:group={position} value="C" />
+        ><input type="radio" name="position" bind:group={position} value={1} />
         <span>C</span></label>
       <label
-        ><input type="radio" name="position" bind:group={position} value="A" />
+        ><input type="radio" name="position" bind:group={position} value={2} />
         <span>A</span></label>
       <label
-        ><input type="radio" name="position" bind:group={position} value="G" />
+        ><input type="radio" name="position" bind:group={position} value={3} />
         <span>G</span></label>
       <label
-        ><input type="radio" name="position" bind:group={position} value="E" />
+        ><input type="radio" name="position" bind:group={position} value={4} />
         <span>E</span></label>
       <label
-        ><input type="radio" name="position" bind:group={position} value="D" />
+        ><input type="radio" name="position" bind:group={position} value={5} />
         <span>D</span></label>
     {:else if system === "3NPS"}
       <label

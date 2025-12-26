@@ -30,8 +30,9 @@ describe("pentatonic scale tests", () => {
 
     expect(anote.note.name).toBe("A4");
     expect(anote.interval).toBe("1P");
-    // A is the root, and A appears at fret 5 on low E string, so position 1 starts at fret 5
-    // Fret 5 relative to root (5) = 0, which is in positions 1 and 5
+    // A is the root (degree 0). On high E string for A minor pentatonic:
+    // Position 1 (G shape) pattern is [0, 1] - includes root (degree 0)
+    // Position 5 (A shape) pattern is [4, 0] - includes root (degree 0)
     expect(anote.positions.Pentatonic).toEqual([1, 5]);
   });
 

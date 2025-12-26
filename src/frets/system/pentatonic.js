@@ -10,65 +10,123 @@ export default function pentatonic(strings, scale) {
     const noteObj = Note.get(noteName);
     return {
       note: noteObj,
-      interval: intervals[i]
+      interval: intervals[i],
+      name: noteName,
     };
   });
 
-  // Find the root note (1P) to anchor positions
-  const rootNote = scaleNotes.find(sn => sn.interval === "1P");
-  if (!rootNote) {
-    throw new Error("Scale must have a root note (1P)");
-  }
+  // Pentatonic positions use CAGED shape naming: Position 1=G, 2=E, 3=D, 4=C, 5=A
+  //
+  // For minor pentatonic (e.g., C minor):
+  //   Position 1 (G shape) starts on the root (C at fret 8)
+  //
+  // For major pentatonic (e.g., C major):
+  //   Position 1 (G shape) starts on the 6th (A at fret 5)
+  //
+  // This means C major and A minor (which are relative and share notes)
+  // have their Position 1 patterns at different fret locations
+  //
+  // Each pattern defines which scale degrees (0-4) appear on each string
+  // Patterns are 2 notes per string
+  // Strings are in reversed order: [high E, B, G, D, A, low E]
 
-  // Find the root note on the lowest string (low E, which is the last string in reversed array)
-  // This anchors position 1 to the traditional starting position
-  let rootFret = null;
-  const lowestString = strings[strings.length - 1]; // Low E string
-
-  for (const semitone of lowestString) {
-    if (semitone.note.chroma === rootNote.note.chroma) {
-      rootFret = semitone.fret;
-      break; // Take the first occurrence on the low E string
-    }
-  }
-
-  if (rootFret === null) {
-    throw new Error("Could not find root note on lowest string");
-  }
-
-  // Define position boxes based on fret ranges relative to the root
-  // Each position spans 4-5 frets with overlaps, positions repeat every 12 frets (octave)
-  const getPositionForFret = (fret) => {
-    // Calculate fret position relative to root, normalized to 0-11 range (one octave)
-    const relativeToRoot = (fret - rootFret + 12) % 12;
-
-    // Position boxes (relative to root fret):
-    // Position 1: root + 0-3 semitones
-    // Position 2: root + 2-5 semitones  (overlaps with 1)
-    // Position 3: root + 4-7 semitones  (overlaps with 2)
-    // Position 4: root + 7-10 semitones (overlaps with 3)
-    // Position 5: root + 9-11 semitones and wraps to 0-1 (overlaps with 4 and 1)
-
-    const positions = [];
-
-    if (relativeToRoot >= 0 && relativeToRoot <= 3) positions.push(1);
-    if (relativeToRoot >= 2 && relativeToRoot <= 5) positions.push(2);
-    if (relativeToRoot >= 4 && relativeToRoot <= 7) positions.push(3);
-    if (relativeToRoot >= 7 && relativeToRoot <= 10) positions.push(4);
-    if (relativeToRoot >= 9 || relativeToRoot <= 1) positions.push(5);
-
-    return positions;
+  // Physical patterns for each CAGED shape
+  const shapePatterns = {
+    G: [
+      [0, 1], // High E string: root, 2nd
+      [3, 4], // B string: 5th, m7 (or 6th in major)
+      [1, 2], // G string: 2nd, 4th
+      [4, 0], // D string: m7/6th, root
+      [2, 3], // A string: 4th, 5th
+      [0, 1], // Low E string: root, 2nd
+    ],
+    E: [
+      [1, 2], // High E string: 2nd, 4th
+      [4, 0], // B string: m7/6th, root
+      [2, 3], // G string: 4th, 5th
+      [0, 1], // D string: root, 2nd
+      [3, 4], // A string: 5th, m7/6th
+      [1, 2], // Low E string: 2nd, 4th
+    ],
+    D: [
+      [2, 3], // High E string: 4th, 5th
+      [0, 1], // B string: root, 2nd
+      [3, 4], // G string: 5th, m7/6th
+      [1, 2], // D string: 2nd, 4th
+      [4, 0], // A string: m7/6th, root
+      [2, 3], // Low E string: 4th, 5th
+    ],
+    C: [
+      [3, 4], // High E string: 5th, m7/6th
+      [1, 2], // B string: 2nd, 4th
+      [4, 0], // G string: m7/6th, root
+      [2, 3], // D string: 4th, 5th
+      [0, 1], // A string: root, 2nd
+      [3, 4], // Low E string: 5th, m7/6th
+    ],
+    A: [
+      [4, 0], // High E string: m7/6th, root
+      [2, 3], // B string: 4th, 5th
+      [0, 1], // G string: root, 2nd
+      [3, 4], // D string: 5th, m7/6th
+      [1, 2], // A string: 2nd, 4th
+      [4, 0], // Low E string: m7/6th, root
+    ],
   };
 
-  for (const str of strings) {
+  // Determine if this is a major or minor pentatonic scale
+  // Minor pentatonic: 1P 3m 4P 5P 7m
+  // Major pentatonic: 1P 2M 3M 5P 6M
+  const isMajor = intervals.includes("3M");
+
+  // Position-to-shape mapping is always: Position 1=G, 2=E, 3=D, 4=C, 5=A
+  const positionMapping = { 1: "G", 2: "E", 3: "D", 4: "C", 5: "A" };
+
+  // For major pentatonic, we need to rotate the pattern indices
+  // This is because C major Position 1 should start at the 6th degree (A),
+  // while C minor Position 1 starts at the root (C)
+  // The offset is 4 positions forward (or 1 position backward) in the pentatonic scale
+  const patternOffset = isMajor ? 4 : 0;
+
+  const pentatonicShapes = Object.entries(positionMapping).map(
+    ([pos, shape]) => {
+      const basePattern = shapePatterns[shape];
+      // Rotate the pattern indices for major scales
+      const rotatedPattern = basePattern.map(degreeArr =>
+        degreeArr.map(degree => (degree + patternOffset) % 5)
+      );
+
+      return {
+        position: parseInt(pos),
+        shape: shape,
+        pattern: rotatedPattern,
+      };
+    }
+  );
+
+  for (let stringIndex = 0; stringIndex < strings.length; stringIndex++) {
+    const str = strings[stringIndex];
+
     for (const semitone of str) {
-      const scaleNote = scaleNotes.find((sn) => {
-        return semitone.note.chroma === sn.note.chroma;
-      });
+      const scaleNote = scaleNotes.find(
+        (sn) => sn.note.chroma === semitone.note.chroma
+      );
 
       if (scaleNote) {
-        // Assign positions based on fret location
-        semitone.positions.Pentatonic = getPositionForFret(semitone.fret);
+        const positions = [];
+        const scaleDegreeIndex = scaleNotes.findIndex(
+          (sn) => sn.note.chroma === semitone.note.chroma
+        );
+
+        for (const shape of pentatonicShapes) {
+          const stringPattern = shape.pattern[stringIndex];
+
+          if (stringPattern.includes(scaleDegreeIndex % 5)) {
+            positions.push(shape.position);
+          }
+        }
+
+        semitone.positions.Pentatonic = [...new Set(positions)].sort();
         semitone.interval = scaleNote.interval;
       }
     }

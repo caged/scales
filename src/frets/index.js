@@ -1,6 +1,7 @@
 import { Interval, Note } from "tonal";
 import { getScaleNoteIntervalMap, getScaleNoteLabelMap } from '../lib/utils.js';
 import pentatonic from './system/pentatonic.js';
+import caged from './system/caged.js';
 
 export default function frets(
   tuning = ["E2", "A2", "D3", "G3", "B3", "E4"],
@@ -35,9 +36,16 @@ export default function frets(
 
   // Apply position systems if a scale is provided
   if (scale && scale.intervals) {
+    const noteCount = scale.intervals.length;
+
     // Apply pentatonic positions if it's a pentatonic scale
-    if (scale.intervals.length === 5) {
+    if (noteCount === 5) {
       pentatonic(strings, scale);
+    }
+
+    // Apply CAGED positions for pentatonic (5 notes) or major/minor scales (7 notes)
+    if (noteCount === 5 || noteCount === 7) {
+      caged(strings, scale);
     }
   }
 
