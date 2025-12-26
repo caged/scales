@@ -113,3 +113,11 @@ export const cagedPositionMapping = {
   4: "E",
   5: "D",
 };
+
+export const cagedPositionMappingMajor = {
+  1: "A",
+  2: "G",
+  3: "E",
+  4: "D",
+  5: "C",
+}
