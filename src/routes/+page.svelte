@@ -14,7 +14,9 @@
   let key = $state("C");
   let scale = $state("minor pentatonic");
   let scaleObj = $derived(Scale.get(`${key} ${scale}`));
-  let system = $state("Pentatonic");
+  let system = $derived.by(() =>
+    scaleObj.intervals.length === 7 ? "CAGED" : "Pentatonic",
+  );
   let position = $state(null);
   let fretData = $derived(frets(tunings.get(tuning), 16, scaleObj));
   let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
