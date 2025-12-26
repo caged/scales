@@ -2,6 +2,7 @@ import {
   cagedPositionMapping,
   diatonicPatterns,
   pentatonicPatterns,
+  pentatonicPositionMapping,
 } from "./patterns.js";
 
 import { Note } from "tonal";
@@ -34,7 +35,7 @@ export default function caged(strings, scale) {
 
   console.log('isMajor:', isMajor, intervals, scale);
 
-  // For major pentatonic scales, rotate the pattern indices
+  // For major scales, rotate the pattern indices
   // This aligns the patterns correctly with the scale degrees
   // const patternOffset = (noteCount === 5 && isMajor) ? 4 : 0;
   const patternOffset = isMajor ? 4 : 0;
@@ -43,7 +44,7 @@ export default function caged(strings, scale) {
     ([pos, shape]) => {
       const basePattern = basePatterns[shape];
 
-      // Rotate the pattern indices for major pentatonic scales
+      // Rotate the pattern indices for major scales
       const rotatedPattern = basePattern.map(degreeArr =>
         degreeArr.map(degree => (degree + patternOffset) % noteCount)
       );
