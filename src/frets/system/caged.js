@@ -1,4 +1,9 @@
 import { Note } from "tonal";
+import {
+  pentatonicPatterns,
+  diatonicPatterns,
+  cagedPositionMapping,
+} from "./patterns.js";
 
 export default function caged(strings, scale) {
   const noteCount = scale.intervals.length;
@@ -18,66 +23,34 @@ export default function caged(strings, scale) {
     };
   });
 
-  // CAGED shapes define which scale degrees appear on each string for each position
-  // Patterns are in scale degree indices (0-based: 0=root, 1=2nd, 2=3rd, etc.)
-  // Strings are in reversed order: [high E, B, G, D, A, low E]
-  const cagedShapes = {
-    C: {
-      position: 1,
-      pattern: [
-        [2, 3, 4], // High E string: 3rd, 4th, 5th
-        [5, 6, 0], // B string: 6th, 7th, root
-        [3, 4, 5], // G string: 4th, 5th, 6th
-        [1, 2],    // D string: 2nd, 3rd
-        [6, 0],    // A string: 7th, root
-        [3, 4, 5], // Low E string: 4th, 5th, 6th
-      ],
-    },
-    A: {
-      position: 2,
-      pattern: [
-        [5, 6, 0], // High E string: 6th, 7th, root
-        [0, 1, 2], // B string: root, 2nd, 3rd
-        [5, 6, 0], // G string: 6th, 7th, root
-        [2, 3, 4], // D string: 3rd, 4th, 5th
-        [0, 1, 2], // A string: root, 2nd, 3rd
-        [5, 6, 0], // Low E string: 6th, 7th, root
-      ],
-    },
-    G: {
-      position: 3,
-      pattern: [
-        [0, 1, 2], // High E string: root, 2nd, 3rd
-        [4, 5, 6], // B string: 5th, 6th, 7th
-        [2, 3, 4], // G string: 3rd, 4th, 5th
-        [6, 0, 1], // D string: 7th, root, 2nd
-        [4, 5, 6], // A string: 5th, 6th, 7th
-        [2, 3, 4], // Low E string: 3rd, 4th, 5th
-      ],
-    },
-    E: {
-      position: 4,
-      pattern: [
-        [0, 1, 2], // High E string: root, 2nd, 3rd
-        [5, 6, 0], // B string: 6th, 7th, root
-        [3, 4, 5], // G string: 4th, 5th, 6th
-        [1, 2, 3], // D string: 2nd, 3rd, 4th
-        [6, 0, 1], // A string: 7th, root, 2nd
-        [3, 4, 5], // Low E string: 4th, 5th, 6th
-      ],
-    },
-    D: {
-      position: 5,
-      pattern: [
-        [5, 6, 0], // High E string: 6th, 7th, root
-        [3, 4, 5], // B string: 4th, 5th, 6th
-        [0, 1, 2], // G string: root, 2nd, 3rd
-        [5, 6, 0], // D string: 6th, 7th, root
-        [3, 4],    // A string: 4th, 5th
-        [0, 1, 2], // Low E string: root, 2nd, 3rd
-      ],
-    },
-  };
+  // CAGED system uses position mapping: Position 1=C, 2=A, 3=G, 4=E, 5=D
+  // For pentatonic (5 notes), use pentatonicPatterns (2 notes per string)
+  // For diatonic (7 notes), use diatonicPatterns (3 notes per string)
+  const basePatterns = noteCount === 5 ? pentatonicPatterns : diatonicPatterns;
+
+  // Determine if this is a major or minor scale for rotation
+  const isMajor = intervals.includes("3M") || intervals.includes("2M");
+
+  // For major pentatonic scales, rotate the pattern indices
+  // This aligns the patterns correctly with the scale degrees
+  const patternOffset = (noteCount === 5 && isMajor) ? 4 : 0;
+
+  const cagedShapes = Object.entries(cagedPositionMapping).map(
+    ([pos, shape]) => {
+      const basePattern = basePatterns[shape];
+
+      // Rotate the pattern indices for major pentatonic scales
+      const rotatedPattern = basePattern.map(degreeArr =>
+        degreeArr.map(degree => (degree + patternOffset) % noteCount)
+      );
+
+      return {
+        position: parseInt(pos),
+        shape: shape,
+        pattern: rotatedPattern,
+      };
+    }
+  );
 
   for (let stringIndex = 0; stringIndex < strings.length; stringIndex++) {
     const str = strings[stringIndex];
@@ -93,25 +66,11 @@ export default function caged(strings, scale) {
           (sn) => sn.note.chroma === semitone.note.chroma
         );
 
-        for (const shape of Object.values(cagedShapes)) {
+        for (const shape of cagedShapes) {
           const stringPattern = shape.pattern[stringIndex];
 
-          if (noteCount === 5) {
-            // For pentatonic scales, filter out the 3rd and 6th degrees
-            // and adjust the remaining degrees accordingly
-            const pentatonicPattern = stringPattern
-              .filter((d) => d !== 3 && d !== 6)
-              .map((d) => (d > 3 ? d - 1 : d))
-              .map((d) => (d > 5 ? d - 2 : d));
-
-            if (pentatonicPattern.includes(scaleDegreeIndex % noteCount)) {
-              positions.push(shape.position);
-            }
-          } else {
-            // For 7-note scales, use the pattern as-is
-            if (stringPattern.includes(scaleDegreeIndex % noteCount)) {
-              positions.push(shape.position);
-            }
+          if (stringPattern.includes(scaleDegreeIndex % noteCount)) {
+            positions.push(shape.position);
           }
         }
 
