@@ -45,7 +45,7 @@ export default function pentatonic(strings, scale) {
     // Position boxes (relative to root fret):
     // Position 1: root + 0-3 semitones
     // Position 2: root + 2-5 semitones  (overlaps with 1)
-    // Position 3: root + 5-8 semitones  (overlaps with 2)
+    // Position 3: root + 4-7 semitones  (overlaps with 2)
     // Position 4: root + 7-10 semitones (overlaps with 3)
     // Position 5: root + 9-11 semitones and wraps to 0-1 (overlaps with 4 and 1)
 
@@ -53,7 +53,7 @@ export default function pentatonic(strings, scale) {
 
     if (relativeToRoot >= 0 && relativeToRoot <= 3) positions.push(1);
     if (relativeToRoot >= 2 && relativeToRoot <= 5) positions.push(2);
-    if (relativeToRoot >= 5 && relativeToRoot <= 8) positions.push(3);
+    if (relativeToRoot >= 4 && relativeToRoot <= 7) positions.push(3);
     if (relativeToRoot >= 7 && relativeToRoot <= 10) positions.push(4);
     if (relativeToRoot >= 9 || relativeToRoot <= 1) positions.push(5);
 
