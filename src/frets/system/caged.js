@@ -1,9 +1,10 @@
-import { Note } from "tonal";
 import {
-  pentatonicPatterns,
-  diatonicPatterns,
   cagedPositionMapping,
+  diatonicPatterns,
+  pentatonicPatterns,
 } from "./patterns.js";
+
+import { Note } from "tonal";
 
 export default function caged(strings, scale) {
   const noteCount = scale.intervals.length;

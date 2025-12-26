@@ -50,47 +50,48 @@ export const pentatonicPatterns = {
 };
 
 // Diatonic patterns (3 notes per string for most strings)
-// Used by CAGED system for 7-note scales
+// Used by CAGED system for 7-note minor/major scales
+// These patterns are based on minor scale interval indices
 export const diatonicPatterns = {
-  C: [
-    [2, 3, 4], // High E string: 3rd, 4th, 5th
-    [5, 6, 0], // B string: 6th, 7th, root
-    [3, 4, 5], // G string: 4th, 5th, 6th
-    [1, 2],    // D string: 2nd, 3rd
-    [6, 0],    // A string: 7th, root
-    [3, 4, 5], // Low E string: 4th, 5th, 6th
-  ],
-  A: [
-    [5, 6, 0], // High E string: 6th, 7th, root
-    [0, 1, 2], // B string: root, 2nd, 3rd
-    [5, 6, 0], // G string: 6th, 7th, root
-    [2, 3, 4], // D string: 3rd, 4th, 5th
-    [0, 1, 2], // A string: root, 2nd, 3rd
-    [5, 6, 0], // Low E string: 6th, 7th, root
-  ],
   G: [
     [0, 1, 2], // High E string: root, 2nd, 3rd
     [4, 5, 6], // B string: 5th, 6th, 7th
-    [2, 3, 4], // G string: 3rd, 4th, 5th
-    [6, 0, 1], // D string: 7th, root, 2nd
-    [4, 5, 6], // A string: 5th, 6th, 7th
-    [2, 3, 4], // Low E string: 3rd, 4th, 5th
+    [1, 2, 3], // G string: 2nd, 3rd, 4th
+    [6, 0], // D string: 7th, root
+    [3, 4, 5], // A string: 4th, 5th, 6th
+    [0, 1, 2], // Low E string: root, 2nd, 3rd
   ],
   E: [
-    [0, 1, 2], // High E string: root, 2nd, 3rd
-    [5, 6, 0], // B string: 6th, 7th, root
+    [1, 2, 3], // High E string: 2nd, 3rd, 4th
+    [6, 0], // B string: 7th, root
     [3, 4, 5], // G string: 4th, 5th, 6th
-    [1, 2, 3], // D string: 2nd, 3rd, 4th
-    [6, 0, 1], // A string: 7th, root, 2nd
-    [3, 4, 5], // Low E string: 4th, 5th, 6th
+    [0, 1, 2], // D string: root, 2nd, 3rd
+    [4, 5, 6], // A string: 5th, 6th, 7th
+    [1, 2, 3], // Low E string: 2nd, 3rd, 4th
   ],
   D: [
-    [5, 6, 0], // High E string: 6th, 7th, root
+    [3, 4, 5], // High E string: 4th, 5th, 6th
+    [0, 1, 2], // B string: root, 2nd, 3rd
+    [4, 5, 6], // G string: 5th, 6th, 7th
+    [1, 2, 3], // D string: 2nd, 3rd, 4th
+    [6, 0], // A string: 7th, root
+    [3, 4, 5], // Low E string: 4th, 5th, 6th
+  ],
+  C: [
+    [4, 5, 6], // High E string: 5th, 6th, 7th
+    [1, 2, 3], // B string: 2nd, 3rd, 4th
+    [6, 0], // G string: 7th, root
+    [3, 4, 5], // D string: 4th, 5th, 6th
+    [0, 1, 2], // A string: root, 2nd, 3rd
+    [4, 5, 6], // Low E string: 5th, 6th, 7th
+  ],
+  A: [
+    [6, 0], // High E string: 7th, root
     [3, 4, 5], // B string: 4th, 5th, 6th
     [0, 1, 2], // G string: root, 2nd, 3rd
-    [5, 6, 0], // D string: 6th, 7th, root
-    [3, 4],    // A string: 4th, 5th
-    [0, 1, 2], // Low E string: root, 2nd, 3rd
+    [4, 5, 6], // D string: 5th, 6th, 7th
+    [1, 2, 3], // A string: 2nd, 3rd, 4th
+    [6, 0], // Low E string: 7th, root
   ],
 };
 
