@@ -24,28 +24,30 @@
     if (!position || !system) return fretData;
 
     // Check if the current scale has positions for this system
-    const hasSystemPositions = fretData.strings.some(string =>
-      string.some(note => note.positions[system] && note.positions[system].length > 0)
+    const hasSystemPositions = fretData.strings.some((string) =>
+      string.some(
+        (note) => note.positions[system] && note.positions[system].length > 0,
+      ),
     );
 
     if (!hasSystemPositions) return fretData;
 
     // Create filtered strings with only notes in the selected position
-    const filteredStrings = fretData.strings.map(notes =>
-      notes.map(note => {
+    const filteredStrings = fretData.strings.map((notes) =>
+      notes.map((note) => {
         // Keep the note but mark if it should be in the selected position
         // Only show notes that are in the scale AND in the selected position
         const isInPosition = note.positions[system]?.includes(position);
         return {
           ...note,
-          inPosition: isInPosition && !!note.interval // Only scale notes in this position
+          inPosition: isInPosition && !!note.interval, // Only scale notes in this position
         };
-      })
+      }),
     );
 
     return {
       ...fretData,
-      strings: filteredStrings
+      strings: filteredStrings,
     };
   });
 
@@ -80,10 +82,10 @@
     <ScaleSelector bind:value={scale} />
   </div>
   <div class="">
-    <ScaleInfo scale={scaleObj} />
-  </div>
-  <div>
     <SystemSelector bind:system bind:position />
+  </div>
+  <div class="border-r-0">
+    <ScaleInfo scale={scaleObj} />
   </div>
 </div>
 
