@@ -53,6 +53,22 @@ export const pentatonicPatterns = {
 // Used by CAGED system for 7-note minor/major scales
 // These patterns are based on minor scale interval indices
 export const diatonicPatterns = {
+  C: [
+    [4, 5, 6], // High E string: 5th, 6th, 7th
+    [1, 2, 3], // B string: 2nd, 3rd, 4th
+    [6, 0], // G string: 7th, root
+    [3, 4, 5], // D string: 4th, 5th, 6th
+    [0, 1, 2], // A string: root, 2nd, 3rd
+    [4, 5, 6], // Low E string: 5th, 6th, 7th
+  ],
+  A: [
+    [6, 0], // High E string: 7th, root
+    [3, 4, 5], // B string: 4th, 5th, 6th
+    [0, 1, 2], // G string: root, 2nd, 3rd
+    [4, 5, 6], // D string: 5th, 6th, 7th
+    [1, 2, 3], // A string: 2nd, 3rd, 4th
+    [6, 0], // Low E string: 7th, root
+  ],
   G: [
     [0, 1, 2], // High E string: root, 2nd, 3rd
     [4, 5, 6], // B string: 5th, 6th, 7th
@@ -76,22 +92,6 @@ export const diatonicPatterns = {
     [1, 2, 3], // D string: 2nd, 3rd, 4th
     [6, 0], // A string: 7th, root
     [3, 4, 5], // Low E string: 4th, 5th, 6th
-  ],
-  C: [
-    [4, 5, 6], // High E string: 5th, 6th, 7th
-    [1, 2, 3], // B string: 2nd, 3rd, 4th
-    [6, 0], // G string: 7th, root
-    [3, 4, 5], // D string: 4th, 5th, 6th
-    [0, 1, 2], // A string: root, 2nd, 3rd
-    [4, 5, 6], // Low E string: 5th, 6th, 7th
-  ],
-  A: [
-    [6, 0], // High E string: 7th, root
-    [3, 4, 5], // B string: 4th, 5th, 6th
-    [0, 1, 2], // G string: root, 2nd, 3rd
-    [4, 5, 6], // D string: 5th, 6th, 7th
-    [1, 2, 3], // A string: 2nd, 3rd, 4th
-    [6, 0], // Low E string: 7th, root
   ],
 };
 
