@@ -10,17 +10,32 @@
   import ScaleInfo from "../lib/ScaleInfo.svelte";
   import SystemSelector from "../lib/SystemSelector.svelte";
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+  let scaleLabel = "minor";
+  let position;
+  let chordName;
+=======
+>>>>>>> Stashed changes
   let tuning = $state("Standard");
   let key = $state("C");
   let scale = $state("minor pentatonic");
   let scaleObj = $derived(Scale.get(`${key} ${scale}`));
   let system = $state("CAGED");
+<<<<<<< Updated upstream
   // let system = $derived.by(() =>
   //   scaleObj.intervals.length === 7 ? "CAGED" : "Pentatonic",
   // );
   let position = $state(null);
   let fretData = $derived(frets(tunings.get(tuning), 16, scaleObj));
   let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
+=======
+  let position = $state(null);
+  let fretData = $derived(frets(tunings.get(tuning), 16, scaleObj));
+  let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
   // Filter fretData based on selected system and position
   let filteredFretData = $derived.by(() => {
