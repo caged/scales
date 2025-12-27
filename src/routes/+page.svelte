@@ -9,20 +9,50 @@
   import ScaleChords from "../lib/ScaleChords.svelte";
   import ScaleInfo from "../lib/ScaleInfo.svelte";
   import SystemSelector from "../lib/SystemSelector.svelte";
+  import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
 
-  let tuning = $state("Standard");
-  let key = $state("C");
-  let scale = $state("minor pentatonic");
+  // Read state from URL params with defaults
+  let tuning = $state($page.url.searchParams.get("tuning") || "Standard");
+  let key = $state($page.url.searchParams.get("key") || "C");
+  let scale = $state($page.url.searchParams.get("scale") || "minor pentatonic");
+  let system = $state($page.url.searchParams.get("system") || "CAGED");
+  let positionParam = $page.url.searchParams.get("position");
+  let position = $state(positionParam ? parseInt(positionParam) : null);
+
   let scaleObj = $derived(Scale.get(`${key} ${scale}`));
-  let system = $state("CAGED");
-  let position = $state(null);
   let fretData = $derived(frets(tunings.get(tuning), 16, scaleObj));
   let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
+
+  // Update URL when state changes
+  function updateURL() {
+    const params = new URLSearchParams();
+    params.set("tuning", tuning);
+    params.set("key", key);
+    params.set("scale", scale);
+    params.set("system", system);
+    if (position) {
+      params.set("position", position);
+    }
+    goto(`?${params.toString()}`, { replaceState: true, noScroll: true });
+  }
+
+  // Watch for state changes and update URL
+  $effect(() => {
+    // Access all reactive values
+    tuning;
+    key;
+    scale;
+    system;
+    position;
+
+    // Update URL after state changes
+    updateURL();
+  });
 
   // Filter fretData based on selected system and position
   let filteredFretData = $derived.by(() => {
     if (!position || !system) return fretData;
-
     // Check if the current scale has positions for this system
     const hasSystemPositions = fretData.strings.some((string) =>
       string.some(
