@@ -49,49 +49,47 @@ export const pentatonicPatterns = {
   ],
 };
 
-// Diatonic patterns (3 notes per string for most strings)
-// Used by CAGED system for 7-note minor/major scales
-// These patterns are based on minor scale interval indices
+// Scale degrees in 1-7
 export const diatonicPatterns = {
   C: [
-    [4, 5, 6], // High E string: 5th, 6th, 7th
-    [1, 2, 3], // B string: 2nd, 3rd, 4th
-    [6, 0], // G string: 7th, root
-    [3, 4, 5], // D string: 4th, 5th, 6th
-    [0, 1, 2], // A string: root, 2nd, 3rd
-    [4, 5, 6], // Low E string: 5th, 6th, 7th
+    [3, 4, 5],
+    [7, 1, 2],
+    [5, 6],
+    [2, 3, 4],
+    [6, 7, 1],
+    [3, 4, 5],
   ],
   A: [
-    [6, 0], // High E string: 7th, root
-    [3, 4, 5], // B string: 4th, 5th, 6th
-    [0, 1, 2], // G string: root, 2nd, 3rd
-    [4, 5, 6], // D string: 5th, 6th, 7th
-    [1, 2, 3], // A string: 2nd, 3rd, 4th
-    [6, 0], // Low E string: 7th, root
+    [5, 6],
+    [2, 3, 4],
+    [6, 7, 1],
+    [3, 4, 5],
+    [7, 1, 2],
+    [5, 6],
   ],
   G: [
-    [0, 1, 2], // High E string: root, 2nd, 3rd
-    [4, 5, 6], // B string: 5th, 6th, 7th
-    [1, 2, 3], // G string: 2nd, 3rd, 4th
-    [6, 0], // D string: 7th, root
-    [3, 4, 5], // A string: 4th, 5th, 6th
-    [0, 1, 2], // Low E string: root, 2nd, 3rd
+    [6, 7, 1],
+    [3, 4, 5],
+    [7, 1, 2],
+    [5, 6],
+    [2, 3, 4],
+    [6, 7, 1],
   ],
   E: [
-    [1, 2, 3], // High E string: 2nd, 3rd, 4th
-    [6, 0], // B string: 7th, root
-    [3, 4, 5], // G string: 4th, 5th, 6th
-    [0, 1, 2], // D string: root, 2nd, 3rd
-    [4, 5, 6], // A string: 5th, 6th, 7th
-    [1, 2, 3], // Low E string: 2nd, 3rd, 4th
+    [7, 1, 2],
+    [5, 6],
+    [2, 3, 4],
+    [6, 7, 1],
+    [3, 4, 5],
+    [7, 1, 2],
   ],
   D: [
-    [3, 4, 5], // High E string: 4th, 5th, 6th
-    [0, 1, 2], // B string: root, 2nd, 3rd
-    [4, 5, 6], // G string: 5th, 6th, 7th
-    [1, 2, 3], // D string: 2nd, 3rd, 4th
-    [6, 0], // A string: 7th, root
-    [3, 4, 5], // Low E string: 4th, 5th, 6th
+    [2, 3, 4],
+    [6, 7, 1],
+    [3, 4, 5],
+    [7, 1, 2],
+    [5, 6],
+    [2, 3, 4],
   ],
 };
 
@@ -107,11 +105,11 @@ export const pentatonicPositionMapping = {
 };
 
 export const cagedPositionMapping = {
-  1: "C",
-  2: "A",
-  3: "G",
-  4: "E",
-  5: "D",
+  1: "E",
+  2: "D",
+  3: "C",
+  4: "A",
+  5: "G",
 };
 
 // export const cagedPositionMappingMajor = {
