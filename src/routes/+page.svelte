@@ -39,6 +39,9 @@
 
   // Watch for state changes and update URL
   $effect(() => {
+    if (scaleObj.intervals?.length === 7) {
+      system = "CAGED";
+    }
     // Access all reactive values
     tuning;
     key;
