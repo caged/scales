@@ -1,6 +1,7 @@
-import tnps from "./tnps";
+import { beforeEach, describe, expect, it } from "vitest";
 import { frets, scale } from "../";
-import { assert } from "chai";
+
+import tnps from "./tnps";
 
 describe("three note per string tests", () => {
   let fb;
@@ -20,21 +21,21 @@ describe("three note per string tests", () => {
     const enote = e[0];
     const dnote = e[10];
 
-    assert.equal(enote.name, "E2");
-    assert.equal(dnote.name, "D3");
-    assert.equal(dnote.interval, "1P");
-    assert.deepEqual(enote.positions, [1, 2, 7]);
-    assert.deepEqual(dnote.positions, [1, 6, 7]);
+    expect(enote.name).toBe("E2");
+    expect(dnote.name).toBe("D3");
+    expect(dnote.interval).toBe("1P");
+    expect(enote.positions).toEqual([1, 2, 7]);
+    expect(dnote.positions).toEqual([1, 6, 7]);
   });
 
   it("assigns position arrays with values between 1 and 7", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.isArray(note.positions);
+          expect(Array.isArray(note.positions)).toBe(true);
           for (const pos of note.positions) {
-            assert.isAtLeast(pos, 1, `Position ${pos} should be >= 1`);
-            assert.isAtMost(pos, 7, `Position ${pos} should be <= 7`);
+            expect(pos).toBeGreaterThanOrEqual(1);
+            expect(pos).toBeLessThanOrEqual(7);
           }
         }
       }
@@ -47,11 +48,7 @@ describe("three note per string tests", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.include(
-            scaleChroma,
-            note.chroma,
-            `Note ${note.name} with positions should be in the scale`
-          );
+          expect(scaleChroma).toContain(note.chroma);
         }
       }
     }
@@ -62,7 +59,7 @@ describe("three note per string tests", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.interval) {
-          assert.include(scaleIntervals, note.interval);
+          expect(scaleIntervals).toContain(note.interval);
         }
       }
     }
@@ -72,36 +69,33 @@ describe("three note per string tests", () => {
     for (const string of strings) {
       for (const note of string) {
         if (note.positions && note.positions.length > 0) {
-          assert.isDefined(
-            note.interval,
-            `Note ${note.name} at positions ${note.positions} should have an interval`
-          );
+          expect(note.interval).toBeDefined();
         }
       }
     }
   });
 
   it("processes all 6 strings", () => {
-    assert.equal(strings.length, 6);
+    expect(strings.length).toBe(6);
   });
 
   it("returns the same string array reference that was passed in", () => {
     const originalNotes = fb.notes();
     const result = tnps(originalNotes, dms);
-    assert.strictEqual(result, originalNotes);
+    expect(result).toBe(originalNotes);
   });
 
   it("works with different scales", () => {
     const aMajor = scale("A major");
     const aStrings = tnps(frets().notes(), aMajor);
 
-    assert.isDefined(aStrings);
-    assert.equal(aStrings.length, 6);
+    expect(aStrings).toBeDefined();
+    expect(aStrings.length).toBe(6);
 
     const hasPositions = aStrings.some((string) =>
       string.some((note) => note.positions && note.positions.length > 0)
     );
-    assert.isTrue(hasPositions, "Should have notes with positions assigned");
+    expect(hasPositions).toBe(true);
   });
 
   it("each scale note appears on multiple strings", () => {
@@ -120,15 +114,8 @@ describe("three note per string tests", () => {
     }
 
     for (const chroma of scaleChroma) {
-      assert.isDefined(
-        chromaStringCount[chroma],
-        `Scale note with chroma ${chroma} should appear on at least one string`
-      );
-      assert.isAtLeast(
-        chromaStringCount[chroma].size,
-        1,
-        `Scale note with chroma ${chroma} should appear on at least one string`
-      );
+      expect(chromaStringCount[chroma]).toBeDefined();
+      expect(chromaStringCount[chroma].size).toBeGreaterThanOrEqual(1);
     }
   });
 
@@ -149,11 +136,7 @@ describe("three note per string tests", () => {
         if (notes.length > 1) {
           const firstPositions = JSON.stringify(notes[0].positions);
           for (const note of notes) {
-            assert.equal(
-              JSON.stringify(note.positions),
-              firstPositions,
-              `All notes with chroma ${chroma} on same string should have identical positions`
-            );
+            expect(JSON.stringify(note.positions)).toBe(firstPositions);
           }
         }
       }
@@ -164,13 +147,13 @@ describe("three note per string tests", () => {
     const chromatic = scale("C chromatic");
     const chromaticStrings = tnps(frets().notes(), chromatic);
 
-    assert.isDefined(chromaticStrings);
-    assert.equal(chromaticStrings.length, 6);
+    expect(chromaticStrings).toBeDefined();
+    expect(chromaticStrings.length).toBe(6);
 
     const hasPositions = chromaticStrings.some((string) =>
       string.some((note) => note.positions && note.positions.length > 0)
     );
-    assert.isTrue(hasPositions, "Should have notes with positions assigned");
+    expect(hasPositions).toBe(true);
   });
 
   it("assigns positions to all notes in scale across the fretboard", () => {
@@ -186,10 +169,7 @@ describe("three note per string tests", () => {
     }
 
     for (const chroma of scaleChroma) {
-      assert.isTrue(
-        notesWithPositions.has(chroma),
-        `All scale notes should appear with positions somewhere on the fretboard`
-      );
+      expect(notesWithPositions.has(chroma)).toBe(true);
     }
   });
 });

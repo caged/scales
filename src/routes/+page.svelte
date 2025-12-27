@@ -1,110 +1,103 @@
 <script>
-  import { Chord, Note } from "tonal";
-  import { scale as getScale, tnps, pentatonic } from "$lib/frets/index";
-  import KeySelector from "$lib/KeySelector.svelte";
-  import ScaleSelector from "$lib/ScaleSelector.svelte";
-  import FretBoard from "$lib/FretBoard.svelte";
-  import ScaleInfo from "$lib/ScaleInfo.svelte";
-  import PositionSelector from "$lib/PositionSelector.svelte";
-  import TuningSelector from "$lib/TuningSelector.svelte";
-  import ScaleChords from "$lib/ScaleChords.svelte";
-  import NotePlayer from "$lib/NotePlayer.svelte";
-  import AppContext from "$lib/AppContext.svelte";
-  import Metronome from "$lib/Metronome.svelte";
-  import { tonic, tuning } from "$lib/store";
+  import { tunings } from "../lib";
+  import frets from "../frets";
+  import { Scale, Mode } from "tonal";
+  import TuningSelector from "../lib/TuningSelector.svelte";
+  import FretBoard from "../lib/FretBoard.svelte";
+  import KeySelector from "../lib/KeySelector.svelte";
+  import ScaleSelector from "../lib/ScaleSelector.svelte";
+  import ScaleChords from "../lib/ScaleChords.svelte";
+  import ScaleInfo from "../lib/ScaleInfo.svelte";
+  import SystemSelector from "../lib/SystemSelector.svelte";
 
-  let scaleLabel = "minor";
-  let position;
-  let chordName;
+  let tuning = $state("Standard");
+  let key = $state("C");
+  let scale = $state("minor pentatonic");
+  let scaleObj = $derived(Scale.get(`${key} ${scale}`));
+  let system = $state("CAGED");
+  // let system = $derived.by(() =>
+  //   scaleObj.intervals.length === 7 ? "CAGED" : "Pentatonic",
+  // );
+  let position = $state(null);
+  let fretData = $derived(frets(tunings.get(tuning), 16, scaleObj));
+  let triads = $derived(Mode.triads(scaleObj.type, scaleObj.tonic));
 
-  function handleChordChange(chord) {
-    chordName = chord;
-  }
+  // Filter fretData based on selected system and position
+  let filteredFretData = $derived.by(() => {
+    if (!position || !system) return fretData;
 
-  $: scaleName = `${$tonic} ${scaleLabel}`;
-  $: scale = getScale(scaleName);
-  $: system = scale.intervals().length === 5 ? pentatonic : tnps;
-  $: aliases = scale.aliases();
-  $: chord = Chord.getChord(
-    chordName,
-    Note.get($tuning[0]).height > Note.get(`${$tonic}2`).height
-      ? `${$tonic}3`
-      : `${$tonic}2`,
-  );
-  $: notes = chord.notes.map(Note.get);
+    // Check if the current scale has positions for this system
+    const hasSystemPositions = fretData.strings.some((string) =>
+      string.some(
+        (note) => note.positions[system] && note.positions[system].length > 0,
+      ),
+    );
+
+    if (!hasSystemPositions) return fretData;
+
+    // Create filtered strings with only notes in the selected position
+    const filteredStrings = fretData.strings.map((notes) =>
+      notes.map((note) => {
+        // Keep the note but mark if it should be in the selected position
+        // Only show notes that are in the scale AND in the selected position
+        const isInPosition = note.positions[system]?.includes(position);
+        return {
+          ...note,
+          inPosition: isInPosition && !!note.interval, // Only scale notes in this position
+        };
+      }),
+    );
+
+    return {
+      ...fretData,
+      strings: filteredStrings,
+    };
+  });
+
+  $effect(() => {
+    console.log("Page state:", {
+      fretData,
+      filteredFretData,
+      tuning,
+      key,
+      scale,
+      system,
+      position,
+      scaleIntervals: scaleObj.intervals?.length,
+    });
+  });
 </script>
 
 <svelte:head>
-  <title>{scaleName}</title>
-  <meta name="Description" content="{scaleName} guitar scale" />
+  <title>{key} {scale} Scale</title>
+  <meta name="Description" content="{key} {scale} scale for guitar" />
 </svelte:head>
 
-<AppContext>
-  <div class="flex flex-wrap md:flex-nowrap border-b border-gray-300">
-    <div
-      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
-    >
-      <h3 class="mb-2 font-bold">Tuning</h3>
-      <TuningSelector defaultTuning={$tuning} />
-    </div>
-    <div
-      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
-    >
-      <h3 class="mb-2 font-bold">Key</h3>
-      <div><KeySelector key={$tonic} /></div>
-    </div>
-    <div
-      class="p-5 pb-6 w-1/2 md:w-96 border-r border-b sm:border-b-0 border-gray-200"
-    >
-      <h3 class="font-bold mb-2">Scale</h3>
-      <div><ScaleSelector bind:value={scaleLabel} /></div>
-    </div>
-    <div
-      class="p-5 w-1/2 md:w-auto border-r border-b sm:border-b-0 border-gray-200"
-    >
-      <h3 class="mb-2 font-bold">Position</h3>
-      <PositionSelector {scale} bind:position />
-    </div>
-    <div class="p-5 w-1/2 md:w-auto border-r border-gray-200">
-      <Metronome />
-    </div>
+<div
+  class="flex bg-gray-50 *:p-5 *:border-r *:border-gray-200 border-b border-gray-300">
+  <div>
+    <TuningSelector bind:value={tuning} />
   </div>
   <div>
-    {#if scaleLabel != ""}
-      <div class="flex border-b border-gray-200 bg-gray-50 space-x-10">
-        <div class="flex flex-1 flex-col border-r border-gray-200">
-          <div class="p-5 border-b border-gray-200">
-            <h1 class="text-3xl font-bold i capitalize">
-              <span class="underline">{$tonic.replace("b", "♭")}</span>
-              <span>{scaleLabel} scale</span>
-            </h1>
-            {#if aliases.length > 0}
-              <span class="text-sm text-gray-400"
-                >Also known as
-                <span class="capitalize">{aliases}</span>
-              </span>
-            {/if}
-          </div>
-          <div class="p-5">
-            <h3 class="font-bold">Notes and intervals</h3>
-            <ScaleInfo bind:scale bind:position />
-          </div>
-        </div>
-        <div class="p-5 hidden lg:block w-2/3">
-          <h3 class="font-bold mb-2">Chords</h3>
-          <ScaleChords onchordchange={handleChordChange} {scale} />
-        </div>
-      </div>
-    {/if}
-    <div class="py-10">
-      <FretBoard
-        bind:scale
-        bind:system
-        bind:position
-        tuning={$tuning}
-        bind:notes
-      />
-    </div>
-    <NotePlayer bind:notes />
+    <KeySelector bind:value={key} />
   </div>
-</AppContext>
+  <div>
+    <ScaleSelector bind:value={scale} />
+  </div>
+  <div class="">
+    <SystemSelector bind:system bind:position />
+  </div>
+  <div class="border-r-0">
+    <ScaleInfo scale={scaleObj} />
+  </div>
+</div>
+
+<div class="p-5 h-72">
+  <FretBoard fretData={filteredFretData} />
+</div>
+
+{#if triads.length > 0}
+  <div class="relative bg-gray-50 border-t border-gray-200 p-5">
+    <ScaleChords scale={scaleObj} />
+  </div>
+{/if}
