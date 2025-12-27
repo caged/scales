@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import tnps from "./tnps";
+import { beforeEach, describe, expect, it } from "vitest";
 import { frets, scale } from "../";
+
+import tnps from "./tnps";
 
 describe("three note per string tests", () => {
   let fb;
