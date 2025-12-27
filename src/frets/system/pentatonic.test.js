@@ -1,6 +1,6 @@
+import { Note, Scale } from "tonal";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { Scale, Note } from "tonal";
 import frets from "../index.js";
 import pentatonic from "./pentatonic.js";
 
@@ -41,7 +41,9 @@ describe("pentatonic scale tests", () => {
       for (const note of string) {
         if (note.positions.Pentatonic && note.positions.Pentatonic.length > 0) {
           expect(Array.isArray(note.positions.Pentatonic)).toBe(true);
-          expect(note.positions.Pentatonic.every((pos) => pos >= 1 && pos <= 5)).toBe(true);
+          expect(
+            note.positions.Pentatonic.every((pos) => pos >= 1 && pos <= 5)
+          ).toBe(true);
         }
       }
     }
@@ -76,7 +78,10 @@ describe("pentatonic scale tests", () => {
     expect(gStrings.length).toBe(6);
 
     const hasPositions = gStrings.some((string) =>
-      string.some((note) => note.positions.Pentatonic && note.positions.Pentatonic.length > 0)
+      string.some(
+        (note) =>
+          note.positions.Pentatonic && note.positions.Pentatonic.length > 0
+      )
     );
     expect(hasPositions).toBe(true);
   });
@@ -155,7 +160,9 @@ describe("pentatonic scale tests", () => {
         if (notes.length > 1) {
           const firstPositions = JSON.stringify(notes[0].positions.Pentatonic);
           for (const note of notes) {
-            expect(JSON.stringify(note.positions.Pentatonic)).toBe(firstPositions);
+            expect(JSON.stringify(note.positions.Pentatonic)).toBe(
+              firstPositions
+            );
           }
         }
       }

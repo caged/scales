@@ -31,9 +31,9 @@ export default function caged(strings, scale) {
   const basePatterns = noteCount === 5 ? pentatonicPatterns : diatonicPatterns;
 
   // Determine if this is a major or minor scale for rotation
-  const isMajor = intervals.includes("3M")
+  const isMajor = intervals.includes("3M");
 
-  console.log('isMajor:', isMajor, intervals, scale);
+  console.log("isMajor:", isMajor, intervals, scale);
 
   // For major scales, rotate the pattern indices
   // This aligns the patterns correctly with the scale degrees
@@ -45,8 +45,8 @@ export default function caged(strings, scale) {
       const basePattern = basePatterns[shape];
 
       // Rotate the pattern indices for major scales
-      const rotatedPattern = basePattern.map(degreeArr =>
-        degreeArr.map(degree => (degree + patternOffset) % noteCount)
+      const rotatedPattern = basePattern.map((degreeArr) =>
+        degreeArr.map((degree) => (degree + patternOffset) % noteCount)
       );
 
       return {

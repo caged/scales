@@ -1,5 +1,6 @@
-import { Note } from "tonal";
 import { pentatonicPatterns, pentatonicPositionMapping } from "./patterns.js";
+
+import { Note } from "tonal";
 
 export default function pentatonic(strings, scale) {
   if (scale.intervals.length !== 5)
@@ -42,8 +43,8 @@ export default function pentatonic(strings, scale) {
     ([pos, shape]) => {
       const basePattern = pentatonicPatterns[shape];
       // Rotate the pattern indices for major scales
-      const rotatedPattern = basePattern.map(degreeArr =>
-        degreeArr.map(degree => (degree + patternOffset) % 5)
+      const rotatedPattern = basePattern.map((degreeArr) =>
+        degreeArr.map((degree) => (degree + patternOffset) % 5)
       );
 
       return {

@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+
 import { Scale } from "tonal";
-import frets from "../index.js";
 import caged from "./caged.js";
+import frets from "../index.js";
 
 describe("CAGED system tests", () => {
   let strings;
@@ -19,7 +20,9 @@ describe("CAGED system tests", () => {
       const testStrings = [[], [], [], [], [], []];
       expect(() => {
         caged(testStrings, chromatic);
-      }).toThrow("CAGED system only works with 5-note pentatonic or 7-note scales");
+      }).toThrow(
+        "CAGED system only works with 5-note pentatonic or 7-note scales"
+      );
     });
 
     it("assigns CAGED positions to scale notes", () => {
@@ -52,7 +55,7 @@ describe("CAGED system tests", () => {
             // Non-scale notes should either have no CAGED positions or an empty array
             expect(
               note.positions.CAGED === undefined ||
-              note.positions.CAGED.length === 0
+                note.positions.CAGED.length === 0
             ).toBe(true);
           }
         }

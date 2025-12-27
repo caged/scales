@@ -7,6 +7,22 @@
 // Pentatonic patterns (2 notes per string)
 // Used by both Pentatonic and CAGED position systems for 5-note scales
 export const pentatonicPatterns = {
+  C: [
+    [3, 4], // High E string: 5th, m7/6th
+    [1, 2], // B string: 2nd, 4th
+    [4, 0], // G string: m7/6th, root
+    [2, 3], // D string: 4th, 5th
+    [0, 1], // A string: root, 2nd
+    [3, 4], // Low E string: 5th, m7/6th
+  ],
+  A: [
+    [4, 0], // High E string: m7/6th, root
+    [2, 3], // B string: 4th, 5th
+    [0, 1], // G string: root, 2nd
+    [3, 4], // D string: 5th, m7/6th
+    [1, 2], // A string: 2nd, 4th
+    [4, 0], // Low E string: m7/6th, root
+  ],
   G: [
     [0, 1], // High E string: root, 2nd
     [3, 4], // B string: 5th, m7/6th
@@ -30,22 +46,6 @@ export const pentatonicPatterns = {
     [1, 2], // D string: 2nd, 4th
     [4, 0], // A string: m7/6th, root
     [2, 3], // Low E string: 4th, 5th
-  ],
-  C: [
-    [3, 4], // High E string: 5th, m7/6th
-    [1, 2], // B string: 2nd, 4th
-    [4, 0], // G string: m7/6th, root
-    [2, 3], // D string: 4th, 5th
-    [0, 1], // A string: root, 2nd
-    [3, 4], // Low E string: 5th, m7/6th
-  ],
-  A: [
-    [4, 0], // High E string: m7/6th, root
-    [2, 3], // B string: 4th, 5th
-    [0, 1], // G string: root, 2nd
-    [3, 4], // D string: 5th, m7/6th
-    [1, 2], // A string: 2nd, 4th
-    [4, 0], // Low E string: m7/6th, root
   ],
 };
 
