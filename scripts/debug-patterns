@@ -1,0 +1,119 @@
+#!/usr/bin/env node
+
+import { Scale } from "tonal";
+import { diatonicPatterns, pentatonicPatterns } from "../src/frets/system/patterns.js";
+
+/**
+ * Debug utility to visualize pattern indexes as actual note names or intervals
+ */
+function debugPattern(scaleName, shape, useIntervals = false) {
+  const scale = Scale.get(scaleName);
+  const notes = scale.notes;
+  const intervals = scale.intervals;
+
+  if (!scale || !notes || notes.length === 0) {
+    throw new Error(`Invalid scale: ${scaleName}`);
+  }
+
+  const isPentatonic = notes.length === 5;
+  const isDiatonic = notes.length === 7;
+
+  if (!isPentatonic && !isDiatonic) {
+    throw new Error(`Scale must be 5 or 7 notes. ${scaleName} has ${notes.length} notes.`);
+  }
+
+  const patterns = isPentatonic ? pentatonicPatterns : diatonicPatterns;
+  const pattern = patterns[shape];
+
+  if (!pattern) {
+    throw new Error(`Invalid shape: ${shape}. Must be one of C, A, G, E, D`);
+  }
+
+  const stringNames = ["High E", "B", "G", "D", "A", "Low E"];
+  const displayMode = useIntervals ? "Intervals" : "Notes";
+  const displayValues = useIntervals ? intervals : notes;
+
+  console.log(`\n${"=".repeat(60)}`);
+  console.log(`Scale: ${scaleName}`);
+  console.log(`Shape: ${shape}`);
+  console.log(`${displayMode}: ${displayValues.join(", ")}`);
+  console.log(`${"=".repeat(60)}\n`);
+
+  pattern.forEach((stringPattern, stringIndex) => {
+    const stringName = stringNames[stringIndex].padEnd(6);
+    const indexes = stringPattern.map(i => String(i).padStart(2)).join(", ");
+    const actualValues = stringPattern.map(i => displayValues[i].padEnd(3)).join(", ");
+
+    console.log(`${stringName}: [${indexes}] → [${actualValues}]`);
+  });
+
+  console.log(`\n${"=".repeat(60)}\n`);
+}
+
+/**
+ * Debug all shapes for a given scale
+ */
+function debugAllShapes(scaleName, useIntervals = false) {
+  const shapes = ["C", "A", "G", "E", "D"];
+  shapes.forEach(shape => debugPattern(scaleName, shape, useIntervals));
+}
+
+function printUsage() {
+  console.log(`
+Usage: debug-patterns [options]
+
+Options:
+  -s, --scale <name>      Scale name (e.g., "C major", "A minor pentatonic")
+  -p, --position <shape>  CAGED position/shape (C, A, G, E, or D)
+  -i, --intervals         Display intervals instead of note names
+  -h, --help              Show this help message
+
+Examples:
+  debug-patterns -s "C major" -p G
+  debug-patterns --scale "A minor pentatonic" --position E
+  debug-patterns -s "C major" -i
+  debug-patterns -s "C major" -p G --intervals
+
+If no position is specified, all positions will be displayed.
+`);
+}
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+let scaleName = null;
+let shape = null;
+let useIntervals = false;
+
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+
+  if (arg === '-h' || arg === '--help') {
+    printUsage();
+    process.exit(0);
+  } else if (arg === '-s' || arg === '--scale') {
+    scaleName = args[++i];
+  } else if (arg === '-p' || arg === '--position') {
+    shape = args[++i];
+  } else if (arg === '-i' || arg === '--intervals') {
+    useIntervals = true;
+  }
+}
+
+// Validate required arguments
+if (!scaleName) {
+  console.error('Error: Scale name is required\n');
+  printUsage();
+  process.exit(1);
+}
+
+// Run the debug
+try {
+  if (shape) {
+    debugPattern(scaleName, shape, useIntervals);
+  } else {
+    debugAllShapes(scaleName, useIntervals);
+  }
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  process.exit(1);
+}
