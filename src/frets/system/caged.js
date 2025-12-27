@@ -33,8 +33,6 @@ export default function caged(strings, scale) {
   // Determine if this is a major or minor scale for rotation
   const isMajor = intervals.includes("3M");
 
-  console.log("isMajor:", isMajor, intervals, scale);
-
   // For major scales, rotate the pattern indices
   // This aligns the patterns correctly with the scale degrees
   // const patternOffset = (noteCount === 5 && isMajor) ? 4 : 0;
