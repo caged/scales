@@ -42,7 +42,8 @@ function debugPattern(scaleName, shape, useIntervals = false) {
   pattern.forEach((stringPattern, stringIndex) => {
     const stringName = stringNames[stringIndex].padEnd(6);
     const indexes = stringPattern.map(i => String(i).padStart(2)).join(", ");
-    const actualValues = stringPattern.map(i => displayValues[i].padEnd(3)).join(", ");
+    // Scale degrees are 1-indexed (1-7), so subtract 1 to get array index (0-6)
+    const actualValues = stringPattern.map(i => displayValues[i - 1].padEnd(3)).join(", ");
 
     console.log(`${stringName}: [${indexes}] → [${actualValues}]`);
   });
