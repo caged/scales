@@ -1,6 +1,5 @@
 import {
   cagedPositionMapping,
-  cagedPositionMappingMajor,
   diatonicPatterns,
   pentatonicPatterns,
   pentatonicPositionMapping,
@@ -40,9 +39,8 @@ export default function caged(strings, scale) {
   // This aligns the patterns correctly with the scale degrees
   // const patternOffset = (noteCount === 5 && isMajor) ? 4 : 0;
   const patternOffset = isMajor ? 4 : 0;
-  const basePositionMapping = isMajor && noteCount === 7 ? cagedPositionMappingMajor : cagedPositionMapping;
 
-  const cagedShapes = Object.entries(basePositionMapping).map(
+  const cagedShapes = Object.entries(cagedPositionMapping).map(
     ([pos, shape]) => {
       const basePattern = basePatterns[shape];
 
