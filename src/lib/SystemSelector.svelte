@@ -6,8 +6,8 @@
   <div>
     <select bind:value={system} class="w-fit border border-gray-200">
       <option value="CAGED">CAGED</option>
-      <option value="3NPS">3NPS</option>
       <option value="Pentatonic">Pentatonic</option>
+      <option value="3NPS">3NPS</option>
     </select>
   </div>
 
