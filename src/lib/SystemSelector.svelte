@@ -1,5 +1,13 @@
 <script>
+  import { cagedPositionMapping } from "../frets/system/patterns.js";
   let { system = $bindable(), position = $bindable() } = $props();
+
+  // Get position key for CAGED in word order
+  let cagedMap = "CAGED".split("").map((char) => {
+    return Object.entries(cagedPositionMapping).find(
+      ([, label]) => label === char,
+    );
+  });
 </script>
 
 <div class="flex gap-5">
@@ -13,21 +21,15 @@
 
   <div class="flex items-center space-x-2">
     {#if system === "CAGED"}
-      <label
-        ><input type="radio" name="position" bind:group={position} value={1} />
-        <span>C</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={2} />
-        <span>A</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={3} />
-        <span>G</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={4} />
-        <span>E</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={5} />
-        <span>D</span></label>
+      {#each cagedMap as [pos, label]}
+        <label
+          ><input
+            type="radio"
+            name="position"
+            bind:group={position}
+            value={parseInt(pos)} />
+          <span>{label}</span></label>
+      {/each}
     {:else if system === "3NPS"}
       <label
         ><input type="radio" name="position" bind:group={position} value={1} />
