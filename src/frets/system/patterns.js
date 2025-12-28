@@ -104,6 +104,7 @@ export const pentatonicPositionMapping = {
   5: "A",
 };
 
+// Position mapping based on common CAGED systems
 export const cagedPositionMapping = {
   1: "E",
   2: "D",
