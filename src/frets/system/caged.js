@@ -24,9 +24,8 @@ export default function caged(strings, scale) {
 
   scale.notes.forEach((noteName, index) => {
     const noteObj = Note.get(noteName);
-    // For diatonic (7 notes): degrees are 1-7
-    // For pentatonic (5 notes): degrees are 0-4 (0-indexed as in the patterns)
-    const degree = noteCount === 7 ? index + 1 : index;
+    // Scale degrees are 1-indexed (1-5 for pentatonic, 1-7 for diatonic)
+    const degree = index + 1;
     chromaToScaleDegree.set(noteObj.chroma, degree);
     chromaToInterval.set(noteObj.chroma, scale.intervals[index]);
   });

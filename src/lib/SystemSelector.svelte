@@ -2,7 +2,7 @@
   import { cagedPositionMapping } from "../frets/system/patterns.js";
   let { system = $bindable(), position = $bindable() } = $props();
 
-  // Get position key for CAGED in word order
+  // Get position key for CAGED in correct letter order
   let cagedMap = "CAGED".split("").map((char) => {
     return Object.entries(cagedPositionMapping).find(
       ([, label]) => label === char,
@@ -15,7 +15,6 @@
     <select bind:value={system} class="w-fit border border-gray-200">
       <option value="CAGED">CAGED</option>
       <option value="Pentatonic">Pentatonic</option>
-      <option value="3NPS">3NPS</option>
     </select>
   </div>
 
@@ -30,44 +29,16 @@
             value={parseInt(pos)} />
           <span>{label}</span></label>
       {/each}
-    {:else if system === "3NPS"}
-      <label
-        ><input type="radio" name="position" bind:group={position} value={1} />
-        <span>1</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={2} />
-        <span>2</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={3} />
-        <span>3</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={4} />
-        <span>4</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={5} />
-        <span>5</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={6} />
-        <span>6</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={7} />
-        <span>7</span></label>
     {:else if system === "Pentatonic"}
-      <label
-        ><input type="radio" name="position" bind:group={position} value={1} />
-        <span>1</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={2} />
-        <span>2</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={3} />
-        <span>3</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={4} />
-        <span>4</span></label>
-      <label
-        ><input type="radio" name="position" bind:group={position} value={5} />
-        <span>5</span></label>
+      {#each Array(5) as _, index}
+        <label
+          ><input
+            type="radio"
+            name="position"
+            bind:group={position}
+            value={index + 1} />
+          <span>{index + 1}</span></label>
+      {/each}
     {/if}
   </div>
 </div>
