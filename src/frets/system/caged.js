@@ -2,10 +2,14 @@ import {
   cagedPositionMapping,
   diatonicPatterns,
   pentatonicPatterns,
-  pentatonicPositionMapping,
 } from "./patterns.js";
 
 import { Note } from "tonal";
+
+// Rotate a 1-indexed degree (1-7) by an offset
+function rotateDegree(degree, offset) {
+  return ((degree - 1 + offset) % 7) + 1;
+}
 
 export default function caged(strings, scale) {
   const noteCount = scale.intervals.length;
@@ -14,73 +18,69 @@ export default function caged(strings, scale) {
       "CAGED system only works with 5-note pentatonic or 7-note scales"
     );
 
-  const intervals = scale.intervals;
-  const snotes = scale.notes;
-  const scaleNotes = snotes.map((noteName, i) => {
+  // Build a map from chroma to scale degree and interval
+  const chromaToScaleDegree = new Map();
+  const chromaToInterval = new Map();
+
+  scale.notes.forEach((noteName, index) => {
     const noteObj = Note.get(noteName);
-    return {
-      note: noteObj,
-      interval: intervals[i],
-      name: noteName,
-    };
+    // For diatonic (7 notes): degrees are 1-7
+    // For pentatonic (5 notes): degrees are 0-4 (0-indexed as in the patterns)
+    const degree = noteCount === 7 ? index + 1 : index;
+    chromaToScaleDegree.set(noteObj.chroma, degree);
+    chromaToInterval.set(noteObj.chroma, scale.intervals[index]);
   });
 
-  // CAGED system uses position mapping: Position 1=C, 2=A, 3=G, 4=E, 5=D
-  // For pentatonic (5 notes), use pentatonicPatterns (2 notes per string)
-  // For diatonic (7 notes), use diatonicPatterns (3 notes per string)
+  // Determine if this is a minor scale (has minor 3rd)
+  const isMinor = scale.intervals.includes("3m");
+
+  // Build CAGED shapes with their patterns
+  // For minor scales, rotate the diatonic pattern degrees by +2
+  // This shifts the shapes so that G shape root aligns at fret 8 instead of fret 5
   const basePatterns = noteCount === 5 ? pentatonicPatterns : diatonicPatterns;
-
-  // Determine if this is a major or minor scale for rotation
-  const isMajor = intervals.includes("3M");
-
-  // For major scales, rotate the pattern indices
-  // This aligns the patterns correctly with the scale degrees
-  // const patternOffset = (noteCount === 5 && isMajor) ? 4 : 0;
-  const patternOffset = isMajor ? 4 : 0;
 
   const cagedShapes = Object.entries(cagedPositionMapping).map(
     ([pos, shape]) => {
-      const basePattern = basePatterns[shape];
+      let pattern = basePatterns[shape];
 
-      // Rotate the pattern indices for major scales
-      const rotatedPattern = basePattern.map((degreeArr) =>
-        degreeArr.map((degree) => (degree + patternOffset) % noteCount)
-      );
+      // For 7-note minor scales, rotate degrees by +2
+      if (noteCount === 7 && isMinor) {
+        pattern = pattern.map((stringDegrees) =>
+          stringDegrees.map((degree) => rotateDegree(degree, 2))
+        );
+      }
 
       return {
         position: parseInt(pos),
         shape: shape,
-        pattern: rotatedPattern,
+        pattern: pattern,
       };
     }
   );
 
+  // Process each string and note
   for (let stringIndex = 0; stringIndex < strings.length; stringIndex++) {
-    const str = strings[stringIndex];
+    const string = strings[stringIndex];
 
-    for (const semitone of str) {
-      const scaleNote = scaleNotes.find(
-        (sn) => sn.note.chroma === semitone.note.chroma
-      );
+    for (const fretNote of string) {
+      const chroma = fretNote.note.chroma;
 
-      if (scaleNote) {
-        const positions = [];
-        const scaleDegreeIndex = scaleNotes.findIndex(
-          (sn) => sn.note.chroma === semitone.note.chroma
-        );
+      // Skip notes not in the scale
+      if (!chromaToScaleDegree.has(chroma)) continue;
 
-        for (const shape of cagedShapes) {
-          const stringPattern = shape.pattern[stringIndex];
+      const scaleDegree = chromaToScaleDegree.get(chroma);
+      const positions = [];
 
-          if (stringPattern.includes(scaleDegreeIndex % noteCount)) {
-            positions.push(shape.position);
-          }
+      // Check each CAGED shape to see if this scale degree is on this string
+      for (const shape of cagedShapes) {
+        const stringPattern = shape.pattern[stringIndex];
+        if (stringPattern.includes(scaleDegree)) {
+          positions.push(shape.position);
         }
-
-        // Store positions under the CAGED system key
-        semitone.positions.CAGED = [...new Set(positions)].sort();
-        semitone.interval = scaleNote.interval;
       }
+
+      fretNote.positions.CAGED = [...new Set(positions)].sort();
+      fretNote.interval = chromaToInterval.get(chroma);
     }
   }
 
