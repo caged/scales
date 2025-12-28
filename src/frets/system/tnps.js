@@ -1,15 +1,17 @@
+import { Note } from "tonal";
 import { partition } from "../utils";
 
 export default function tnps(strings, scale) {
   const numPositions = 7;
   const notesPerString = 3;
-  const intervals = scale.intervals();
-  const snotes = scale.notes();
-  const scaleNotes = snotes.map((note, i) => {
+  const intervals = scale.intervals;
+  const snotes = scale.notes;
+  const scaleNotes = snotes.map((noteName, i) => {
+    const noteObj = Note.get(noteName);
     return {
-      note,
+      note: noteObj,
       interval: intervals[i],
-      name: note.name,
+      name: noteName,
     };
   });
 
@@ -27,17 +29,17 @@ export default function tnps(strings, scale) {
 
     for (const semitone of str) {
       const scaleNote = scaleNotes.find((sn) => {
-        return semitone.chroma === sn.note.chroma;
+        return semitone.note.chroma === sn.note.chroma;
       });
 
       const positions = strScalePositions
         .map((ssp, i) =>
-          ssp.some((n) => n.note.chroma === semitone.chroma) ? i + 1 : -1
+          ssp.some((n) => n.note.chroma === semitone.note.chroma) ? i + 1 : -1
         )
         .filter((i) => i !== -1);
 
       if (scaleNote) {
-        semitone.positions = positions;
+        semitone.positions.TNPS = positions;
         semitone.interval = scaleNote.interval;
       }
     }
