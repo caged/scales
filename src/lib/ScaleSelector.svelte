@@ -17,7 +17,7 @@
   ];
 </script>
 
-<select bind:value class="border-gray-300 w-full">
+<select bind:value class="border-gray-300 w-fit">
   {#each scales as scale}
     <option value={scale}>
       {scale}
