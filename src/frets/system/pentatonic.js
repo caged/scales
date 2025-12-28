@@ -33,18 +33,21 @@ export default function pentatonic(strings, scale) {
   // Major pentatonic: 1P 2M 3M 5P 6M
   const isMajor = intervals.includes("3M");
 
-  // For major pentatonic, we need to rotate the pattern indices
+  // For major pentatonic, we need to rotate the pattern degrees
   // This is because C major Position 1 should start at the 6th degree (A),
   // while C minor Position 1 starts at the root (C)
   // The offset is 4 positions forward (or 1 position backward) in the pentatonic scale
   const patternOffset = isMajor ? 4 : 0;
 
+  // Helper to rotate 1-indexed degrees (1-5)
+  const rotateDegree = (degree, offset) => ((degree - 1 + offset) % 5) + 1;
+
   const pentatonicShapes = Object.entries(pentatonicPositionMapping).map(
     ([pos, shape]) => {
       const basePattern = pentatonicPatterns[shape];
-      // Rotate the pattern indices for major scales
+      // Rotate the pattern degrees for major scales
       const rotatedPattern = basePattern.map((degreeArr) =>
-        degreeArr.map((degree) => (degree + patternOffset) % 5)
+        degreeArr.map((degree) => rotateDegree(degree, patternOffset))
       );
 
       return {
@@ -65,14 +68,16 @@ export default function pentatonic(strings, scale) {
 
       if (scaleNote) {
         const positions = [];
-        const scaleDegreeIndex = scaleNotes.findIndex(
-          (sn) => sn.note.chroma === semitone.note.chroma
-        );
+        // Scale degree is 1-indexed (1-5)
+        const scaleDegree =
+          scaleNotes.findIndex(
+            (sn) => sn.note.chroma === semitone.note.chroma
+          ) + 1;
 
         for (const shape of pentatonicShapes) {
           const stringPattern = shape.pattern[stringIndex];
 
-          if (stringPattern.includes(scaleDegreeIndex % 5)) {
+          if (stringPattern.includes(scaleDegree)) {
             positions.push(shape.position);
           }
         }

@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { Scale } from "tonal";
 import frets from "./index.js";
 
 describe("fretboard tests", () => {
@@ -44,11 +45,13 @@ describe("fretboard tests", () => {
       expect(notes[0].length).toBe(24);
     });
 
-    it("generates correct start notes for each string", () => {
+    it("generates correct start notes for each string (reversed by default)", () => {
       const fb = frets();
       const notes = fb.strings;
 
-      fb.tuning.forEach((tuningNote, i) => {
+      // Strings are reversed by default: [E4, B3, G3, D3, A2, E2]
+      const reversedTuning = [...fb.tuning].reverse();
+      reversedTuning.forEach((tuningNote, i) => {
         expect(notes[i][0].note.name).toBe(tuningNote);
       });
     });
@@ -97,27 +100,29 @@ describe("fretboard tests", () => {
       });
     });
 
-    it("generates all 6 strings for standard tuning", () => {
+    it("generates all 6 strings for standard tuning (reversed)", () => {
       const fb = frets();
       const notes = fb.strings;
 
+      // Strings are reversed: index 0 = high E, index 5 = low E
       expect(notes.length).toBe(6);
-      expect(notes[0][0].note.name).toBe("E2");
-      expect(notes[1][0].note.name).toBe("A2");
-      expect(notes[2][0].note.name).toBe("D3");
-      expect(notes[3][0].note.name).toBe("G3");
-      expect(notes[4][0].note.name).toBe("B3");
-      expect(notes[5][0].note.name).toBe("E4");
+      expect(notes[0][0].note.name).toBe("E4"); // High E
+      expect(notes[1][0].note.name).toBe("B3");
+      expect(notes[2][0].note.name).toBe("G3");
+      expect(notes[3][0].note.name).toBe("D3");
+      expect(notes[4][0].note.name).toBe("A2");
+      expect(notes[5][0].note.name).toBe("E2"); // Low E
     });
 
     it("generates correct notes at specific fret positions", () => {
       const fb = frets();
       const notes = fb.strings;
+      const lowE = notes[5]; // Low E is at index 5 (reversed)
 
       // Test known notes on the low E string
-      expect(notes[0][0].note.name).toBe("E2");
-      expect(notes[0][5].note.name).toBe("A2");
-      expect(notes[0][12].note.name).toBe("E3");
+      expect(lowE[0].note.name).toBe("E2");
+      expect(lowE[5].note.name).toBe("A2");
+      expect(lowE[12].note.name).toBe("E3");
     });
   });
 
@@ -126,8 +131,9 @@ describe("fretboard tests", () => {
       const dropD = ["D2", "A2", "D3", "G3", "B3", "E4"];
       const fb = frets(dropD);
       const notes = fb.strings;
+      const lowString = notes[5]; // Reversed, so low string is at index 5
 
-      expect(notes[0][0].note.name).toBe("D2");
+      expect(lowString[0].note.name).toBe("D2");
       expect(notes.length).toBe(6);
     });
 
@@ -136,9 +142,10 @@ describe("fretboard tests", () => {
       const fb = frets(dadgad);
       const notes = fb.strings;
 
-      expect(notes[0][0].note.name).toBe("D2");
-      expect(notes[4][0].note.name).toBe("A3");
-      expect(notes[5][0].note.name).toBe("D4");
+      // Reversed order
+      expect(notes[5][0].note.name).toBe("D2"); // Low D
+      expect(notes[1][0].note.name).toBe("A3");
+      expect(notes[0][0].note.name).toBe("D4"); // High D
     });
 
     it("works with 7-string tuning", () => {
@@ -147,7 +154,7 @@ describe("fretboard tests", () => {
       const notes = fb.strings;
 
       expect(notes.length).toBe(7);
-      expect(notes[0][0].note.name).toBe("B1");
+      expect(notes[6][0].note.name).toBe("B1"); // Reversed, lowest is at end
     });
 
     it("works with 4-string bass tuning", () => {
@@ -156,8 +163,8 @@ describe("fretboard tests", () => {
       const notes = fb.strings;
 
       expect(notes.length).toBe(4);
-      expect(notes[0][0].note.name).toBe("E1");
-      expect(notes[3][0].note.name).toBe("G2");
+      expect(notes[3][0].note.name).toBe("E1"); // Low E at end (reversed)
+      expect(notes[0][0].note.name).toBe("G2"); // High G at start
     });
   });
 
@@ -189,77 +196,74 @@ describe("fretboard tests", () => {
 
   describe("note normalization for scales", () => {
     it("normalizes to flats for Ab major scale", () => {
-      const fb = frets(undefined, 13, "Ab major");
+      const scale = Scale.get("Ab major");
+      const fb = frets(undefined, 13, scale);
       const notes = fb.strings;
+      const lowE = notes[5]; // Low E string (reversed)
 
-      // Ab major scale should use flats: Ab, Bb, C, Db, Eb, F, G
-      // The scale notes themselves should be flats
-      // Check a specific position that would normally be a sharp
-      // On the low E string (E2), fret 4 is G# / Ab
-      const fret4Notes = notes.map(string => string[4]);
-      const lowEStringFret4 = fret4Notes[0]; // First string is low E
-
-      // This should be Ab (not G#) for Ab major scale
-      expect(lowEStringFret4.label).toBe("Ab");
+      // On the low E string, fret 4 is G#/Ab - should be Ab for Ab major
+      expect(lowE[4].label).toBe("A♭");
     });
 
     it("shows all flat notes in Ab major scale intervals", () => {
-      const fb = frets(undefined, 13, "Ab major");
+      const scale = Scale.get("Ab major");
+      const fb = frets(undefined, 13, scale);
       const notes = fb.strings;
 
       // Collect all notes that are part of the Ab major scale (have intervals)
-      const scaleNotes = notes.flat().filter(n => n.interval !== null);
-      const scaleLabels = [...new Set(scaleNotes.map(n => n.label))];
+      const scaleNotes = notes.flat().filter((n) => n.interval !== null);
+      const scaleLabels = [...new Set(scaleNotes.map((n) => n.label))];
 
-      // Ab major should be: Ab, Bb, C, Db, Eb, F, G
-      expect(scaleLabels.sort()).toEqual(["Ab", "Bb", "C", "Db", "Eb", "F", "G"]);
+      // Ab major should be: Ab, Bb, C, Db, Eb, F, G (with ♭ symbols)
+      expect(scaleLabels.sort()).toEqual(["A♭", "B♭", "C", "D♭", "E♭", "F", "G"]);
     });
 
     it("does not normalize sharps for G# major scale", () => {
-      const fb = frets(undefined, 13, "G# major");
+      const scale = Scale.get("G# major");
+      const fb = frets(undefined, 13, scale);
       const notes = fb.strings;
 
-      // G# major scale uses sharps, so we don't convert anything
-      // The scale notes should remain as sharps: G#, A#, B# (becomes C), C#, D#, E# (becomes F), F## (becomes G)
-      const scaleNotes = notes.flat().filter(n => n.interval !== null);
-      const scaleLabels = [...new Set(scaleNotes.map(n => n.label))];
+      // G# major scale uses sharps
+      const scaleNotes = notes.flat().filter((n) => n.interval !== null);
+      const scaleLabels = [...new Set(scaleNotes.map((n) => n.label))];
 
-      // Should contain sharps since we don't normalize sharp scales
-      expect(scaleLabels).toContain("G#");
-      expect(scaleLabels).toContain("A#");
-      expect(scaleLabels).toContain("C#");
-      expect(scaleLabels).toContain("D#");
+      // Should contain sharps
+      expect(scaleLabels).toContain("G♯");
+      expect(scaleLabels).toContain("A♯");
+      expect(scaleLabels).toContain("C♯");
+      expect(scaleLabels).toContain("D♯");
     });
 
     it("uses scale note names for notes in the scale", () => {
-      const fb = frets(undefined, 13, "Ab major");
+      const scale = Scale.get("Ab major");
+      const fb = frets(undefined, 13, scale);
       const notes = fb.strings;
 
       // Notes that are in the Ab major scale should use the scale's notation
-      const scaleNotes = notes.flat().filter(n => n.interval !== null);
-      const scaleLabels = [...new Set(scaleNotes.map(n => n.label))];
+      const scaleNotes = notes.flat().filter((n) => n.interval !== null);
+      const scaleLabels = [...new Set(scaleNotes.map((n) => n.label))];
 
       // Scale notes should all be flats or naturals (no sharps in Ab major)
-      const scaleHasSharps = scaleLabels.some(label => label.includes("#"));
+      const scaleHasSharps = scaleLabels.some((label) => label.includes("♯"));
       expect(scaleHasSharps).toBe(false);
-      expect(scaleLabels.sort()).toEqual(["Ab", "Bb", "C", "Db", "Eb", "F", "G"]);
+      expect(scaleLabels.sort()).toEqual(["A♭", "B♭", "C", "D♭", "E♭", "F", "G"]);
     });
 
     it("uses scale note names including Cb for Gb major", () => {
-      const fb = frets(undefined, 13, "Gb major");
+      const scale = Scale.get("Gb major");
+      const fb = frets(undefined, 13, scale);
       const notes = fb.strings;
 
-      // Gb major scale contains Cb, and we should use Cb as the label
-      // Gb major notes: Gb, Ab, Bb, Cb, Db, Eb, F
-      const scaleNotes = notes.flat().filter(n => n.interval !== null);
-      const scaleLabels = [...new Set(scaleNotes.map(n => n.label))];
+      // Gb major scale contains Cb
+      const scaleNotes = notes.flat().filter((n) => n.interval !== null);
+      const scaleLabels = [...new Set(scaleNotes.map((n) => n.label))];
 
-      // Should have Cb as defined in the scale
-      expect(scaleLabels).toContain("Cb");
-      expect(scaleLabels.sort()).toEqual(["Ab", "Bb", "Cb", "Db", "Eb", "F", "Gb"]);
+      // Should have C♭ as defined in the scale
+      expect(scaleLabels).toContain("C♭");
+      expect(scaleLabels.sort()).toEqual(["A♭", "B♭", "C♭", "D♭", "E♭", "F", "G♭"]);
 
       // All notes should be flats or naturals (no sharps)
-      const hasSharps = scaleLabels.some(label => label.includes("#"));
+      const hasSharps = scaleLabels.some((label) => label.includes("♯"));
       expect(hasSharps).toBe(false);
     });
   });

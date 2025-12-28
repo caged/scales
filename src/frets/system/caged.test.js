@@ -1,58 +1,119 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
+import { describe, expect, it } from "vitest";
 import { Scale } from "tonal";
-import caged from "./caged.js";
 import frets from "../index.js";
+import caged from "./caged.js";
 
-describe("CAGED system tests", () => {
-  let strings;
-  let scale;
-
-  describe("with 7-note major scale", () => {
-    beforeEach(() => {
-      scale = Scale.get("C major");
+describe("CAGED system", () => {
+  describe("C major scale", () => {
+    it("assigns G shape (position 5) correctly - starts at fret 5 with A, B, C", () => {
+      const scale = Scale.get("C major");
       const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
-      strings = fb.strings;
+      const lowE = fb.strings[5]; // Low E string (reversed order)
+
+      // G shape pattern on low E has degrees [6, 7, 1] = A, B, C
+      expect(lowE[5].note.pc).toBe("A");
+      expect(lowE[5].positions.CAGED).toContain(5);
+
+      expect(lowE[7].note.pc).toBe("B");
+      expect(lowE[7].positions.CAGED).toContain(5);
+
+      expect(lowE[8].note.pc).toBe("C");
+      expect(lowE[8].positions.CAGED).toContain(5);
     });
 
-    it("throws error for non-5 or non-7 note scales", () => {
+    it("assigns E shape (position 1) correctly - starts at open position", () => {
+      const scale = Scale.get("C major");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+      const lowE = fb.strings[5];
+
+      // E shape pattern on low E has degrees [7, 1, 2] = B, C, D
+      expect(lowE[7].note.pc).toBe("B");
+      expect(lowE[7].positions.CAGED).toContain(1);
+
+      expect(lowE[8].note.pc).toBe("C");
+      expect(lowE[8].positions.CAGED).toContain(1);
+
+      expect(lowE[10].note.pc).toBe("D");
+      expect(lowE[10].positions.CAGED).toContain(1);
+    });
+  });
+
+  describe("C minor scale", () => {
+    it("assigns G shape (position 5) correctly - starts at fret 8 with C, D, Eb", () => {
+      const scale = Scale.get("C minor");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+      const lowE = fb.strings[5];
+
+      // For minor, G shape pattern rotates +2, so low E has degrees [1, 2, 3] = C, D, Eb
+      expect(lowE[8].note.pc).toBe("C");
+      expect(lowE[8].positions.CAGED).toContain(5);
+
+      expect(lowE[10].note.pc).toBe("D");
+      expect(lowE[10].positions.CAGED).toContain(5);
+
+      // Use label which reflects the scale's spelling (E♭ not D#)
+      expect(lowE[11].label).toBe("E♭");
+      expect(lowE[11].positions.CAGED).toContain(5);
+    });
+  });
+
+  describe("error handling", () => {
+    it("throws error for chromatic scale (12 notes)", () => {
       const chromatic = Scale.get("C chromatic");
-      const testStrings = [[], [], [], [], [], []];
-      expect(() => {
-        caged(testStrings, chromatic);
-      }).toThrow(
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16);
+      expect(() => caged(fb.strings, chromatic)).toThrow(
         "CAGED system only works with 5-note pentatonic or 7-note scales"
       );
     });
 
-    it("assigns CAGED positions to scale notes", () => {
-      // Check that scale notes have CAGED positions
-      const lowE = strings[5]; // Low E string
-      const cNote = lowE[8]; // C at fret 8 on low E string
-
-      expect(cNote.note.pc).toBe("C");
-      expect(cNote.interval).toBe("1P");
-      expect(cNote.positions.CAGED).toBeDefined();
-      expect(Array.isArray(cNote.positions.CAGED)).toBe(true);
-      expect(cNote.positions.CAGED.length).toBeGreaterThan(0);
+    it("throws error for 6-note scales", () => {
+      const blues = Scale.get("C blues");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16);
+      expect(() => caged(fb.strings, blues)).toThrow(
+        "CAGED system only works with 5-note pentatonic or 7-note scales"
+      );
     });
+  });
 
-    it("assigns positions property to all scale notes on all strings", () => {
-      for (const string of strings) {
+  describe("position assignment", () => {
+    it("assigns positions to all scale notes", () => {
+      const scale = Scale.get("G major");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      for (const string of fb.strings) {
         for (const note of string) {
           if (note.interval) {
             expect(note.positions.CAGED).toBeDefined();
             expect(Array.isArray(note.positions.CAGED)).toBe(true);
+            expect(note.positions.CAGED.length).toBeGreaterThan(0);
           }
         }
       }
     });
 
-    it("only assigns positions to notes that are in the scale", () => {
-      for (const string of strings) {
+    it("assigns positions between 1 and 5", () => {
+      const scale = Scale.get("A minor");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.positions.CAGED?.length > 0) {
+            for (const pos of note.positions.CAGED) {
+              expect(pos).toBeGreaterThanOrEqual(1);
+              expect(pos).toBeLessThanOrEqual(5);
+            }
+          }
+        }
+      }
+    });
+
+    it("does not assign positions to non-scale notes", () => {
+      const scale = Scale.get("C major");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      for (const string of fb.strings) {
         for (const note of string) {
           if (!note.interval) {
-            // Non-scale notes should either have no CAGED positions or an empty array
             expect(
               note.positions.CAGED === undefined ||
                 note.positions.CAGED.length === 0
@@ -61,113 +122,27 @@ describe("CAGED system tests", () => {
         }
       }
     });
-
-    it("assigns position arrays with values between 1 and 5", () => {
-      for (const string of strings) {
-        for (const note of string) {
-          if (note.positions.CAGED && note.positions.CAGED.length > 0) {
-            for (const pos of note.positions.CAGED) {
-              expect(pos).toBeGreaterThanOrEqual(1);
-              expect(pos).toBeLessThanOrEqual(5);
-            }
-          }
-        }
-      }
-    });
-
-    it("returns the same string array reference that was passed in", () => {
-      const result = Scale.get("C major");
-      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, result);
-      expect(fb.strings).toBe(fb.strings);
-    });
-
-    it("processes all 6 strings", () => {
-      expect(strings.length).toBe(6);
-    });
   });
 
-  describe("with 5-note pentatonic scale", () => {
-    beforeEach(() => {
-      scale = Scale.get("A minor pentatonic");
+  describe("works with different keys", () => {
+    it("works with G major", () => {
+      const scale = Scale.get("G major");
       const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
-      strings = fb.strings;
+      const lowE = fb.strings[5];
+
+      // G is at fret 3, should be in position 5 (G shape starts on root)
+      expect(lowE[3].note.pc).toBe("G");
+      expect(lowE[3].positions.CAGED).toContain(5);
     });
 
-    it("assigns CAGED positions to pentatonic scale notes", () => {
-      const lowE = strings[5]; // Low E string
-      const aNote = lowE[5]; // A at fret 5 on low E string
+    it("works with E minor", () => {
+      const scale = Scale.get("E minor");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+      const lowE = fb.strings[5];
 
-      expect(aNote.note.pc).toBe("A");
-      expect(aNote.interval).toBe("1P");
-      expect(aNote.positions.CAGED).toBeDefined();
-      expect(Array.isArray(aNote.positions.CAGED)).toBe(true);
-      expect(aNote.positions.CAGED.length).toBeGreaterThan(0);
-    });
-
-    it("works alongside pentatonic system", () => {
-      // When a pentatonic scale is used, both systems should be applied
-      for (const string of strings) {
-        for (const note of string) {
-          if (note.interval) {
-            expect(note.positions.Pentatonic).toBeDefined();
-            expect(note.positions.CAGED).toBeDefined();
-          }
-        }
-      }
-    });
-
-    it("assigns valid CAGED positions for pentatonic scales", () => {
-      let foundWithPositions = false;
-      for (const string of strings) {
-        for (const note of string) {
-          if (note.positions.CAGED && note.positions.CAGED.length > 0) {
-            foundWithPositions = true;
-            for (const pos of note.positions.CAGED) {
-              expect(pos).toBeGreaterThanOrEqual(1);
-              expect(pos).toBeLessThanOrEqual(5);
-            }
-          }
-        }
-      }
-      expect(foundWithPositions).toBe(true);
-    });
-  });
-
-  describe("with different scales", () => {
-    it("works with G major scale", () => {
-      const gMajor = Scale.get("G major");
-      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, gMajor);
-
-      let hasCAGEDPositions = false;
-      for (const string of fb.strings) {
-        for (const note of string) {
-          if (note.positions.CAGED && note.positions.CAGED.length > 0) {
-            hasCAGEDPositions = true;
-            break;
-          }
-        }
-        if (hasCAGEDPositions) break;
-      }
-
-      expect(hasCAGEDPositions).toBe(true);
-    });
-
-    it("works with E minor pentatonic", () => {
-      const eMinorPent = Scale.get("E minor pentatonic");
-      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, eMinorPent);
-
-      let hasCAGEDPositions = false;
-      for (const string of fb.strings) {
-        for (const note of string) {
-          if (note.positions.CAGED && note.positions.CAGED.length > 0) {
-            hasCAGEDPositions = true;
-            break;
-          }
-        }
-        if (hasCAGEDPositions) break;
-      }
-
-      expect(hasCAGEDPositions).toBe(true);
+      // E is at fret 0 (open), should be in G shape (position 5) for minor
+      expect(lowE[0].note.pc).toBe("E");
+      expect(lowE[0].positions.CAGED).toContain(5);
     });
   });
 });
