@@ -127,7 +127,7 @@
 </div>
 
 {#if triads.length > 0}
-  <div class="relative bg-gray-50 p-5 dark:bg-transparent dark:border-blue-900">
+  <div class="relative px-5 dark:border-blue-900">
     <ScaleChords scale={scaleObj} />
   </div>
 {/if}

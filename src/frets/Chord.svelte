@@ -58,7 +58,6 @@
     const chart = new SVGuitarChord(el);
     chart
       .configure({
-        title: chordName,
         strings: tuning.length,
         frets: frets,
         position: chordData.position,
@@ -70,7 +69,7 @@
         fretSize: 1.1,
         fretColor: chordColor,
         color: chordColor,
-        titleFontSize: 28,
+        titleFontSize: 40,
         titleBottomMargin: 10,
         fretLabelFontSize: 20,
         tuning,
@@ -88,18 +87,27 @@
   });
 </script>
 
-<button
-  class="flex cursor-pointer w-full h-full"
-  aria-label="Play {chordName} chord at position {position}"
-  onclick={playChord}>
-  <div
+<div
+  class="flex flex-col justify-center items-center relative w-full h-full p-1">
+  <a
     bind:clientWidth={width}
     bind:clientHeight={height}
     bind:this={el}
     data-chord={chordName}
+    href="#"
+    title="Chord diagram for {chordName}"
     class="w-full h-full flex">
+  </a>
+  <div class="flex w-full justify-center items-center py-2">
+    <button
+      class="flex justify-center items-center gap-1 w-full h-fit p-1 mx-5 text-xs cursor-pointer border border-gray-500 bg-gray-200 rounded-full hover:text-white hover:bg-green-600 hover:border-green-800"
+      aria-label="Play {chordName} chord at position {position}"
+      onclick={playChord}>
+      <div class="font-medium">{chordName}</div>
+      <span>▶</span>
+    </button>
   </div>
-</button>
+</div>
 
 <style>
   :global(.barre-rectangle) {
