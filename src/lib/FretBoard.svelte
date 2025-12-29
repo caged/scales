@@ -52,7 +52,7 @@
           <line
             x1={fretX(1) - margin.left}
             x2={width - margin.right - margin.left}
-            class="stroke-gray-100 dark:stroke-gray-600"
+            class="stroke-gray-100 dark:stroke-blue-950"
             stroke-width={lineW(i)} />
           {#each notes as stringNote}
             <g
@@ -99,12 +99,12 @@
   @reference "tailwindcss";
 
   .fret-label {
-    @apply text-xs fill-gray-800 dark:fill-gray-200 text-center -translate-y-2;
+    @apply text-xs fill-gray-800 text-center -translate-y-2 dark:fill-blue-500;
     text-anchor: middle;
     dominant-baseline: ideographic;
   }
 
   .fret-line {
-    @apply fill-gray-400 dark:fill-gray-500 stroke-0;
+    @apply fill-gray-400 stroke-0 dark:fill-blue-950;
   }
 </style>
