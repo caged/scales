@@ -42,7 +42,7 @@
   }
 
   .in-scale .fret-note-background {
-    @apply fill-sky-600 stroke-0 stroke-sky-800 dark:fill-blue-900 dark:stroke-sky-800;
+    @apply fill-blue-400 stroke-0 stroke-sky-800 dark:fill-blue-900 dark:stroke-sky-800;
   }
 
   .in-scale .fret-note-text {
