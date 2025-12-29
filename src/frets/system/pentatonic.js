@@ -2,58 +2,56 @@ import { pentatonicPatterns, pentatonicPositionMapping } from "./patterns.js";
 
 import { Note } from "tonal";
 
+// Helper to rotate 1-indexed degrees (1-7) in mod 7
+function rotateDegree(degree, offset) {
+  return ((degree - 1 + offset) % 7) + 1;
+}
+
 export default function pentatonic(strings, scale) {
   if (scale.intervals.length !== 5)
     throw new Error("Does not appear to be a pentatonic scale");
 
   const intervals = scale.intervals;
   const snotes = scale.notes;
-  const scaleNotes = snotes.map((noteName, i) => {
-    const noteObj = Note.get(noteName);
-    return {
-      note: noteObj,
-      interval: intervals[i],
-      name: noteName,
-    };
-  });
-
-  // Pentatonic positions use CAGED shape naming: Position 1=G, 2=E, 3=D, 4=C, 5=A
-  //
-  // For minor pentatonic (e.g., C minor):
-  //   Position 1 (G shape) starts on the root (C at fret 8)
-  //
-  // For major pentatonic (e.g., C major):
-  //   Position 1 (G shape) starts on the 6th (A at fret 5)
-  //
-  // This means C major and A minor (which are relative and share notes)
-  // have their Position 1 patterns at different fret locations
 
   // Determine if this is a major or minor pentatonic scale
   // Minor pentatonic: 1P 3m 4P 5P 7m
   // Major pentatonic: 1P 2M 3M 5P 6M
-  const isMajor = intervals.includes("3M");
+  const isMinor = intervals.includes("3m");
 
-  // For major pentatonic, we need to rotate the pattern degrees
-  // This is because C major Position 1 should start at the 6th degree (A),
-  // while C minor Position 1 starts at the root (C)
-  // The offset is 4 positions forward (or 1 position backward) in the pentatonic scale
-  const patternOffset = isMajor ? 4 : 0;
+  // Map pentatonic scale notes to their 7-degree equivalents
+  // Major pentatonic uses degrees: 1, 2, 3, 5, 6
+  // Minor pentatonic uses degrees: 1, 3, 4, 5, 7
+  const majorDegrees = [1, 2, 3, 5, 6];
+  const minorDegrees = [1, 3, 4, 5, 7];
+  const degreeMapping = isMinor ? minorDegrees : majorDegrees;
 
-  // Helper to rotate 1-indexed degrees (1-5)
-  const rotateDegree = (degree, offset) => ((degree - 1 + offset) % 5) + 1;
+  // Build a map from note chroma to its 7-degree scale degree
+  const chromaToScaleDegree = new Map();
+  const chromaToInterval = new Map();
 
+  snotes.forEach((noteName, index) => {
+    const noteObj = Note.get(noteName);
+    chromaToScaleDegree.set(noteObj.chroma, degreeMapping[index]);
+    chromaToInterval.set(noteObj.chroma, intervals[index]);
+  });
+
+  // For minor pentatonic, rotate the pattern degrees by +2 (same as diatonic)
+  // This aligns the minor patterns correctly with the major-based pattern definitions
   const pentatonicShapes = Object.entries(pentatonicPositionMapping).map(
     ([pos, shape]) => {
-      const basePattern = pentatonicPatterns[shape];
-      // Rotate the pattern degrees for major scales
-      const rotatedPattern = basePattern.map((degreeArr) =>
-        degreeArr.map((degree) => rotateDegree(degree, patternOffset))
-      );
+      let pattern = pentatonicPatterns[shape];
+
+      if (isMinor) {
+        pattern = pattern.map((stringDegrees) =>
+          stringDegrees.map((degree) => rotateDegree(degree, 2))
+        );
+      }
 
       return {
         position: parseInt(pos),
         shape: shape,
-        pattern: rotatedPattern,
+        pattern: pattern,
       };
     }
   );
@@ -62,29 +60,23 @@ export default function pentatonic(strings, scale) {
     const str = strings[stringIndex];
 
     for (const semitone of str) {
-      const scaleNote = scaleNotes.find(
-        (sn) => sn.note.chroma === semitone.note.chroma
-      );
+      const chroma = semitone.note.chroma;
 
-      if (scaleNote) {
-        const positions = [];
-        // Scale degree is 1-indexed (1-5)
-        const scaleDegree =
-          scaleNotes.findIndex(
-            (sn) => sn.note.chroma === semitone.note.chroma
-          ) + 1;
+      if (!chromaToScaleDegree.has(chroma)) continue;
 
-        for (const shape of pentatonicShapes) {
-          const stringPattern = shape.pattern[stringIndex];
+      const scaleDegree = chromaToScaleDegree.get(chroma);
+      const positions = [];
 
-          if (stringPattern.includes(scaleDegree)) {
-            positions.push(shape.position);
-          }
+      for (const shape of pentatonicShapes) {
+        const stringPattern = shape.pattern[stringIndex];
+
+        if (stringPattern.includes(scaleDegree)) {
+          positions.push(shape.position);
         }
-
-        semitone.positions.Pentatonic = [...new Set(positions)].sort();
-        semitone.interval = scaleNote.interval;
       }
+
+      semitone.positions.Pentatonic = [...new Set(positions)].sort();
+      semitone.interval = chromaToInterval.get(chroma);
     }
   }
 

@@ -145,4 +145,169 @@ describe("CAGED system", () => {
       expect(lowE[0].positions.CAGED).toContain(5);
     });
   });
+
+  describe("C major pentatonic", () => {
+    it("assigns positions using 7-degree mapping (1,2,3,5,6)", () => {
+      const scale = Scale.get("C major pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+      const lowE = fb.strings[5];
+
+      // C major pentatonic: C(1), D(2), E(3), G(5), A(6)
+      // On low E: E at fret 0, G at fret 3, A at fret 5, C at fret 8, D at fret 10
+      expect(lowE[0].note.pc).toBe("E");
+      expect(lowE[0].positions.CAGED).toBeDefined();
+      expect(lowE[0].positions.CAGED.length).toBeGreaterThan(0);
+
+      expect(lowE[3].note.pc).toBe("G");
+      expect(lowE[3].positions.CAGED).toBeDefined();
+
+      expect(lowE[5].note.pc).toBe("A");
+      expect(lowE[5].positions.CAGED).toBeDefined();
+
+      expect(lowE[8].note.pc).toBe("C");
+      expect(lowE[8].positions.CAGED).toBeDefined();
+
+      expect(lowE[10].note.pc).toBe("D");
+      expect(lowE[10].positions.CAGED).toBeDefined();
+    });
+
+    it("assigns all 5 positions across the fretboard", () => {
+      const scale = Scale.get("C major pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      const allPositions = new Set();
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.positions.CAGED) {
+            note.positions.CAGED.forEach((p) => allPositions.add(p));
+          }
+        }
+      }
+
+      expect(allPositions.size).toBe(5);
+      expect([...allPositions].sort()).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it("assigns correct intervals to scale notes", () => {
+      const scale = Scale.get("C major pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      // C major pentatonic intervals: 1P, 2M, 3M, 5P, 6M
+      const expectedIntervals = ["1P", "2M", "3M", "5P", "6M"];
+
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.interval) {
+            expect(expectedIntervals).toContain(note.interval);
+          }
+        }
+      }
+    });
+  });
+
+  describe("C minor pentatonic", () => {
+    it("assigns positions with rotation for minor scale", () => {
+      const scale = Scale.get("C minor pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+      const lowE = fb.strings[5];
+
+      // C minor pentatonic: C(1), Eb(3), F(4), G(5), Bb(7)
+      // On low E: F at fret 1, G at fret 3, Bb at fret 6, C at fret 8
+      expect(lowE[1].note.pc).toBe("F");
+      expect(lowE[1].positions.CAGED).toBeDefined();
+      expect(lowE[1].positions.CAGED.length).toBeGreaterThan(0);
+
+      expect(lowE[3].note.pc).toBe("G");
+      expect(lowE[3].positions.CAGED).toBeDefined();
+
+      expect(lowE[6].note.pc).toBe("Bb");
+      expect(lowE[6].positions.CAGED).toBeDefined();
+
+      expect(lowE[8].note.pc).toBe("C");
+      expect(lowE[8].positions.CAGED).toBeDefined();
+    });
+
+    it("assigns all 5 positions across the fretboard", () => {
+      const scale = Scale.get("C minor pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      const allPositions = new Set();
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.positions.CAGED) {
+            note.positions.CAGED.forEach((p) => allPositions.add(p));
+          }
+        }
+      }
+
+      expect(allPositions.size).toBe(5);
+      expect([...allPositions].sort()).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it("assigns correct intervals to scale notes", () => {
+      const scale = Scale.get("C minor pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      // C minor pentatonic intervals: 1P, 3m, 4P, 5P, 7m
+      const expectedIntervals = ["1P", "3m", "4P", "5P", "7m"];
+
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.interval) {
+            expect(expectedIntervals).toContain(note.interval);
+          }
+        }
+      }
+    });
+  });
+
+  describe("pentatonic position assignment", () => {
+    it("assigns positions to all pentatonic scale notes", () => {
+      const scale = Scale.get("A minor pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.interval) {
+            expect(note.positions.CAGED).toBeDefined();
+            expect(Array.isArray(note.positions.CAGED)).toBe(true);
+            expect(note.positions.CAGED.length).toBeGreaterThan(0);
+          }
+        }
+      }
+    });
+
+    it("assigns positions between 1 and 5 for pentatonic", () => {
+      const scale = Scale.get("G major pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (note.positions.CAGED?.length > 0) {
+            for (const pos of note.positions.CAGED) {
+              expect(pos).toBeGreaterThanOrEqual(1);
+              expect(pos).toBeLessThanOrEqual(5);
+            }
+          }
+        }
+      }
+    });
+
+    it("does not assign positions to non-scale notes for pentatonic", () => {
+      const scale = Scale.get("E minor pentatonic");
+      const fb = frets(["E2", "A2", "D3", "G3", "B3", "E4"], 16, scale);
+      const scaleNotes = scale.notes.map((n) => n.replace(/[0-9]/g, ""));
+
+      for (const string of fb.strings) {
+        for (const note of string) {
+          if (!scaleNotes.includes(note.note.pc)) {
+            expect(
+              note.positions.CAGED === undefined ||
+                note.positions.CAGED.length === 0
+            ).toBe(true);
+          }
+        }
+      }
+    });
+  });
 });

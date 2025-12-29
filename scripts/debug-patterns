@@ -4,6 +4,21 @@ import { Scale } from "tonal";
 import { diatonicPatterns, pentatonicPatterns } from "../src/frets/system/patterns.js";
 
 /**
+ * Build a mapping from diatonic scale degree (1-7) to array index
+ * For 7-note scales: degree 1 -> 0, degree 2 -> 1, etc.
+ * For 5-note scales: uses intervals to map (e.g., major pent 1,2,3,5,6 -> 0,1,2,3,4)
+ */
+function buildDegreeToIndexMap(intervals) {
+  const map = {};
+  intervals.forEach((interval, index) => {
+    // Extract the degree number from interval like "1P", "2M", "3m", "5P", "6M"
+    const degree = parseInt(interval);
+    map[degree] = index;
+  });
+  return map;
+}
+
+/**
  * Debug utility to visualize pattern indexes as actual note names or intervals
  */
 function debugPattern(scaleName, shape, useIntervals = false) {
@@ -33,17 +48,28 @@ function debugPattern(scaleName, shape, useIntervals = false) {
   const displayMode = useIntervals ? "Intervals" : "Notes";
   const displayValues = useIntervals ? intervals : notes;
 
+  // Build degree-to-index mapping for pentatonic scales
+  const degreeToIndex = isPentatonic ? buildDegreeToIndexMap(intervals) : null;
+
   console.log(`\n${"=".repeat(60)}`);
   console.log(`Scale: ${scaleName}`);
   console.log(`Shape: ${shape}`);
   console.log(`${displayMode}: ${displayValues.join(", ")}`);
+  if (isPentatonic) {
+    console.log(`Degree mapping: ${Object.entries(degreeToIndex).map(([d, i]) => `${d}→${i}`).join(", ")}`);
+  }
   console.log(`${"=".repeat(60)}\n`);
 
   pattern.forEach((stringPattern, stringIndex) => {
     const stringName = stringNames[stringIndex].padEnd(6);
     const indexes = stringPattern.map(i => String(i).padStart(2)).join(", ");
-    // Scale degrees are 1-indexed (1-7), so subtract 1 to get array index (0-6)
-    const actualValues = stringPattern.map(i => displayValues[i - 1].padEnd(3)).join(", ");
+
+    // For diatonic: degree - 1 gives array index
+    // For pentatonic: use the degree-to-index mapping
+    const actualValues = stringPattern.map(degree => {
+      const index = isPentatonic ? degreeToIndex[degree] : degree - 1;
+      return displayValues[index].padEnd(3);
+    }).join(", ");
 
     console.log(`${stringName}: [${indexes}] → [${actualValues}]`);
   });
