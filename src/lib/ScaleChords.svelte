@@ -21,9 +21,9 @@
   });
 </script>
 
-<div class="text-xs text-gray-500 grid grid-cols-4 md:grid-cols-7 gap-5">
+<div class="text-xs text-gray-500 dark:text-gray-400 grid grid-cols-4 md:grid-cols-7 gap-5">
   {#each chords as chord}
-    <div class="bg-gray-100 py-5">
+    <div class="bg-gray-100 dark:bg-gray-700 py-5">
       <Chord chordName={chord} />
     </div>
   {/each}

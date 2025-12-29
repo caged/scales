@@ -1,7 +1,7 @@
 <script>
   import { getChordVariations } from "../frets/chordFingerings.js";
   import { tunings } from "$lib";
-  import { getContext } from "svelte";
+  import { getContext, onMount } from "svelte";
   import { SVGuitarChord } from "svguitar";
 
   let {
@@ -16,10 +16,14 @@
   let el = $state(null);
   let width = $state(0);
   let height = $state(0);
+  let isDarkMode = $state(false);
 
   const variations = $derived(getChordVariations(chordName, tuning));
   // Use the first variation
   const chordData = $derived(variations.positions[position]);
+
+  // Colors based on color scheme
+  const chordColor = $derived(isDarkMode ? "#e5e7eb" : "#333");
 
   function playChord() {
     if (chordData?.midi) {
@@ -31,6 +35,17 @@
       );
     }
   }
+
+  onMount(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    isDarkMode = mediaQuery.matches;
+
+    const handler = (e) => {
+      isDarkMode = e.matches;
+    };
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  });
 
   $effect(() => {
     // Redraw the chord whenever props or chordData changes
@@ -49,11 +64,12 @@
         position: chordData.position,
         strokeWidth: 1,
         fingerSize: 0.5,
-        fingerColor: "#333",
+        fingerColor: chordColor,
+        fingerTextColor: isDarkMode ? "#374151" : "#fff",
         fingerTextSize: 20,
         fretSize: 1.1,
-        fretColor: "#333",
-        color: "#333",
+        fretColor: chordColor,
+        color: chordColor,
         titleFontSize: 28,
         titleBottomMargin: 10,
         fretLabelFontSize: 20,
@@ -87,7 +103,7 @@
 
 <style>
   :global(.barre-rectangle) {
-    fill: #333 !important;
+    @apply fill-[#333] dark:fill-[#e5e7eb];
   }
 
   :global(.tuning) {

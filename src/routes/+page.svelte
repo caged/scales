@@ -104,7 +104,7 @@
 </svelte:head>
 
 <div
-  class="flex bg-gray-50 *:p-5 *:border-r *:border-gray-200 border-b border-gray-300">
+  class="flex bg-gray-50 dark:bg-gray-800 *:p-5 *:border-r *:border-gray-200 dark:*:border-gray-700 border-b border-gray-300 dark:border-gray-700">
   <div>
     <TuningSelector bind:value={tuning} />
   </div>
@@ -127,7 +127,7 @@
 </div>
 
 {#if triads.length > 0}
-  <div class="relative bg-gray-50 border-t border-gray-200 p-5">
+  <div class="relative bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-5">
     <ScaleChords scale={scaleObj} />
   </div>
 {/if}

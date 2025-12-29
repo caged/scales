@@ -43,7 +43,7 @@
           text-anchor="middle"
           dy="25"
           font-size="10"
-          class="text-black"
+          class="text-black dark:text-gray-200"
           fill="currentColor">{note.interval}</text>
       </g>
     {/each}
