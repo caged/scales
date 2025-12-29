@@ -26,11 +26,11 @@
   @reference "tailwindcss";
 
   .fret-note-background {
-    @apply fill-white;
+    @apply fill-transparent;
   }
 
   .fret-note-text {
-    @apply text-xs fill-gray-500;
+    @apply text-xs fill-gray-500 dark:fill-blue-500;
   }
 
   .fret-note:not(.in-position):is(.in-scale) .fret-note-background {
@@ -38,11 +38,11 @@
   }
 
   .fret-note:not(.in-position):is(.in-scale) .fret-note-text {
-    @apply font-normal fill-gray-500;
+    @apply font-normal fill-gray-500 dark:fill-blue-500;
   }
 
   .in-scale .fret-note-background {
-    @apply fill-sky-600 stroke-1 stroke-sky-800;
+    @apply fill-sky-600 stroke-0 stroke-sky-800 dark:fill-blue-900 dark:stroke-sky-800;
   }
 
   .in-scale .fret-note-text {
@@ -50,10 +50,14 @@
   }
 
   .in-scale[data-interval="1P"] circle {
-    @apply fill-gray-800 stroke-gray-900 stroke-2;
+    @apply fill-gray-800 stroke-1 stroke-gray-900 dark:fill-blue-600 dark:stroke-blue-300;
+  }
+
+  .in-scale[data-interval="1P"] .fret-note-text {
+    @apply dark:fill-blue-100;
   }
 
   .in-scale:is([data-interval^="3"], [data-interval^="5"]) circle {
-    @apply fill-sky-800;
+    @apply fill-blue-700 stroke-1 stroke-blue-600;
   }
 </style>

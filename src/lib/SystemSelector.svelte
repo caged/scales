@@ -12,7 +12,7 @@
 
 <div class="flex gap-5">
   <div>
-    <select bind:value={system} class="w-fit border border-gray-200">
+    <select bind:value={system}>
       <option value="CAGED">CAGED</option>
       <option value="Pentatonic">Pentatonic</option>
     </select>
@@ -47,7 +47,7 @@
   @reference "tailwindcss";
 
   input[type="radio"] {
-    @apply border-gray-400 checked:bg-sky-600 checked:border-sky-600 active:bg-sky-200 focus:ring-1 focus:ring-sky-500;
+    @apply border-gray-400 checked:bg-sky-600 checked:border-sky-600 active:bg-sky-200 focus:ring-1 focus:ring-sky-500 dark:bg-blue-900 dark:border-blue-500 dark:active:bg-blue-700 dark:checked:bg-blue-400 dark:checked:border-blue-200;
   }
 
   label {
