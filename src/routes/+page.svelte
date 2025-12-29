@@ -104,7 +104,7 @@
 </svelte:head>
 
 <div
-  class="flex bg-gray-50 *:p-5 *:border-r *:border-gray-200 border-b border-gray-300 dark:bg-blue-950 dark:*:border-blue-900 dark:border-blue-900">
+  class="flex items-center bg-gray-50 *:p-5 *:border-r *:border-gray-200 border-b border-gray-300 dark:bg-blue-950 dark:*:border-blue-900 dark:border-blue-900">
   <div>
     <TuningSelector bind:value={tuning} />
   </div>

@@ -18,7 +18,7 @@
     </select>
   </div>
 
-  <div class="flex items-center space-x-2">
+  <div class="flex items-start space-x-2">
     {#if system === "CAGED"}
       {#each cagedMap as [pos, label]}
         <label
@@ -39,6 +39,11 @@
             value={index + 1} />
           <span>{index + 1}</span></label>
       {/each}
+    {/if}
+    {#if position !== null}
+      <button
+        class="flex justify-center items-center text-xs text-gray-500 bg-gray-300 border border-gray-500 rounded-full size-5 scale-75 cursor-pointer hover:bg-gray-100"
+        onclick={() => (position = null)}>✕</button>
     {/if}
   </div>
 </div>
